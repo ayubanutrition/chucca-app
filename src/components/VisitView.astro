@@ -1,0 +1,215 @@
+---
+import Icon from './Icon.astro';
+import { MODE } from '../config/mode';
+import { dictionary, type Locale } from '../i18n';
+import { venueFor } from '../lib/content';
+import { href } from '../lib/paths';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const venue = venueFor(MODE);
+const instagram = venue.channels.find((channel) => channel.type === 'instagram');
+const addressText = `${venue.shortName} · ${venue.address.building}, ${venue.address.street}, ${venue.address.postalCode} ${venue.address.city}, ${venue.address.region}`;
+const hours = venue.hours;
+const clientData = {
+  locale,
+  addressText,
+  maps: venue.maps.google,
+  shareTitle: t.visit.shareTitle,
+  shareText: t.visit.shareText,
+  shared: t.visit.shared,
+  shareCopied: t.visit.shareCopied,
+  addressCopied: t.visit.addressCopied,
+  inquiry: t.visit.inquiry,
+};
+---
+
+<div class="wrap" data-visit>
+  <header class="pagehead">
+    <div class="stack" style="--stack: var(--space-4)">
+      <p class="eyebrow">{t.visit.eyebrow}</p>
+      <h1 class="display h1--page">{t.visit.titleA} <em>{t.visit.titleB}</em></h1>
+    </div>
+    <p class="lede">{t.visit.intro}</p>
+  </header>
+
+  <div class="visit__grid">
+    <section class="stack" style="--stack: var(--space-5)" aria-labelledby="address-title">
+      <h2 class="eyebrow" id="address-title">{t.visit.addressTitle}</h2>
+      <address class="address">
+        <span class="small">{venue.shortName} · {venue.address.building}</span>
+        <span class="address__street">{venue.address.street}</span>
+        <span class="address__rest">{venue.address.postalCode} {venue.address.city} · {venue.address.area} · {venue.address.region}</span>
+      </address>
+      <div class="actions">
+        <a class="btn btn--primary" href={venue.maps.google} target="_blank" rel="noopener">
+          {t.visit.googleMaps}<Icon name="out" /><span class="visually-hidden">({t.common.external})</span>
+        </a>
+        <a class="btn" href={venue.maps.apple} target="_blank" rel="noopener">
+          {t.visit.appleMaps}<Icon name="out" /><span class="visually-hidden">({t.common.external})</span>
+        </a>
+      </div>
+      <div class="actions">
+        <button class="link" type="button" data-share-place><Icon name="share" />{t.visit.share}</button>
+        <button class="link" type="button" data-copy-address><Icon name="copy" />{t.visit.copyAddress}</button>
+      </div>
+      <p class="status" data-place-status role="status"></p>
+      <div class="field" data-place-manual hidden>
+        <p class="small">{t.common.manualCopyHint}</p>
+        <label for="place-text">{t.common.manualCopyLabel}</label>
+        <textarea class="input" id="place-text" readonly rows="3"></textarea>
+      </div>
+    </section>
+
+    {
+      venue.entrance && (
+        <section class="way" aria-labelledby="way-title">
+          <h2 class="eyebrow" id="way-title">
+            {t.visit.way.title}
+          </h2>
+          <figure class="stack" style="--stack: var(--space-3)">
+            <div class="way__map">
+              <svg viewBox="0 0 800 470" role="img" aria-label={t.visit.way.mapAlt} font-family="Instrument Sans Variable, system-ui, sans-serif" font-weight="600">
+                <rect width="800" height="470" fill="#130a10" />
+                <rect width="800" height="92" fill="#36202c" />
+                <path d="M0 40q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".25" stroke-width="2" />
+                <path d="M0 66q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".15" stroke-width="2" />
+                <rect y="92" width="800" height="70" fill="#ead8bf" />
+                <rect y="162" width="800" height="14" fill="#b9a596" />
+                <g fill="#26151f" stroke="#f7ecdc" stroke-opacity=".18">
+                  <rect x="30" y="196" width="150" height="74" rx="8" /><rect x="205" y="196" width="190" height="74" rx="8" /><rect x="420" y="196" width="130" height="74" rx="8" /><rect x="575" y="196" width="195" height="74" rx="8" />
+                </g>
+                <rect y="290" width="800" height="34" fill="#36202c" />
+                <path d="M0 307h800" stroke="#f7ecdc" stroke-opacity=".35" stroke-width="2" stroke-dasharray="14 12" />
+                <rect x="250" y="344" width="330" height="110" rx="10" fill="#26151f" stroke="#f7ecdc" stroke-opacity=".5" stroke-width="2" />
+                <path d="M360 454v-52a54 54 0 0 1 108 0v52Z" fill="#5a1f42" stroke="#ff8f45" stroke-width="2.500" />
+                <circle cx="408" cy="128" r="15" fill="#23131b" />
+                <text x="408" y="133" text-anchor="middle" font-size="14" fill="#f7ecdc">7</text>
+                <path d="M408 148V300q0 30 6 60" fill="none" stroke="#ff8f45" stroke-width="3.500" stroke-dasharray="2 9" stroke-linecap="round" />
+                <g stroke-width="7" stroke-linecap="round"><path d="M402 404l24 24" stroke="#f27aa5" /><path d="M426 404l-24 24" stroke="#ff8f45" /></g>
+                <g font-size="15" aria-hidden="true">
+                  <text x="24" y="30" fill="#d9c7b6">{t.visit.way.sea}</text>
+                  <text x="24" y="132" fill="#23131b">{t.visit.way.beach}</text>
+                  <text x="776" y="132" text-anchor="end" fill="#5c4650">{t.visit.way.promenade}</text>
+                  <text x="24" y="312" fill="#f7ecdc">{t.visit.way.street}</text>
+                  <text x="264" y="368" fill="#d9c7b6">Riu Center</text>
+                  <text x="480" y="424" fill="#f7ecdc" font-size="17">CHUCCA</text>
+                  <text x="480" y="443" fill="#d9c7b6" font-size="13">{t.visit.way.courtyard}</text>
+                </g>
+              </svg>
+            </div>
+            <figcaption class="small">{t.visit.way.mapCaption}</figcaption>
+          </figure>
+          <p>{venue.entrance.note[locale]}</p>
+          {!venue.entrance.confirmed && <p class="notice">{t.visit.way.unconfirmed}</p>}
+        </section>
+      )
+    }
+  </div>
+
+  <div class="rows">
+    <section class="row" aria-labelledby="hours-title">
+      <h2 class="h3" id="hours-title">{t.visit.hours.title}</h2>
+      {
+        hours.status === 'confirmed' && hours.regular ? (
+          <dl class="hours" data-hours>
+            {[1, 2, 3, 4, 5, 6, 0].map((day) => {
+              const range = hours.regular?.[day];
+              return (
+                <>
+                  <dt data-day={day}>{t.visit.hours.days[day]}</dt>
+                  <dd data-day={day}>{range ? `${range.open}–${range.close}` : t.visit.hours.closed}</dd>
+                </>
+              );
+            })}
+          </dl>
+        ) : (
+          <p>{t.visit.hours.unconfirmed}</p>
+        )
+      }
+    </section>
+    {
+      instagram && (
+        <section class="row" aria-labelledby="contact-title">
+          <h2 class="h3" id="contact-title">
+            {t.visit.contact.title}
+          </h2>
+          <div class="stack" style="--stack: var(--space-2)">
+            <p>{t.visit.contact.body}</p>
+            <a class="link" href={instagram.href} target="_blank" rel="noopener">
+              {instagram.label}
+              <Icon name="out" />
+              <span class="visually-hidden">({t.common.external})</span>
+            </a>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <section class="section--tight" aria-labelledby="inquiry-title" id="anfrage">
+    <div class="visit__grid" style="padding-bottom:0">
+      <div class="stack" style="--stack: var(--space-4)">
+        <p class="eyebrow">{t.nav.group}</p>
+        <h2 class="display h2" id="inquiry-title">{t.visit.inquiry.title}</h2>
+        <p class="notice">{t.visit.inquiry.limited}</p>
+        <p class="prose">{t.visit.inquiry.lead}</p>
+        <a class="link" href={href(locale, 'group')}>{t.visit.inquiry.plannerCta}<Icon name="arrow" /></a>
+      </div>
+      <form class="panel" data-inquiry novalidate>
+        <div class="fields">
+          <div class="field">
+            <label for="inq-people">{t.visit.inquiry.people}</label>
+            <input class="input" id="inq-people" name="people" type="number" inputmode="numeric" min="2" max="40" value="6" required />
+          </div>
+          <div class="field">
+            <label for="inq-date">{t.visit.inquiry.date}</label>
+            <input class="input" id="inq-date" name="date" type="date" max="2100-12-31" required />
+          </div>
+          <div class="field">
+            <label for="inq-time">{t.visit.inquiry.time}</label>
+            <input class="input" id="inq-time" name="time" type="time" step="60" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="inq-note">{t.visit.inquiry.note}</label>
+          <input class="input" id="inq-note" name="note" type="text" maxlength="140" placeholder={t.visit.inquiry.notePlaceholder} autocomplete="off" />
+        </div>
+        <p class="small">{t.common.localTime} · Europe/Madrid</p>
+        <button class="btn btn--primary btn--block" type="submit">{t.visit.inquiry.prepare}</button>
+        <p class="status" id="inq-status" data-inquiry-status role="status"></p>
+        <div class="output" data-inquiry-output hidden>
+          <div class="field">
+            <label for="inq-text">{t.visit.inquiry.output}</label>
+            <textarea class="input" id="inq-text" readonly rows="5"></textarea>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" data-inquiry-copy><Icon name="copy" />{t.common.copy}</button>
+            {
+              instagram && (
+                <a class="btn" href={instagram.href} target="_blank" rel="noopener">
+                  {t.visit.inquiry.openInstagram}
+                  <Icon name="out" />
+                  <span class="visually-hidden">({t.common.external})</span>
+                </a>
+              )
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <details class="fold" style="margin-bottom: var(--space-8)">
+    <summary>{t.visit.install.title}</summary>
+    <p>{t.visit.install.body}</p>
+  </details>
+  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+</div>
+
+<script>
+  import '../scripts/visit';
+</script>

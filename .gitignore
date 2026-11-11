@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-public/
+.astro/
+test-results/
+playwright-report/
+.worktrees/
+*.log
+.env
+.env.*

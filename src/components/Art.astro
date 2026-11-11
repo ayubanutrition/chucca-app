@@ -1,0 +1,36 @@
+---
+/** Bild mit responsiven Varianten. Konzeptmotive tragen immer ihre Kennzeichnung. */
+import { Picture } from 'astro:assets';
+import type { GalleryItem } from '../lib/gallery';
+import { dictionary, type Locale } from '../i18n';
+
+interface Props {
+  item: GalleryItem;
+  locale: Locale;
+  sizes: string;
+  arch?: boolean;
+  eager?: boolean;
+  class?: string;
+  /** Rein dekorativ einsetzen (leerer Alternativtext), wenn der Kontext das Motiv schon benennt. */
+  decorative?: boolean;
+}
+const { item, locale, sizes, arch = false, eager = false, decorative = false, class: className = '' } = Astro.props;
+const t = dictionary(locale);
+const widths = [360, 560, 800, 1100, 1500].filter((w) => w <= item.image.width);
+---
+
+<div class:list={['art', arch && 'art--arch', className]}>
+  <Picture
+    src={item.image}
+    alt={decorative ? '' : item.media.alt[locale]}
+    formats={['avif']}
+    fallbackFormat="webp"
+    widths={widths}
+    sizes={sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding={eager ? 'sync' : 'async'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    style={`object-position:${item.media.focus}`}
+  />
+  {item.media.kind === 'concept' && <span class="art__tag">{t.common.concept}</span>}
+</div>

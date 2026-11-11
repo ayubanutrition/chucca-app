@@ -1,0 +1,26 @@
+---
+import DrinksView from '../../components/DrinksView.astro';
+import GalleryView from '../../components/GalleryView.astro';
+import GroupView from '../../components/GroupView.astro';
+import VisitView from '../../components/VisitView.astro';
+import Base from '../../layouts/Base.astro';
+import { LOCALES, PAGES, SLUGS, type Locale, type PageKey } from '../../i18n';
+import { galleryItems } from '../../lib/gallery';
+
+export function getStaticPaths() {
+  return LOCALES.flatMap((locale) =>
+    PAGES.filter((page) => page !== 'today').map((page) => ({ params: { locale, slug: SLUGS[locale][page] }, props: { page } })),
+  );
+}
+const locale = Astro.params.locale as Locale;
+const { page } = Astro.props as { page: Exclude<PageKey, 'today'> };
+// Eine leere Galerie ist kein Hauptversprechen: Seite bleibt erreichbar, wird aber nicht indexiert.
+const noindex = page === 'gallery' && galleryItems().length === 0;
+---
+
+<Base locale={locale} page={page} noindex={noindex}>
+  {page === 'drinks' && <DrinksView locale={locale} />}
+  {page === 'visit' && <VisitView locale={locale} />}
+  {page === 'group' && <GroupView locale={locale} />}
+  {page === 'gallery' && <GalleryView locale={locale} />}
+</Base>

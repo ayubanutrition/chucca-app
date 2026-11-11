@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+import { MODE } from '../config/mode';
+import { dictionary, pagePath, type Locale } from '../i18n';
+import { venueFor } from '../lib/content';
+import { absoluteUrl, href } from '../lib/paths';
+import { IS_PUBLIC } from '../config/mode';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const venue = venueFor(MODE);
+const clientData = {
+  locale,
+  maps: venue.maps.google,
+  // Ein Link zum Plan gehört nur in die Einladung, wenn die Seite öffentlich erreichbar ist.
+  planUrl: IS_PUBLIC ? absoluteUrl(pagePath(locale, 'group')) : null,
+  location: `${venue.shortName}, ${venue.address.building}, ${venue.address.street}, ${venue.address.postalCode} ${venue.address.city}, ${venue.address.region}`,
+  localTime: t.common.localTime,
+  s: t.group,
+};
+---
+
+<div class="wrap" data-planner>
+  <header class="pagehead">
+    <div class="stack" style="--stack: var(--space-4)">
+      <p class="eyebrow">{t.group.eyebrow}</p>
+      <h1 class="display h1--page">{t.group.titleA} <em>{t.group.titleB}</em></h1>
+    </div>
+    <p class="lede">{t.group.intro}</p>
+  </header>
+
+  <div class="plan">
+    <form class="plan__form" novalidate>
+      <div class="incoming" data-incoming hidden>
+        <strong data-incoming-text></strong>
+        <span class="small">{t.group.incomingHint}</span>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label for="plan-date">{t.group.date}</label>
+          <input class="input" id="plan-date" name="date" type="date" max="2100-12-31" aria-describedby="plan-zone" required />
+        </div>
+        <div class="field">
+          <label for="plan-time">{t.group.time}</label>
+          <input class="input" id="plan-time" name="time" type="time" step="60" aria-describedby="plan-zone" required />
+        </div>
+      </div>
+      <p class="small" id="plan-zone">{t.group.zone}</p>
+      <p class="notice">{t.group.note}</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="submit"><Icon name="share" />{t.group.share}</button>
+        <button class="btn" type="button" data-calendar><Icon name="calendar" />{t.group.calendar}</button>
+        <button class="btn" type="button" data-copy><Icon name="copy" />{t.group.copy}</button>
+      </div>
+      <p class="status" id="plan-status" data-status role="status"></p>
+      <div class="field" data-manual hidden>
+        <p class="small">{t.common.manualCopyHint}</p>
+        <label for="plan-text">{t.common.manualCopyLabel}</label>
+        <textarea class="input" id="plan-text" readonly rows="6"></textarea>
+      </div>
+    </form>
+
+    <aside class="ticket" data-ticket data-empty="true" aria-live="polite">
+      <div class="band" aria-hidden="true"></div>
+      <div class="ticket__body">
+        <p class="ticket__label">{t.group.inviteTitle}</p>
+        <p class="ticket__date" data-ticket-date>{t.group.previewEmpty}</p>
+        <p class="ticket__time" data-ticket-time>–:–</p>
+        <p class="small" data-ticket-device hidden></p>
+        <p class="ticket__meta">
+          <strong>{venue.shortName} · {venue.address.building}</strong>
+          <span>{venue.address.street} · {venue.address.area}</span>
+          <span>{t.common.localTime} · Europe/Madrid</span>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="facts" aria-label={t.nav.group}>
+    <div class="fact">
+      <h2 class="h3">{t.group.facts.zoneTitle}</h2>
+      <p>{t.group.facts.zoneBody}</p>
+    </div>
+    <div class="fact">
+      <h2 class="h3">{t.group.facts.privateTitle}</h2>
+      <p>{t.group.facts.privateBody}</p>
+    </div>
+    <div class="fact">
+      <h2 class="h3">{t.group.facts.reserveTitle}</h2>
+      <p>{t.group.facts.reserveBody}</p>
+      <a class="link" href={`${href(locale, 'visit')}#anfrage`}>{t.group.facts.reserveLink}<Icon name="arrow" /></a>
+    </div>
+  </section>
+  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+</div>
+
+<script>
+  import '../scripts/planner';
+</script>

@@ -1,0 +1,26 @@
+---
+/** Eigene Liniensymbole (24er-Raster). Dekorativ: der Text daneben trägt die Bedeutung. */
+interface Props {
+  name: 'today' | 'drinks' | 'visit' | 'group' | 'gallery' | 'arrow' | 'out' | 'search' | 'close' | 'prev' | 'next' | 'pin' | 'calendar' | 'share' | 'copy';
+}
+const paths: Record<Props['name'], string> = {
+  today: '<path d="M3 17h18"/><path d="M6.5 17a5.5 5.5 0 0 1 11 0"/><path d="M12 5v3M4.6 9.6l2 2M19.4 9.6l-2 2"/><path d="M8 21h8"/>',
+  drinks: '<path d="M4.5 5h15c0 4.6-3.2 7.5-7.5 7.5S4.500 9.6 4.500 5Z"/><path d="M12 12.500V20M8 20h8"/><path d="M15 5l2.500-2.500"/>',
+  visit: '<path d="M12 21s6.500-5.800 6.500-11A6.500 6.500 0 0 0 5.500 10c0 5.200 6.500 11 6.500 11Z"/><path d="M9.800 7.800l4.400 4.400M14.200 7.800l-4.400 4.400"/>',
+  group: '<circle cx="12" cy="12" r="8.500"/><path d="M12 7.500V12l3 2"/>',
+  gallery: '<path d="M5 20V10a7 7 0 0 1 14 0v10Z"/><path d="M5 16l4-3.500 3.500 3 2.500-2 4 3.500"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  out: '<path d="M7 17 17 7M9 7h8v8"/>',
+  search: '<circle cx="11" cy="11" r="6.500"/><path d="m16 16 4.500 4.500"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  prev: '<path d="M15 5l-7 7 7 7"/>',
+  next: '<path d="M9 5l7 7-7 7"/>',
+  pin: '<path d="M12 21s6.500-5.800 6.500-11A6.500 6.500 0 0 0 5.500 10c0 5.200 6.500 11 6.500 11Z"/><circle cx="12" cy="10" r="2.200"/>',
+  calendar: '<rect x="4" y="5.500" width="16" height="14.500" rx="2.500"/><path d="M4 10h16M8.500 3.500v4M15.500 3.500v4"/>',
+  share: '<path d="M12 15V4M8 7.500 12 3.500l4 4"/><path d="M6 12.500V19a1.500 1.500 0 0 0 1.500 1.500h9A1.500 1.500 0 0 0 18 19v-6.500"/>',
+  copy: '<rect x="8.500" y="8.500" width="11" height="11" rx="2.200"/><path d="M15.500 5.500A1.500 1.500 0 0 0 14 4.500H6.500a2 2 0 0 0-2 2V14a1.500 1.500 0 0 0 1 1.400"/>',
+};
+const { name } = Astro.props;
+---
+
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" set:html={paths[name]} />

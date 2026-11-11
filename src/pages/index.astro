@@ -1,0 +1,107 @@
+---
+/**
+ * Einstieg ohne Sprachpfad: eine echte Sprachwahl (x-default) statt einer
+ * automatischen Weiterleitung. Weitergeleitet wird nur, wenn jemand schon
+ * bewusst eine Sprache gewählt hat oder über einen alten V3-Hash-Link kommt.
+ */
+import '@fontsource-variable/fraunces/soft.css';
+import '@fontsource-variable/instrument-sans/wght.css';
+import '../styles/global.css';
+import Mark from '../components/Mark.astro';
+import { IS_PUBLIC } from '../config/mode';
+import { LEGACY_HASHES, LOCALES, LOCALE_NAMES, SLUGS, dictionary, pagePath } from '../i18n';
+import { absoluteUrl, href, withBase } from '../lib/paths';
+
+const canonical = absoluteUrl('/');
+const indexable = IS_PUBLIC && canonical !== null;
+const routes = Object.fromEntries(LOCALES.map((locale) => [locale, Object.fromEntries(Object.entries(SLUGS[locale]).map(([page]) => [page, href(locale, page as keyof (typeof SLUGS)['de'])]))]));
+const config = JSON.stringify({ routes, legacy: LEGACY_HASHES, locales: LOCALES });
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>CHUCCA · Playa de Palma · Mallorca</title>
+    <meta name="description" content="CHUCCA – Cocktailbar in Playa de Palma, Mallorca. Deutsch · English · Español." />
+    <meta name="robots" content={indexable ? 'index,follow' : 'noindex,nofollow'} />
+    <meta name="theme-color" content="#1b0f17" />
+    <link rel="icon" href={withBase('/icon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/manifest.webmanifest')} />
+    {
+      indexable && (
+        <>
+          <link rel="canonical" href={canonical} />
+          {LOCALES.map((locale) => <link rel="alternate" hreflang={locale} href={absoluteUrl(pagePath(locale, 'today'))} />)}
+          <link rel="alternate" hreflang="x-default" href={canonical} />
+        </>
+      )
+    }
+    <script is:inline define:vars={{ config }}>
+      (function () {
+        try {
+          const c = JSON.parse(config);
+          const hash = location.hash.replace('#', '').toLowerCase();
+          const page = c.legacy[hash];
+          let stored = null;
+          try {
+            stored = localStorage.getItem('chucca-locale');
+          } catch (e) {}
+          const valid = function (v) {
+  return c.locales.indexOf(v) !== -1 ? v : null;
+};
+          let locale = valid(stored);
+          if (!locale && page) {
+            const langs = navigator.languages || [navigator.language || ''];
+            for (let i = 0; i < langs.length && !locale; i++) locale = valid(String(langs[i]).toLowerCase().split('-')[0]);
+            locale = locale || 'de';
+          }
+          if (locale) location.replace(c.routes[locale][page || 'today']);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bare">
+    <main class="gate">
+      <div class="gate__box">
+        <p class="wordmark" style="font-size:2rem"><Mark />CHUCCA</p>
+        <h1 class="display h2">Playa de Palma <em>Mallorca</em></h1>
+        <nav aria-label="Sprache · Language · Idioma">
+          <ul class="gate__list" role="list">
+            {
+              LOCALES.map((locale) => (
+                <li>
+                  <a href={href(locale, 'today')} hreflang={locale} lang={locale} data-locale={locale}>
+                    {LOCALE_NAMES[locale]}
+                    <small>{dictionary(locale).nav.today} →</small>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+    </main>
+    <script is:inline>
+      (function () {
+        const langs = navigator.languages || [navigator.language || ''];
+        for (let i = 0; i < langs.length; i++) {
+          const link = document.querySelector('[data-locale="' + String(langs[i]).toLowerCase().split('-')[0] + '"]');
+          if (link) {
+            link.setAttribute('data-suggested', 'true');
+            break;
+          }
+        }
+        document.querySelectorAll('[data-locale]').forEach(function (a) {
+          a.addEventListener('click', function () {
+            try {
+              localStorage.setItem('chucca-locale', a.getAttribute('data-locale'));
+            } catch (e) {}
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

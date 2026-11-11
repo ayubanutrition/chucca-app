@@ -1,0 +1,187 @@
+---
+import Art from './Art.astro';
+import Icon from './Icon.astro';
+import { MODE } from '../config/mode';
+import { dictionary, type Locale } from '../i18n';
+import { eventsFor, venueFor } from '../lib/content';
+import { galleryItem, galleryItems } from '../lib/gallery';
+import { href } from '../lib/paths';
+import { intlLocale } from '../lib/time';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const venue = venueFor(MODE);
+const { events, fixture } = eventsFor(MODE);
+const instagram = venue.channels.find((channel) => channel.type === 'instagram');
+const heroArt = galleryItem('concept-dusk') ?? galleryItems()[0] ?? null;
+const peek = galleryItems()
+  .filter((item) => item.media.id !== heroArt?.media.id)
+  .slice(0, 3);
+const monthFormat = new Intl.DateTimeFormat(intlLocale(locale), { month: 'short', timeZone: 'UTC' });
+const weekdayFormat = new Intl.DateTimeFormat(intlLocale(locale), { weekday: 'long', timeZone: 'UTC' });
+const paths = [
+  { page: 'drinks', q: t.today.paths.drinksQ, a: t.today.paths.drinksA },
+  { page: 'visit', q: t.today.paths.visitQ, a: t.today.paths.visitA },
+  { page: 'group', q: t.today.paths.groupQ, a: t.today.paths.groupA },
+] as const;
+const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: t.today.now };
+---
+
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow">{t.today.eyebrow}</p>
+      <h1 class="display h1">{t.today.titleA} <em>{t.today.titleB}</em></h1>
+      <p class="lede">{t.today.intro}</p>
+      <div class="actions">
+        <a class="btn btn--primary" href={venue.maps.google} target="_blank" rel="noopener">
+          {t.common.route}<Icon name="out" /><span class="visually-hidden">({t.common.external})</span>
+        </a>
+        <a class="btn" href={href(locale, 'drinks')}>{t.today.drinksCta}<Icon name="arrow" /></a>
+      </div>
+      <p class="hero__addr"><span style="width:1.1em;display:inline-block"><Icon name="pin" /></span>{t.today.addressLine}</p>
+    </div>
+    {heroArt && <Art item={heroArt} locale={locale} arch eager class="hero__art" sizes="(min-width: 60rem) 40vw, 100vw" />}
+  </div>
+</section>
+
+<section class="now" aria-labelledby="now-title" data-today>
+  <h2 class="visually-hidden" id="now-title">{t.today.now.title}</h2>
+  <div class="wrap now__grid">
+    <div class="now__cell">
+      <p class="now__label">{t.today.now.title}</p>
+      <p class="now__value" data-now-clock>–:–</p>
+      <p class="small" data-now-phase></p>
+    </div>
+    <div class="now__cell">
+      <p class="now__label">{t.today.now.sunset}</p>
+      <p class="now__value"><em data-now-sunset>–:–</em></p>
+      <p class="small">{t.common.localTime}</p>
+    </div>
+    <div class="now__cell">
+      <p class="now__label">{t.today.now.hours}</p>
+      <p data-now-hours>{t.today.now.hoursUnconfirmed}</p>
+      {
+        instagram && (
+          <a class="link" href={instagram.href} target="_blank" rel="noopener">
+            {t.today.now.instagram}
+            <Icon name="out" />
+            <span class="visually-hidden">({t.common.external})</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+</section>
+
+<section class="section paths" aria-labelledby="paths-title">
+  <div class="wrap stack" style="--stack: var(--space-6)">
+    <h2 class="eyebrow" id="paths-title">{t.today.paths.title}</h2>
+    <div class="paths__list">
+      {
+        paths.map((item, index) => (
+          <a class="path" href={href(locale, item.page)}>
+            <span class="path__no" aria-hidden="true">
+              0{index + 1}
+            </span>
+            <span class="path__q">{item.q}</span>
+            <span class="path__a">{item.a}</span>
+            <span class="path__go" aria-hidden="true">
+              <Icon name="arrow" />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+{
+  events.length > 0 && (
+    <section class="section--tight events" aria-labelledby="events-title" data-events>
+      <div class="wrap stack" style="--stack: var(--space-6)">
+        <div class="stack">
+          <p class="eyebrow">{t.today.events.eyebrow}</p>
+          <h2 class="display h2" id="events-title">
+            {t.today.events.title}
+          </h2>
+          {fixture && <p class="notice">{t.today.events.fixture}</p>}
+        </div>
+        <ul class="events__list" role="list">
+          {events.map((event) => {
+            const date = new Date(`${event.date}T12:00:00Z`);
+            return (
+              <li class="event" data-event data-hide-after={event.hideAfter ?? event.date}>
+                <p class="event__date">
+                  <span class="event__day">{date.getUTCDate()}</span>
+                  <span class="event__month">{monthFormat.format(date)}</span>
+                </p>
+                <div class="stack" style="--stack: 0.25rem">
+                  <p class="event__meta">
+                    <time datetime={`${event.date}T${event.start}`}>
+                      {weekdayFormat.format(date)} · {event.start}
+                      {event.end ? `–${event.end}` : ''}
+                    </time>
+                  </p>
+                  <h3 class="h3">{event.title[locale]}</h3>
+                  <p class="small">{event.summary[locale]}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+{
+  peek.length === 3 && (
+    <section class="section" aria-labelledby="peek-title">
+      <div class="wrap peek">
+        <div class="stack" style="--stack: var(--space-5)">
+          <p class="eyebrow">{t.today.gallery.eyebrow}</p>
+          <h2 class="display h2" id="peek-title">
+            {t.today.gallery.title}
+          </h2>
+          <a class="btn" href={href(locale, 'gallery')}>
+            {t.today.gallery.cta}
+            <Icon name="arrow" />
+          </a>
+        </div>
+        <div class="stack" style="--stack: var(--space-3)">
+          <div class="peek__row">
+            {peek.map((item) => (
+              <Art item={item} locale={locale} arch sizes="(min-width: 60rem) 22vw, 33vw" />
+            ))}
+          </div>
+          {peek.some((item) => item.media.kind === 'concept') && <p class="small">{t.common.conceptLong}</p>}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<section class="closing" aria-labelledby="closing-title">
+  <div class="band" aria-hidden="true"></div>
+  <div class="wrap closing__grid">
+    <div class="stack">
+      <h2 class="display h2" id="closing-title">{t.today.closing.title}</h2>
+      <p>{t.today.closing.body}</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn--primary" href={venue.maps.google} target="_blank" rel="noopener">
+        {t.common.route}<Icon name="out" /><span class="visually-hidden">({t.common.external})</span>
+      </a>
+      <a class="btn" href={href(locale, 'group')}>{t.today.paths.groupQ}<Icon name="arrow" /></a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/today';
+</script>

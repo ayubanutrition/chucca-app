@@ -1,0 +1,294 @@
+[
+ {
+  "id": "concept-dusk",
+  "kind": "concept",
+  "file": "concept-dusk.webp",
+  "focus": "55% 70%",
+  "alt": {
+   "de": "Illustration: Palmen vor einem Abendhimmel, der von Orange in dunkles Pflaumenblau übergeht; eine Lichterkette spannt sich über einen Innenhof.",
+   "en": "Illustration: palm trees against an evening sky fading from orange to deep plum; a string of lights spans a courtyard.",
+   "es": "Ilustración: palmeras ante un cielo de atardecer que pasa del naranja al ciruela oscuro; una guirnalda de luces cruza un patio."
+  },
+  "caption": {
+   "de": "Abend über dem Innenhof",
+   "en": "Evening over the courtyard",
+   "es": "Atardecer sobre el patio"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "atmosphere"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-coupe",
+  "kind": "concept",
+  "file": "concept-coupe.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: eine Cocktailschale mit orangefarbenem Drink und Orangenzeste vor dunklem Hintergrund.",
+   "en": "Illustration: a coupe glass with an orange drink and an orange twist against a dark background.",
+   "es": "Ilustración: una copa coupe con una bebida naranja y una piel de naranja sobre fondo oscuro."
+  },
+  "caption": {
+   "de": "Etwas Klassisches",
+   "en": "Something classic",
+   "es": "Algo clásico"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "drinks"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-highball",
+  "kind": "concept",
+  "file": "concept-highball.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: ein hohes Glas mit Eis, Zitronenscheibe und Rosmarinzweig.",
+   "en": "Illustration: a tall glass with ice, a lemon wheel and a sprig of rosemary.",
+   "es": "Ilustración: un vaso alto con hielo, una rodaja de limón y una ramita de romero."
+  },
+  "caption": {
+   "de": "Frisch und alkoholfrei",
+   "en": "Fresh and alcohol-free",
+   "es": "Fresco y sin alcohol"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "drinks"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-arch",
+  "kind": "concept",
+  "file": "concept-arch.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: ein Torbogen führt in einen warm beleuchteten Innenhof mit Topfpalme.",
+   "en": "Illustration: an archway leads into a warmly lit courtyard with a potted palm.",
+   "es": "Ilustración: un arco conduce a un patio con luz cálida y una palmera en maceta."
+  },
+  "caption": {
+   "de": "Durch den Bogen in den Hof",
+   "en": "Through the arch into the courtyard",
+   "es": "Por el arco hacia el patio"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "place"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-citrus",
+  "kind": "concept",
+  "file": "concept-citrus.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: aufgeschnittene Orangen und Zitronen mit Minzblättern, von oben gesehen.",
+   "en": "Illustration: halved oranges and lemons with mint leaves, seen from above.",
+   "es": "Ilustración: naranjas y limones cortados con hojas de menta, vistos desde arriba."
+  },
+  "caption": {
+   "de": "Zitrus, Minze, Eis",
+   "en": "Citrus, mint, ice",
+   "es": "Cítricos, menta, hielo"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "drinks"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-table",
+  "kind": "concept",
+  "file": "concept-table.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: zwei Gläser und eine Kerze auf einem kleinen runden Tisch, dahinter Lichterpunkte.",
+   "en": "Illustration: two glasses and a candle on a small round table, with dots of light behind.",
+   "es": "Ilustración: dos copas y una vela sobre una mesita redonda, con puntos de luz al fondo."
+  },
+  "caption": {
+   "de": "Ein Tisch für zwei – oder zwölf",
+   "en": "A table for two – or twelve",
+   "es": "Una mesa para dos, o para doce"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "atmosphere"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-llengues",
+  "kind": "concept",
+  "file": "concept-llengues.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: ein Muster nach Art der mallorquinischen Zungenstoffe in Orange, Creme und Pink.",
+   "en": "Illustration: a pattern in the style of Mallorcan “llengües” ikat fabric in orange, cream and pink.",
+   "es": "Ilustración: un estampado al estilo de la tela de lenguas mallorquina en naranja, crema y rosa."
+  },
+  "caption": {
+   "de": "Roba de llengües – Mallorcas Flammenmuster",
+   "en": "Roba de llengües – Mallorca’s flame pattern",
+   "es": "Roba de llengües: el estampado de llamas de Mallorca"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "place"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "concept-night",
+  "kind": "concept",
+  "file": "concept-night.webp",
+  "focus": "50% 50%",
+  "alt": {
+   "de": "Illustration: Mond und Sterne über einer Reihe von Palmen und warmen Lichtern am Wasser.",
+   "en": "Illustration: moon and stars above a row of palms and warm lights by the water.",
+   "es": "Ilustración: luna y estrellas sobre una hilera de palmeras y luces cálidas junto al agua."
+  },
+  "caption": {
+   "de": "Später Abend an der Playa",
+   "en": "Late evening on the Playa",
+   "es": "Última hora en la Playa"
+  },
+  "credit": "CHUCCA V4 · Konzeptillustration",
+  "tags": [
+   "atmosphere"
+  ],
+  "authorization": "self-made",
+  "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
+  "rights_status": "approved",
+  "rights_evidence": "Eigenes Werk des Projekts; keine Fremdrechte. Nur als gekennzeichnetes Konzeptmotiv freigegeben.",
+  "venue_name": "CHUCCA Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Kein Foto: frei gestaltetes Motiv ohne Anspruch auf Abbildung des Lokals.",
+  "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
+ },
+ {
+  "id": "chucca-palma-mallorcaguide-0",
+  "source_url": "https://lumaguide.sfo3.cdn.digitaloceanspaces.com/media/place_images/2025/05/19/google_place_ChIJe62fuTqXlxIRtw-Kh40KWb0_photo_0.jpg",
+  "source_page": "https://mallorcaguide.com/en/places/2170/chucca-playa-de-palma/",
+  "authorization": "authorized",
+  "authorization_evidence": "Reference supplied during authorized media discovery; metadata indexing only. This is not image-use permission.",
+  "rights_status": "pending",
+  "rights_evidence": "Unknown; permission required before publication.",
+  "venue_name": "Chucca, Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Listing associates this reference with Chucca Playa de Palma; image contents not independently verified.",
+  "kind": "photograph",
+  "retrieved_at": "2026-11-07",
+  "date_captured": "unknown",
+  "notes": "Metadata only; not downloaded or visually verified. Date components of URL do not establish capture date. Source classification as photograph remains unverified.",
+  "tags": []
+ },
+ {
+  "id": "chucca-palma-mallorcaguide-1",
+  "source_url": "https://lumaguide.sfo3.cdn.digitaloceanspaces.com/media/place_images/2025/05/19/google_place_ChIJe62fuTqXlxIRtw-Kh40KWb0_photo_1.jpg",
+  "source_page": "https://mallorcaguide.com/en/places/2170/chucca-playa-de-palma/",
+  "authorization": "authorized",
+  "authorization_evidence": "Reference supplied during authorized media discovery; metadata indexing only. This is not image-use permission.",
+  "rights_status": "pending",
+  "rights_evidence": "Unknown; permission required before publication.",
+  "venue_name": "Chucca, Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Listing associates this reference with Chucca Playa de Palma; image contents not independently verified.",
+  "kind": "photograph",
+  "retrieved_at": "2026-11-07",
+  "date_captured": "unknown",
+  "notes": "Metadata only; not downloaded or visually verified. Date components of URL do not establish capture date. Source classification as photograph remains unverified.",
+  "tags": []
+ },
+ {
+  "id": "chucca-palma-mallorcaguide-2",
+  "source_url": "https://lumaguide.sfo3.cdn.digitaloceanspaces.com/media/place_images/2025/05/19/google_place_ChIJe62fuTqXlxIRtw-Kh40KWb0_photo_2.jpg",
+  "source_page": "https://mallorcaguide.com/en/places/2170/chucca-playa-de-palma/",
+  "authorization": "authorized",
+  "authorization_evidence": "Reference supplied during authorized media discovery; metadata indexing only. This is not image-use permission.",
+  "rights_status": "pending",
+  "rights_evidence": "Unknown; permission required before publication.",
+  "venue_name": "Chucca, Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Listing associates this reference with Chucca Playa de Palma; image contents not independently verified.",
+  "kind": "photograph",
+  "retrieved_at": "2026-11-07",
+  "date_captured": "unknown",
+  "notes": "Metadata only; not downloaded or visually verified. Date components of URL do not establish capture date. Source classification as photograph remains unverified.",
+  "tags": []
+ },
+ {
+  "id": "chucca-palma-mallorcaguide-3",
+  "source_url": "https://lumaguide.sfo3.cdn.digitaloceanspaces.com/media/place_images/2025/05/19/google_place_ChIJe62fuTqXlxIRtw-Kh40KWb0_photo_3.jpg",
+  "source_page": "https://mallorcaguide.com/en/places/2170/chucca-playa-de-palma/",
+  "authorization": "authorized",
+  "authorization_evidence": "Reference supplied during authorized media discovery; metadata indexing only. This is not image-use permission.",
+  "rights_status": "pending",
+  "rights_evidence": "Unknown; permission required before publication.",
+  "venue_name": "Chucca, Playa de Palma",
+  "venue_verified": false,
+  "venue_evidence": "Listing associates this reference with Chucca Playa de Palma; image contents not independently verified.",
+  "kind": "photograph",
+  "retrieved_at": "2026-11-07",
+  "date_captured": "unknown",
+  "notes": "Metadata only; not downloaded or visually verified. Date components of URL do not establish capture date. Source classification as photograph remains unverified.",
+  "tags": []
+ }
+]

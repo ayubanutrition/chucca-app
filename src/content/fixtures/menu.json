@@ -1,0 +1,788 @@
+{
+ "kind": "fixture",
+ "status": "pending",
+ "updatedAt": null,
+ "categories": [
+  {
+   "id": "classics",
+   "name": {
+    "de": "Klassiker",
+    "en": "Classics",
+    "es": "Clásicos"
+   }
+  },
+  {
+   "id": "spritz",
+   "name": {
+    "de": "Spritz & Longdrinks",
+    "en": "Spritz & long drinks",
+    "es": "Spritz y combinados"
+   }
+  },
+  {
+   "id": "free",
+   "name": {
+    "de": "Alkoholfrei",
+    "en": "Alcohol-free",
+    "es": "Sin alcohol"
+   },
+   "note": {
+    "de": "Gleiche Sorgfalt, gleiche Gläser – nur ohne Alkohol.",
+    "en": "Same care, same glassware – just no alcohol.",
+    "es": "El mismo cuidado y las mismas copas, solo que sin alcohol."
+   }
+  }
+ ],
+ "items": [
+  {
+   "id": "mojito",
+   "category": "classics",
+   "name": {
+    "de": "Mojito",
+    "en": "Mojito",
+    "es": "Mojito"
+   },
+   "description": {
+    "de": "Frisch, minzig, viel Eis.",
+    "en": "Fresh, minty, plenty of ice.",
+    "es": "Fresco, con menta y mucho hielo."
+   },
+   "ingredients": [
+    {
+     "de": "weißer Rum",
+     "en": "white rum",
+     "es": "ron blanco"
+    },
+    {
+     "de": "Minze",
+     "en": "mint",
+     "es": "menta"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "Rohrzucker",
+     "en": "cane sugar",
+     "es": "azúcar de caña"
+    },
+    {
+     "de": "Soda",
+     "en": "soda water",
+     "es": "soda"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1100,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fresh",
+    "classic"
+   ],
+   "available": true
+  },
+  {
+   "id": "negroni",
+   "category": "classics",
+   "name": {
+    "de": "Negroni",
+    "en": "Negroni",
+    "es": "Negroni"
+   },
+   "description": {
+    "de": "Bitter-süß und kräftig, auf einem großen Eiswürfel.",
+    "en": "Bittersweet and strong, over one large ice cube.",
+    "es": "Agridulce e intenso, sobre un gran cubo de hielo."
+   },
+   "ingredients": [
+    {
+     "de": "Gin",
+     "en": "gin",
+     "es": "ginebra"
+    },
+    {
+     "de": "roter Wermut",
+     "en": "sweet vermouth",
+     "es": "vermut rojo"
+    },
+    {
+     "de": "Bitterlikör",
+     "en": "bitter liqueur",
+     "es": "licor amargo"
+    },
+    {
+     "de": "Orange",
+     "en": "orange",
+     "es": "naranja"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1200,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "classic"
+   ],
+   "available": true
+  },
+  {
+   "id": "espresso-martini",
+   "category": "classics",
+   "name": {
+    "de": "Espresso Martini",
+    "en": "Espresso Martini",
+    "es": "Espresso Martini"
+   },
+   "description": {
+    "de": "Kalt geschüttelt, mit fester Crema.",
+    "en": "Shaken cold, with a firm crema.",
+    "es": "Agitado en frío, con crema firme."
+   },
+   "ingredients": [
+    {
+     "de": "Wodka",
+     "en": "vodka",
+     "es": "vodka"
+    },
+    {
+     "de": "Espresso",
+     "en": "espresso",
+     "es": "café expreso"
+    },
+    {
+     "de": "Kaffeelikör",
+     "en": "coffee liqueur",
+     "es": "licor de café"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1200,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "classic"
+   ],
+   "available": true
+  },
+  {
+   "id": "margarita",
+   "category": "classics",
+   "name": {
+    "de": "Margarita",
+    "en": "Margarita",
+    "es": "Margarita"
+   },
+   "description": {
+    "de": "Zitrisch und klar, mit halbem Salzrand.",
+    "en": "Citrusy and clean, with half a salt rim.",
+    "es": "Cítrica y limpia, con medio borde de sal."
+   },
+   "ingredients": [
+    {
+     "de": "Tequila",
+     "en": "tequila",
+     "es": "tequila"
+    },
+    {
+     "de": "Orangenlikör",
+     "en": "orange liqueur",
+     "es": "licor de naranja"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "Salzrand",
+     "en": "salt rim",
+     "es": "borde de sal"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1200,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fresh",
+    "classic"
+   ],
+   "available": true
+  },
+  {
+   "id": "whiskey-sour",
+   "category": "classics",
+   "name": {
+    "de": "Whiskey Sour",
+    "en": "Whiskey Sour",
+    "es": "Whiskey Sour"
+   },
+   "description": {
+    "de": "Weich, sauer, mit Schaumkrone.",
+    "en": "Smooth and sour, with a foam top.",
+    "es": "Suave y ácido, con corona de espuma."
+   },
+   "ingredients": [
+    {
+     "de": "Bourbon",
+     "en": "bourbon",
+     "es": "bourbon"
+    },
+    {
+     "de": "Zitrone",
+     "en": "lemon",
+     "es": "limón"
+    },
+    {
+     "de": "Rohrzucker",
+     "en": "cane sugar",
+     "es": "azúcar de caña"
+    },
+    {
+     "de": "Eiweiß",
+     "en": "egg white",
+     "es": "clara de huevo"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1200,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "classic"
+   ],
+   "available": false
+  },
+  {
+   "id": "pornstar",
+   "category": "classics",
+   "name": {
+    "de": "Maracuja Martini",
+    "en": "Passion Fruit Martini",
+    "es": "Martini de maracuyá"
+   },
+   "description": {
+    "de": "Fruchtig mit Vanille, dazu ein kleiner Schluck Cava.",
+    "en": "Fruity with vanilla, served with a small sip of cava.",
+    "es": "Afrutado con vainilla, con un sorbo de cava aparte."
+   },
+   "ingredients": [
+    {
+     "de": "Wodka",
+     "en": "vodka",
+     "es": "vodka"
+    },
+    {
+     "de": "Maracuja",
+     "en": "passion fruit",
+     "es": "maracuyá"
+    },
+    {
+     "de": "Vanille",
+     "en": "vanilla",
+     "es": "vainilla"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "Cava",
+     "en": "cava",
+     "es": "cava"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1300,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fruity"
+   ],
+   "available": true
+  },
+  {
+   "id": "orange-spritz",
+   "category": "spritz",
+   "name": {
+    "de": "Orangen-Spritz",
+    "en": "Orange Spritz",
+    "es": "Spritz de naranja"
+   },
+   "description": {
+    "de": "Der Aperitif zum Sonnenuntergang.",
+    "en": "The sunset aperitif.",
+    "es": "El aperitivo de la puesta de sol."
+   },
+   "ingredients": [
+    {
+     "de": "Orangen-Aperitivo",
+     "en": "orange aperitivo",
+     "es": "aperitivo de naranja"
+    },
+    {
+     "de": "Cava",
+     "en": "cava",
+     "es": "cava"
+    },
+    {
+     "de": "Soda",
+     "en": "soda water",
+     "es": "soda"
+    },
+    {
+     "de": "Orange",
+     "en": "orange",
+     "es": "naranja"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 900,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fresh",
+    "fruity"
+   ],
+   "available": true
+  },
+  {
+   "id": "gin-tonic",
+   "category": "spritz",
+   "name": {
+    "de": "Gin & Tonic",
+    "en": "Gin & Tonic",
+    "es": "Gin & Tonic"
+   },
+   "description": {
+    "de": "Im Ballonglas, mit Zitrone und Rosmarin.",
+    "en": "In a balloon glass, with lemon and rosemary.",
+    "es": "En copa de balón, con limón y romero."
+   },
+   "ingredients": [
+    {
+     "de": "Gin",
+     "en": "gin",
+     "es": "ginebra"
+    },
+    {
+     "de": "Tonic Water",
+     "en": "tonic water",
+     "es": "tónica"
+    },
+    {
+     "de": "Zitrone",
+     "en": "lemon",
+     "es": "limón"
+    },
+    {
+     "de": "Rosmarin",
+     "en": "rosemary",
+     "es": "romero"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1000,
+     "currency": "EUR",
+     "size": "0,3 l"
+    },
+    {
+     "amountCents": 1300,
+     "currency": "EUR",
+     "size": "0,5 l"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fresh",
+    "classic"
+   ],
+   "available": true
+  },
+  {
+   "id": "moscow-mule",
+   "category": "spritz",
+   "name": {
+    "de": "Moscow Mule",
+    "en": "Moscow Mule",
+    "es": "Moscow Mule"
+   },
+   "description": {
+    "de": "Scharf vom Ingwer, kühl von der Gurke.",
+    "en": "Sharp with ginger, cool with cucumber.",
+    "es": "Picante por el jengibre, fresco por el pepino."
+   },
+   "ingredients": [
+    {
+     "de": "Wodka",
+     "en": "vodka",
+     "es": "vodka"
+    },
+    {
+     "de": "Ginger Beer",
+     "en": "ginger beer",
+     "es": "ginger beer"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "Gurke",
+     "en": "cucumber",
+     "es": "pepino"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 1100,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": false,
+   "tastes": [
+    "fresh"
+   ],
+   "available": true
+  },
+  {
+   "id": "sangria",
+   "category": "spritz",
+   "name": {
+    "de": "Sangría (Karaffe)",
+    "en": "Sangria (carafe)",
+    "es": "Sangría (jarra)"
+   },
+   "description": {
+    "de": "Zum Teilen für den ganzen Tisch.",
+    "en": "To share with the whole table.",
+    "es": "Para compartir en toda la mesa."
+   },
+   "ingredients": [
+    {
+     "de": "Rotwein",
+     "en": "red wine",
+     "es": "vino tinto"
+    },
+    {
+     "de": "frische Früchte",
+     "en": "fresh fruit",
+     "es": "fruta fresca"
+    },
+    {
+     "de": "Orange",
+     "en": "orange",
+     "es": "naranja"
+    },
+    {
+     "de": "Soda",
+     "en": "soda water",
+     "es": "soda"
+    }
+   ],
+   "prices": [],
+   "alcoholFree": false,
+   "tastes": [
+    "fruity"
+   ],
+   "available": true
+  },
+  {
+   "id": "virgin-mojito",
+   "category": "free",
+   "name": {
+    "de": "Mojito ohne Rum",
+    "en": "Mojito without rum",
+    "es": "Mojito sin ron"
+   },
+   "description": {
+    "de": "Alles vom Mojito, nur ohne Alkohol.",
+    "en": "Everything a mojito has, minus the alcohol.",
+    "es": "Todo lo del mojito, pero sin alcohol."
+   },
+   "ingredients": [
+    {
+     "de": "Minze",
+     "en": "mint",
+     "es": "menta"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "Rohrzucker",
+     "en": "cane sugar",
+     "es": "azúcar de caña"
+    },
+    {
+     "de": "Soda",
+     "en": "soda water",
+     "es": "soda"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 800,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": true,
+   "tastes": [
+    "fresh",
+    "free"
+   ],
+   "available": true
+  },
+  {
+   "id": "ipanema",
+   "category": "free",
+   "name": {
+    "de": "Ipanema",
+    "en": "Ipanema",
+    "es": "Ipanema"
+   },
+   "description": {
+    "de": "Limette, brauner Zucker und Ginger Ale.",
+    "en": "Lime, brown sugar and ginger ale.",
+    "es": "Lima, azúcar moreno y ginger ale."
+   },
+   "ingredients": [
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    },
+    {
+     "de": "brauner Zucker",
+     "en": "brown sugar",
+     "es": "azúcar moreno"
+    },
+    {
+     "de": "Ginger Ale",
+     "en": "ginger ale",
+     "es": "ginger ale"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 800,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": true,
+   "tastes": [
+    "fresh",
+    "free"
+   ],
+   "available": true
+  },
+  {
+   "id": "spritz-zero",
+   "category": "free",
+   "name": {
+    "de": "Spritz 0,0",
+    "en": "Spritz 0.0",
+    "es": "Spritz 0,0"
+   },
+   "description": {
+    "de": "Herb-orange und perlend – ohne Alkohol.",
+    "en": "Bitter-orange and sparkling – no alcohol.",
+    "es": "Amargo, anaranjado y burbujeante, sin alcohol."
+   },
+   "ingredients": [
+    {
+     "de": "alkoholfreier Aperitivo",
+     "en": "alcohol-free aperitivo",
+     "es": "aperitivo sin alcohol"
+    },
+    {
+     "de": "alkoholfreier Schaumwein",
+     "en": "alcohol-free sparkling wine",
+     "es": "espumoso sin alcohol"
+    },
+    {
+     "de": "Orange",
+     "en": "orange",
+     "es": "naranja"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 900,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": true,
+   "tastes": [
+    "fresh",
+    "fruity",
+    "free"
+   ],
+   "available": true
+  },
+  {
+   "id": "garden-tonic",
+   "category": "free",
+   "name": {
+    "de": "Garten-Tonic",
+    "en": "Garden Tonic",
+    "es": "Tónica de huerto"
+   },
+   "description": {
+    "de": "Wacholdernoten, Gurke und Rosmarin.",
+    "en": "Juniper notes, cucumber and rosemary.",
+    "es": "Notas de enebro, pepino y romero."
+   },
+   "ingredients": [
+    {
+     "de": "alkoholfreie Gin-Alternative",
+     "en": "alcohol-free gin alternative",
+     "es": "alternativa a la ginebra sin alcohol"
+    },
+    {
+     "de": "Tonic Water",
+     "en": "tonic water",
+     "es": "tónica"
+    },
+    {
+     "de": "Gurke",
+     "en": "cucumber",
+     "es": "pepino"
+    },
+    {
+     "de": "Rosmarin",
+     "en": "rosemary",
+     "es": "romero"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 900,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": true,
+   "tastes": [
+    "fresh",
+    "classic",
+    "free"
+   ],
+   "available": true
+  },
+  {
+   "id": "berry-cooler",
+   "category": "free",
+   "name": {
+    "de": "Beeren-Cooler",
+    "en": "Berry Cooler",
+    "es": "Cooler de frutos rojos"
+   },
+   "description": {
+    "de": "Dunkle Beeren, Zitrone, viel Eis.",
+    "en": "Dark berries, lemon, plenty of ice.",
+    "es": "Frutos rojos, limón y mucho hielo."
+   },
+   "ingredients": [
+    {
+     "de": "Beeren",
+     "en": "berries",
+     "es": "frutos rojos"
+    },
+    {
+     "de": "Zitrone",
+     "en": "lemon",
+     "es": "limón"
+    },
+    {
+     "de": "Soda",
+     "en": "soda water",
+     "es": "soda"
+    },
+    {
+     "de": "Minze",
+     "en": "mint",
+     "es": "menta"
+    }
+   ],
+   "prices": [
+    {
+     "amountCents": 800,
+     "currency": "EUR"
+    }
+   ],
+   "alcoholFree": true,
+   "tastes": [
+    "fruity",
+    "free"
+   ],
+   "available": true
+  },
+  {
+   "id": "pina-almond",
+   "category": "free",
+   "name": {
+    "de": "Ananas & Mandel",
+    "en": "Pineapple & Almond",
+    "es": "Piña y almendra"
+   },
+   "description": {
+    "de": "Cremig-fruchtig, ein Gruß an die Mandelblüte.",
+    "en": "Creamy and fruity, a nod to the almond blossom.",
+    "es": "Cremoso y afrutado, un guiño a la flor del almendro."
+   },
+   "ingredients": [
+    {
+     "de": "Ananas",
+     "en": "pineapple",
+     "es": "piña"
+    },
+    {
+     "de": "Mandelsirup",
+     "en": "almond syrup",
+     "es": "sirope de almendra"
+    },
+    {
+     "de": "Limette",
+     "en": "lime",
+     "es": "lima"
+    }
+   ],
+   "prices": [],
+   "alcoholFree": true,
+   "tastes": [
+    "fruity",
+    "free"
+   ],
+   "available": true
+  }
+ ]
+}

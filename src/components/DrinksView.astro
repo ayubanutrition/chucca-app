@@ -1,0 +1,179 @@
+---
+import Icon from './Icon.astro';
+import { MODE } from '../config/mode';
+import { dictionary, fill, type Locale } from '../i18n';
+import { menuFor } from '../lib/content';
+import { TASTES } from '../lib/content/schema';
+import { formatPrice, searchText } from '../lib/menu';
+import { href } from '../lib/paths';
+import { formatLongDate } from '../lib/time';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const { menu, state } = menuFor(MODE);
+const hasMenu = state !== 'pending' && menu.items.length > 0;
+const categories = menu.categories.map((category) => ({ ...category, items: menu.items.filter((item) => item.category === category.id) })).filter((category) => category.items.length > 0);
+const updated = state === 'published' && menu.updatedAt ? formatLongDate(new Date(`${menu.updatedAt}T12:00:00Z`), locale) : null;
+const clientData = {
+  hasMenu,
+  tastes: TASTES,
+  headlines: t.drinks.taste.headlines,
+  texts: t.drinks.taste.texts,
+  hint: t.drinks.taste.hint,
+  title: t.drinks.taste.title,
+  countOne: t.drinks.filter.countOne,
+  countMany: t.drinks.filter.countMany,
+};
+---
+
+<div data-menu>
+  <div class="wrap">
+    <header class="pagehead">
+      <div class="stack" style="--stack: var(--space-4)">
+        <p class="eyebrow">{t.drinks.eyebrow}</p>
+        <h1 class="display h1--page">{t.drinks.titleA} <em>{t.drinks.titleB}</em></h1>
+      </div>
+      <p class="lede">{t.drinks.intro}</p>
+    </header>
+
+    <section class="taste" aria-labelledby="taste-title">
+      <div class="stack" style="--stack: var(--space-4)">
+        <h2 class="h3" id="taste-title">{t.drinks.taste.title}</h2>
+        <div class="chips" role="group" aria-label={t.drinks.taste.group}>
+          {
+            TASTES.map((taste) => (
+              <button class="chip" type="button" data-taste={taste} aria-pressed="false">
+                {t.drinks.taste.names[taste]}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="taste__panel" aria-live="polite">
+        <p class="h3" data-taste-headline hidden></p>
+        <p data-taste-text>{t.drinks.taste.hint}</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="paper" aria-labelledby="menu-title">
+    <div class="band" aria-hidden="true"></div>
+    <div class="wrap paper__inner">
+      <div class="paper__head">
+        <h2 class="display h2" id="menu-title">{t.drinks.paperTitle}</h2>
+        {state === 'fixture' && <span class="badge badge--pink">{t.drinks.fixture.label}</span>}
+        {updated && <p class="small">{fill(t.drinks.updated, { date: updated })}</p>}
+      </div>
+
+      {state === 'fixture' && <p class="notice">{t.drinks.fixture.note}</p>}
+
+      {
+        hasMenu ? (
+          <>
+            <div class="menu__tools">
+              <div class="menu__search">
+                <label class="visually-hidden" for="menu-search">
+                  {t.drinks.filter.search}
+                </label>
+                <Icon name="search" />
+                <input class="input" id="menu-search" type="search" data-menu-search placeholder={t.drinks.filter.searchPlaceholder} autocomplete="off" enterkeyhint="search" />
+              </div>
+              <div class="menu__row">
+                <div class="chips" role="group" aria-label={t.drinks.filter.category}>
+                  <button class="chip" type="button" data-category="" aria-pressed="true">
+                    {t.drinks.filter.allCategories}
+                  </button>
+                  {categories.map((category) => (
+                    <button class="chip" type="button" data-category={category.id} aria-pressed="false">
+                      {category.name[locale]}
+                    </button>
+                  ))}
+                </div>
+                <p class="menu__count" data-menu-count role="status">
+                  {menu.items.length === 1 ? t.drinks.filter.countOne : fill(t.drinks.filter.countMany, { count: menu.items.length })}
+                </p>
+              </div>
+            </div>
+
+            <div class="menu__list">
+              {categories.map((category) => (
+                <section class="menu__cat" data-menu-category={category.id} aria-labelledby={`cat-${category.id}`}>
+                  <div class="menu__cat-head">
+                    <h3 class="menu__cat-title" id={`cat-${category.id}`}>
+                      {category.name[locale]}
+                    </h3>
+                    {category.note && <p class="menu__cat-note">{category.note[locale]}</p>}
+                  </div>
+                  <ul class="menu__items" role="list">
+                    {category.items.map((drink) => (
+                      <li
+                        class="drink"
+                        data-drink={drink.id}
+                        data-category={drink.category}
+                        data-free={String(drink.alcoholFree)}
+                        data-tastes={drink.tastes.join(' ')}
+                        data-search={searchText(drink, locale)}
+                        data-available={String(drink.available)}
+                      >
+                        <h4 class="drink__name">
+                          {drink.name[locale]}
+                          {drink.alcoholFree && <span class="drink__zero">{t.drinks.item.alcoholFree}</span>}
+                        </h4>
+                        {drink.prices.length > 0 ? (
+                          <p class="drink__price">
+                            {drink.prices.map((price) => (
+                              <span style="display:block">
+                                {price.size && <small>{price.size}</small>}
+                                {formatPrice(price.amountCents, locale)}
+                              </span>
+                            ))}
+                          </p>
+                        ) : (
+                          <p class="drink__price drink__price--none">{t.drinks.item.priceMissing}</p>
+                        )}
+                        {drink.description && <p class="drink__desc">{drink.description[locale]}</p>}
+                        {drink.ingredients.length > 0 && (
+                          <p class="drink__ing">
+                            <span class="visually-hidden">{t.drinks.item.ingredients}: </span>
+                            {drink.ingredients.map((ingredient) => ingredient[locale]).join(' · ')}
+                          </p>
+                        )}
+                        {!drink.available && <p class="drink__off">{t.drinks.item.unavailable}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+
+            <div class="menu__empty" data-menu-empty hidden>
+              <h3 class="display h2">{t.drinks.filter.emptyTitle}</h3>
+              <p>{t.drinks.filter.emptyBody}</p>
+              <button class="btn" type="button" data-menu-reset>
+                {t.drinks.filter.reset}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div class="menu__empty" data-menu-pending>
+            <h3 class="display h2">{t.drinks.pending.title}</h3>
+            <p style="max-width: var(--measure)">{t.drinks.pending.body}</p>
+          </div>
+        )
+      }
+
+      <div class="menu__foot">
+        <p>{t.drinks.visitTeaser}</p>
+        <a class="btn btn--primary" href={href(locale, 'visit')}>{t.drinks.visitCta}<Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+</div>
+
+<script>
+  import '../scripts/menu';
+</script>

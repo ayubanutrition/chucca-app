@@ -1,0 +1,181 @@
+---
+/** Gemeinsame Hülle aller Sprachseiten: Metadaten, Navigation, Sprachwahl, Fuß. */
+import '@fontsource-variable/fraunces/soft.css';
+import '@fontsource-variable/fraunces/soft-italic.css';
+import '@fontsource-variable/instrument-sans/wght.css';
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import Mark from '../components/Mark.astro';
+import { IS_PREVIEW, IS_PUBLIC } from '../config/mode';
+import { LOCALES, LOCALE_NAMES, OG_LOCALES, dictionary, pagePath, type Locale, type PageKey } from '../i18n';
+import { absoluteUrl, href, withBase } from '../lib/paths';
+import { venueFor } from '../lib/content';
+import { MODE } from '../config/mode';
+import { galleryItems } from '../lib/gallery';
+
+interface Props {
+  locale: Locale;
+  page: PageKey;
+  /** Seite trotz öffentlichem Modus nicht indexieren (z. B. leere Galerie). */
+  noindex?: boolean;
+}
+const { locale, page, noindex = false } = Astro.props;
+const t = dictionary(locale);
+const venue = venueFor(MODE);
+const hasGallery = galleryItems().length > 0;
+const navPages: PageKey[] = hasGallery ? ['today', 'drinks', 'visit', 'group', 'gallery'] : ['today', 'drinks', 'visit', 'group'];
+const canonical = absoluteUrl(pagePath(locale, page));
+const indexable = IS_PUBLIC && !noindex && canonical !== null;
+const instagram = venue.channels.find((channel) => channel.type === 'instagram');
+const jsonLd =
+  indexable && page === 'today'
+    ? JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BarOrPub',
+        name: venue.name,
+        url: canonical,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: `${venue.address.building}, ${venue.address.street}`,
+          postalCode: venue.address.postalCode,
+          addressLocality: venue.address.city,
+          addressRegion: 'Illes Balears',
+          addressCountry: venue.address.countryCode,
+        },
+        ...(instagram ? { sameAs: [instagram.href] } : {}),
+      })
+    : null;
+---
+
+<!doctype html>
+<html lang={locale} data-locale={locale} data-page={page} data-mode={MODE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{t.meta.titles[page]}</title>
+    <meta name="description" content={t.meta.descriptions[page]} />
+    <meta name="robots" content={indexable ? 'index,follow' : 'noindex,nofollow'} />
+    <meta name="theme-color" content="#1b0f17" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href={withBase('/icon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/manifest.webmanifest')} />
+    {
+      indexable && (
+        <>
+          <link rel="canonical" href={canonical} />
+          {LOCALES.map((alt) => <link rel="alternate" hreflang={alt} href={absoluteUrl(pagePath(alt, page))} />)}
+          <link rel="alternate" hreflang="x-default" href={absoluteUrl(page === 'today' ? '/' : pagePath('en', page))} />
+          <meta property="og:url" content={canonical} />
+          <meta property="og:image" content={absoluteUrl('/og.png')} />
+        </>
+      )
+    }
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.meta.siteName} />
+    <meta property="og:title" content={t.meta.titles[page]} />
+    <meta property="og:description" content={t.meta.descriptions[page]} />
+    <meta property="og:locale" content={OG_LOCALES[locale]} />
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+  </head>
+  <body>
+    <a class="skip" href="#inhalt">{t.nav.skip}</a>
+    {
+      IS_PREVIEW && (
+        <p class="ribbon">
+          {t.common.preview} · <span>{t.common.previewNote}</span>
+        </p>
+      )
+    }
+    <p class="offline" data-offline role="status" hidden>{t.common.offline}</p>
+    <header class="masthead">
+      <div class="wrap masthead__row">
+        <a class="wordmark" href={href(locale, 'today')}>
+          <Mark />CHUCCA<small>Playa de Palma</small><span class="visually-hidden"> – {t.nav.home}</span>
+        </a>
+        <nav class="topnav" aria-label={t.nav.label}>
+          <ul role="list">
+            {
+              navPages.map((key) => (
+                <li>
+                  <a href={href(locale, key)} aria-current={key === page ? 'page' : undefined}>
+                    {t.nav[key]}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <nav class="langs" aria-label={t.nav.language}>
+          {
+            LOCALES.map((code) => (
+              <a href={href(code, page)} hreflang={code} lang={code} data-lang-link={code} aria-current={code === locale ? 'true' : undefined} title={LOCALE_NAMES[code]}>
+                {code.toUpperCase()}
+                <span class="visually-hidden"> – {LOCALE_NAMES[code]}</span>
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhalt" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <div class="band" aria-hidden="true"></div>
+      <div class="wrap footer__grid">
+        <div class="footer__brand">
+          <a class="wordmark" href={href(locale, 'today')}><Mark />CHUCCA<span class="visually-hidden"> – {t.nav.home}</span></a>
+          <p>{t.footer.tagline}</p>
+        </div>
+        <address>
+          {venue.address.building}<br />
+          {venue.address.street}<br />
+          {venue.address.postalCode}
+          {venue.address.city} · {venue.address.region}<br />
+          {
+            instagram && (
+              <a class="link" href={instagram.href} target="_blank" rel="noopener">
+                {instagram.label}
+                <Icon name="out" />
+                <span class="visually-hidden">({t.common.external})</span>
+              </a>
+            )
+          }
+        </address>
+        <div class="footer__notes">
+          <p>{t.footer.privacy}</p>
+          <p>{t.footer.drinkResponsibly}</p>
+          {IS_PREVIEW && <p>{t.footer.preview}</p>}
+        </div>
+      </div>
+    </footer>
+
+    <nav class="tabbar" aria-label={t.nav.label}>
+      <ul role="list">
+        {
+          navPages.map((key) => (
+            <li>
+              <a href={href(locale, key)} aria-current={key === page ? 'page' : undefined}>
+                <Icon name={key} />
+                <span>{t.nav[key]}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="toast" data-toast role="status" hidden>
+      <span data-toast-text></span>
+      <button type="button" data-toast-action hidden></button>
+    </div>
+    <script type="application/json" id="app-strings" set:html={JSON.stringify({ updateReady: t.common.updateReady, reload: t.common.reload, sw: withBase('/sw.js'), scope: withBase('/') })} />
+    <script>
+      import '../scripts/app';
+    </script>
+  </body>
+</html>

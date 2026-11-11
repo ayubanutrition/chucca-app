@@ -1,0 +1,60 @@
+---
+/** Eine 404-Seite für alle Sprachen; die passende Fassung wird anhand des Pfads gezeigt. */
+import '@fontsource-variable/fraunces/soft.css';
+import '@fontsource-variable/instrument-sans/wght.css';
+import '../styles/global.css';
+import Mark from '../components/Mark.astro';
+import { LOCALES, dictionary } from '../i18n';
+import { href, withBase } from '../lib/paths';
+const base = withBase('/');
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>404 · CHUCCA Playa de Palma</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#1b0f17" />
+    <link rel="icon" href={withBase('/icon.svg')} type="image/svg+xml" />
+  </head>
+  <body class="bare">
+    <main class="gate">
+      <div class="gate__box">
+        <a class="wordmark" href={base} style="font-size:2rem"><Mark />CHUCCA</a>
+        {
+          LOCALES.map((locale) => {
+            const t = dictionary(locale);
+            return (
+              <section lang={locale} data-notfound={locale} class="stack" style="--stack: var(--space-4)">
+                <h1 class="display h2">{t.notFound.title}</h1>
+                <p class="prose">{t.notFound.body}</p>
+                <p>
+                  <a class="btn btn--primary" href={href(locale, 'today')}>
+                    {t.notFound.home}
+                  </a>
+                </p>
+              </section>
+            );
+          })
+        }
+      </div>
+    </main>
+    <script is:inline define:vars={{ base, locales: LOCALES }}>
+      (function () {
+        const first = location.pathname.slice(base.length).split('/')[0];
+        let stored = null;
+        try {
+          stored = localStorage.getItem('chucca-locale');
+        } catch (e) {}
+        const locale = locales.indexOf(first) !== -1 ? first : locales.indexOf(stored) !== -1 ? stored : null;
+        if (!locale) return;
+        document.documentElement.lang = locale;
+        document.querySelectorAll('[data-notfound]').forEach(function (el) {
+          el.hidden = el.getAttribute('data-notfound') !== locale;
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+---
+import { getImage } from 'astro:assets';
+import Art from './Art.astro';
+import Icon from './Icon.astro';
+import { MODE } from '../config/mode';
+import { dictionary, fill, type Locale } from '../i18n';
+import { venueFor } from '../lib/content';
+import { galleryItems } from '../lib/gallery';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const items = galleryItems();
+const instagram = venueFor(MODE).channels.find((channel) => channel.type === 'instagram');
+const hasConcepts = items.some((item) => item.media.kind === 'concept');
+const shots = await Promise.all(
+  items.map(async (item, index) => {
+    const large = await getImage({ src: item.image, width: Math.min(1800, item.image.width), format: 'webp', quality: 82 });
+    return {
+      item,
+      index,
+      wide: item.image.width > item.image.height,
+      large: { src: large.src, width: Number(large.attributes.width), height: Number(large.attributes.height) },
+      caption: item.media.caption?.[locale] ?? '',
+    };
+  }),
+);
+// Raster mit 12 Spalten: Hochformat 4, Querformat 8. Bleibt das letzte Bild allein, schließt es als Panorama ab.
+let used = 0;
+const layout = shots.map((shot, index) => {
+  const span = shot.wide ? 8 : 4;
+  if (used + span > 12) used = 0;
+  const alone = index === shots.length - 1 && used === 0;
+  used = (used + span) % 12;
+  return alone ? 'full' : shot.wide ? 'wide' : 'tall';
+});
+const clientData = { counter: t.gallery.counter, loadError: t.gallery.loadError, credit: t.gallery.credit };
+---
+
+<div class="wrap" data-gallery>
+  <header class="pagehead">
+    <div class="stack" style="--stack: var(--space-4)">
+      <p class="eyebrow">{t.gallery.eyebrow}</p>
+      <h1 class="display h1--page">{t.gallery.titleA} <em>{t.gallery.titleB}</em></h1>
+    </div>
+    <div class="stack">
+      <p class="lede">{t.gallery.intro}</p>
+      {hasConcepts && <p class="notice">{t.gallery.conceptNote}</p>}
+    </div>
+  </header>
+
+  {
+    shots.length > 0 ? (
+      <ul class="gallery" role="list">
+        {shots.map(({ item, index, large, caption }) => (
+          <li class:list={['shot', layout[index] === 'wide' && 'shot--wide', layout[index] === 'full' && 'shot--full']}>
+            <figure style="display:contents">
+              <a
+                href={large.src}
+                data-shot={index}
+                data-width={large.width}
+                data-height={large.height}
+                data-alt={item.media.alt[locale]}
+                data-title={item.media.caption?.[locale] ?? ''}
+                data-note={item.media.kind === 'concept' ? t.common.conceptLong : ''}
+                data-credit={item.media.credit ?? ''}
+              >
+                <span class="visually-hidden">{fill(t.gallery.open, { index: index + 1, total: shots.length })}: </span>
+                <Art item={item} locale={locale} sizes={layout[index] === 'tall' ? '(min-width: 48rem) 33vw, 50vw' : '100vw'} eager={index < 2} />
+              </a>
+              {caption && <figcaption>{caption}</figcaption>}
+            </figure>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="empty" data-gallery-empty>
+        <h2 class="display h2">{t.gallery.emptyTitle}</h2>
+        <p class="prose">{t.gallery.emptyBody}</p>
+        {instagram && (
+          <a class="btn" href={instagram.href} target="_blank" rel="noopener">
+            {instagram.label}
+            <Icon name="out" />
+            <span class="visually-hidden">({t.common.external})</span>
+          </a>
+        )}
+      </div>
+    )
+  }
+
+  <dialog class="lightbox" data-lightbox aria-labelledby="lightbox-title">
+    <div class="lightbox__bar">
+      <h2 class="visually-hidden" id="lightbox-title">{t.gallery.dialog}</h2>
+      <p data-lightbox-counter aria-live="polite"></p>
+      <button class="iconbtn" type="button" data-lightbox-close aria-label={t.gallery.close} autofocus><Icon name="close" /></button>
+    </div>
+    <div class="lightbox__stage" data-lightbox-stage>
+      <img data-lightbox-image alt="" />
+      <p data-lightbox-error role="alert" hidden>{t.gallery.loadError}</p>
+    </div>
+    <div class="lightbox__foot">
+      <button class="iconbtn" type="button" data-lightbox-prev aria-label={t.gallery.previous}><Icon name="prev" /></button>
+      <p class="lightbox__caption"><strong data-lightbox-title></strong><span data-lightbox-note></span></p>
+      <button class="iconbtn" type="button" data-lightbox-next aria-label={t.gallery.next}><Icon name="next" /></button>
+    </div>
+  </dialog>
+  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+</div>
+
+<script>
+  import '../scripts/lightbox';
+</script>

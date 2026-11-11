@@ -1,0 +1,69 @@
+{
+  "name": "CHUCCA Playa de Palma",
+  "shortName": "CHUCCA",
+  "place": "Playa de Palma · Mallorca",
+  "timeZone": "Europe/Madrid",
+  "address": {
+    "building": "Riu Center",
+    "street": "Carrer del Llaüt 23",
+    "postalCode": "07610",
+    "city": "Palma",
+    "area": "Playa de Palma",
+    "region": "Mallorca",
+    "countryCode": "ES",
+    "status": "confirmed",
+    "source": "Strategie 25.10.2026 [Q1,Q5,Q6]: Website und Verzeichnisse übereinstimmend; Besucheradresse, nicht Firmensitz.",
+    "observedAt": "2026-10-25",
+    "verifiedAt": null
+  },
+  "approxGeo": { "lat": 39.52, "lon": 2.74 },
+  "maps": {
+    "google": "https://www.google.com/maps/search/?api=1&query=CHUCCA+Carrer+del+Lla%C3%BCt+23+Playa+de+Palma",
+    "apple": "https://maps.apple.com/?q=CHUCCA&address=Carrer+del+Lla%C3%BCt+23%2C+07610+Palma%2C+Spain"
+  },
+  "channels": [
+    {
+      "type": "instagram",
+      "label": "@chucca_palma",
+      "href": "https://www.instagram.com/chucca_palma/",
+      "acceptsInquiries": false,
+      "status": "confirmed",
+      "source": "Projektquelle und Verzeichnisse [Q0,Q6,Q30]; Link vor öffentlichem Release erneut prüfen. Betreute Anfragen über DM nicht bestätigt.",
+      "observedAt": "2026-11-11"
+    },
+    {
+      "type": "email",
+      "label": "info@chucca.com",
+      "href": "mailto:info@chucca.com",
+      "acceptsInquiries": false,
+      "status": "source-claim",
+      "source": "chucca-x.com (veröffentlicht); Erreichbarkeit und Zuständigkeit für Palma nicht getestet.",
+      "observedAt": "2026-10-25"
+    },
+    {
+      "type": "phone",
+      "label": "+34 631 77 67 00",
+      "href": "tel:+34631776700",
+      "acceptsInquiries": false,
+      "status": "source-claim",
+      "source": "Verzeichnisangabe; Erreichbarkeit und WhatsApp-Fähigkeit nicht getestet.",
+      "observedAt": "2026-10-25"
+    }
+  ],
+  "hours": {
+    "regular": null,
+    "status": "unknown",
+    "source": "Widerspruch: Website täglich 19–00 Uhr, Verzeichnisse täglich 20–02 Uhr. Keine Betreiberbestätigung, kein Saisonkalender.",
+    "observedAt": "2026-10-25"
+  },
+  "entrance": {
+    "note": {
+      "de": "Zweite Linie, etwa auf Höhe von Balneario 7. Der Zugang führt laut Verzeichnis über den Innenhof des Riu Center.",
+      "en": "Second line from the beach, roughly level with Balneario 7. According to listings, access is through the Riu Center courtyard.",
+      "es": "Segunda línea, aproximadamente a la altura del Balneario 7. Según los directorios, se accede por el patio interior del Riu Center."
+    },
+    "status": "source-claim",
+    "source": "Strategie [Q3,Q5]; Eingang vor Ort fotografieren und bestätigen.",
+    "observedAt": "2026-10-25"
+  }
+}
