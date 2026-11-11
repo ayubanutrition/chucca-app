@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 import Icon from './Icon.astro';
 import { MODE } from '../config/mode';
 import { dictionary, fill, type Locale } from '../i18n';
@@ -22,7 +23,7 @@ const clientData = {
   tastes: TASTES,
   headlines: t.drinks.taste.headlines,
   texts: t.drinks.taste.texts,
-  hint: t.drinks.taste.hint,
+  hint: hasMenu ? t.drinks.taste.hint : t.drinks.taste.hintNoMenu,
   title: t.drinks.taste.title,
   countOne: t.drinks.filter.countOne,
   countMany: t.drinks.filter.countMany,
@@ -54,7 +55,7 @@ const clientData = {
       </div>
       <div class="taste__panel" aria-live="polite">
         <p class="h3" data-taste-headline hidden></p>
-        <p data-taste-text>{t.drinks.taste.hint}</p>
+        <p data-taste-text>{hasMenu ? t.drinks.taste.hint : t.drinks.taste.hintNoMenu}</p>
       </div>
     </section>
   </div>
@@ -100,7 +101,7 @@ const clientData = {
 
             <div class="menu__list">
               {categories.map((category) => (
-                <section class="menu__cat" data-menu-category={category.id} aria-labelledby={`cat-${category.id}`}>
+                <section class="menu__cat" data-menu-category={category.id} data-all-free={String(category.items.every((drink) => drink.alcoholFree))} aria-labelledby={`cat-${category.id}`}>
                   <div class="menu__cat-head">
                     <h3 class="menu__cat-title" id={`cat-${category.id}`}>
                       {category.name[locale]}
@@ -171,7 +172,7 @@ const clientData = {
       </div>
     </div>
   </section>
-  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+  <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </div>
 
 <script>

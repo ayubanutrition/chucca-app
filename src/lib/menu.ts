@@ -54,7 +54,9 @@ export const filterMenu = (items: Drink[], filter: MenuFilter, locale: 'de' | 'e
   items.filter((item) => matches(item, filter, locale));
 
 export function formatPrice(amountCents: number, locale: string): string {
-  return new Intl.NumberFormat(intlLocale(locale), { style: 'currency', currency: 'EUR' }).format(amountCents / 100);
+  // Glatte Beträge ohne Nachkommastellen: „11 €“ statt „11,00 €“.
+  const digits = amountCents % 100 === 0 ? 0 : 2;
+  return new Intl.NumberFormat(intlLocale(locale), { style: 'currency', currency: 'EUR', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(amountCents / 100);
 }
 
 export const isFilterActive = (filter: MenuFilter): boolean =>

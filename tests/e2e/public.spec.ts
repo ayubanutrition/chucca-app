@@ -17,6 +17,8 @@ test('zeigt keine Beispielkarte, keine Konzeptmotive, keine Termine und kein Vor
   await expect(page.getByRole('heading', { name: 'Die bestätigte Karte folgt.' })).toBeVisible();
   await expect(page.locator('[data-drink]')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Alkoholfrei' })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+  await expect(page.locator('[data-taste-text]')).toContainText('an der Bar');
   await page.goto('/de/besuch/');
   await expect(page.getByRole('heading', { name: 'Der Weg hinein' })).toHaveCount(0);
   await expect(page.locator('address').first()).toContainText('Carrer del Llaüt 23');
@@ -49,8 +51,10 @@ test('SEO: Canonical, wechselseitige hreflang, x-default, strukturierte Daten', 
 
 test('Sitemap, robots und Manifest passen zum öffentlichen Stand', async ({ request }) => {
   const sitemap = await dist('sitemap.xml');
-  expect(sitemap.match(/<url>/g)).toHaveLength(12);
-  expect(sitemap).toContain('<loc>https://chucca.example/es/bebidas/</loc>');
+  // Heute, Besuch, Gruppe × 3 Sprachen; Karte und Galerie erst mit Bestand.
+  expect(sitemap.match(/<url>/g)).toHaveLength(9);
+  expect(sitemap).toContain('<loc>https://chucca.example/es/visita/</loc>');
+  expect(sitemap).not.toContain('bebidas');
   expect(await dist('robots.txt')).toContain('Sitemap: https://chucca.example/sitemap.xml');
   const manifest = await (await request.get('/manifest.webmanifest')).json();
   expect(manifest).toMatchObject({ start_url: '/', scope: '/', display: 'standalone' });
@@ -68,7 +72,10 @@ test('der Build enthält keine internen Recherche-, Rechte- oder Beispieldaten',
       expect(text.includes(secret), `${file} enthält „${secret}“`).toBe(false);
     }
   }
-  expect(files.some((file) => /concept-/.test(file))).toBe(false);
+  // Auch Binärdateien: kein Konzeptmotiv und kein nicht freigegebenes Bild darf im öffentlichen Build liegen.
+  const all = await readdir(root, { recursive: true });
+  expect(all.filter((file) => /concept-/.test(file))).toEqual([]);
+  expect(all.filter((file) => /^_astro\/.*\.(webp|avif|png|jpe?g)$/.test(file))).toEqual([]);
 });
 
 test('Einladungen enthalten im öffentlichen Betrieb den Link zum Plan', async ({ page }) => {

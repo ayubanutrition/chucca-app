@@ -2,7 +2,7 @@
 import { fill } from '../i18n';
 import { openStatus, type HoursData } from '../lib/hours';
 import { skyPhase, sunset } from '../lib/sun';
-import { formatClock, intlLocale, madridDate, VENUE_TIME_ZONE } from '../lib/time';
+import { addDays, formatClock, intlLocale, madridDate, VENUE_TIME_ZONE } from '../lib/time';
 import { strings } from './dom';
 
 interface Data {
@@ -19,6 +19,7 @@ if (root) {
   const clock = root.querySelector<HTMLElement>('[data-now-clock]');
   const phase = root.querySelector<HTMLElement>('[data-now-phase]');
   const sun = root.querySelector<HTMLElement>('[data-now-sunset]');
+  const sunLabel = root.querySelector<HTMLElement>('[data-now-sunset-label]');
   const hours = root.querySelector<HTMLElement>('[data-now-hours]');
   const dayFormat = new Intl.DateTimeFormat(intlLocale(data.locale), { timeZone: VENUE_TIME_ZONE, weekday: 'short', day: 'numeric', month: 'short' });
   const weekday = new Intl.DateTimeFormat(intlLocale(data.locale), { timeZone: VENUE_TIME_ZONE, weekday: 'long' });
@@ -37,7 +38,11 @@ if (root) {
     const sky = skyPhase(now, today, data.geo.lat, data.geo.lon);
     document.documentElement.dataset.sky = sky;
     if (clock) clock.textContent = `${dayFormat.format(now)} · ${formatClock(now, data.locale)}`;
-    if (sun) sun.textContent = set ? formatClock(set, data.locale) : '–';
+    // Nach Sonnenuntergang zählt der nächste: die Angabe soll nach vorn zeigen.
+    const passed = Boolean(set && now.getTime() > set.getTime());
+    const shown = passed ? sunset(addDays(today, 1), data.geo.lat, data.geo.lon) : set;
+    if (sun) sun.textContent = shown ? formatClock(shown, data.locale) : '–';
+    if (sunLabel) sunLabel.textContent = (passed ? s.sunsetTomorrow : s.sunset) ?? '';
     if (phase) {
       const untilSet = set ? set.getTime() - now.getTime() : 0;
       const text = { day: s.phaseDay, golden: s.phaseGolden, dusk: s.phaseDusk, night: s.phaseNight }[sky] ?? '';

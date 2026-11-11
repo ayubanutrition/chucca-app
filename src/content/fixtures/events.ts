@@ -13,7 +13,7 @@ export function fixtureEvents(now: Date = new Date()): VenueEvent[] {
       id: 'fixture-sundowner',
       kind: 'fixture',
       status: 'confirmed',
-      title: { de: 'Sundowner-Abend', en: 'Sundowner evening', es: 'Tarde de sundowner' },
+      title: { de: 'Sundowner-Abend', en: 'Sundowner evening', es: 'Aperitivo al atardecer' },
       summary: {
         de: 'Beispieltext: Aperitif-Karte und ruhige Musik zum Sonnenuntergang.',
         en: 'Sample text: aperitif menu and mellow music at sunset.',

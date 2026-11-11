@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 import Icon from './Icon.astro';
 import { MODE } from '../config/mode';
 import { dictionary, type Locale } from '../i18n';
@@ -12,6 +13,8 @@ const { locale } = Astro.props;
 const t = dictionary(locale);
 const venue = venueFor(MODE);
 const instagram = venue.channels.find((channel) => channel.type === 'instagram');
+// Ein Kanal wird nur dann als Weg für Anfragen angeboten, wenn der Betrieb ihn dafür bestätigt hat.
+const inquiryChannel = venue.channels.find((channel) => channel.acceptsInquiries);
 const addressText = `${venue.shortName} · ${venue.address.building}, ${venue.address.street}, ${venue.address.postalCode} ${venue.address.city}, ${venue.address.region}`;
 const hours = venue.hours;
 const clientData = {
@@ -72,32 +75,32 @@ const clientData = {
           </h2>
           <figure class="stack" style="--stack: var(--space-3)">
             <div class="way__map">
-              <svg viewBox="0 0 800 470" role="img" aria-label={t.visit.way.mapAlt} font-family="Instrument Sans Variable, system-ui, sans-serif" font-weight="600">
-                <rect width="800" height="470" fill="#130a10" />
-                <rect width="800" height="92" fill="#36202c" />
-                <path d="M0 40q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".25" stroke-width="2" />
-                <path d="M0 66q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".15" stroke-width="2" />
-                <rect y="92" width="800" height="70" fill="#ead8bf" />
-                <rect y="162" width="800" height="14" fill="#b9a596" />
+              <svg viewBox="0 0 800 620" role="img" aria-label={t.visit.way.mapAlt} font-family="Instrument Sans Variable, system-ui, sans-serif" font-weight="600">
+                <rect width="800" height="620" fill="#130a10" />
+                <rect width="800" height="110" fill="#36202c" />
+                <path d="M0 52q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".25" stroke-width="2" />
+                <path d="M0 82q25-12 50 0t50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0 50 0" fill="none" stroke="#f7ecdc" stroke-opacity=".15" stroke-width="2" />
+                <rect y="110" width="800" height="96" fill="#ead8bf" />
+                <rect y="206" width="800" height="16" fill="#b9a596" />
                 <g fill="#26151f" stroke="#f7ecdc" stroke-opacity=".18">
-                  <rect x="30" y="196" width="150" height="74" rx="8" /><rect x="205" y="196" width="190" height="74" rx="8" /><rect x="420" y="196" width="130" height="74" rx="8" /><rect x="575" y="196" width="195" height="74" rx="8" />
+                  <rect x="30" y="250" width="150" height="96" rx="8" /><rect x="205" y="250" width="150" height="96" rx="8" /><rect x="445" y="250" width="130" height="96" rx="8" /><rect x="600" y="250" width="170" height="96" rx="8" />
                 </g>
-                <rect y="290" width="800" height="34" fill="#36202c" />
-                <path d="M0 307h800" stroke="#f7ecdc" stroke-opacity=".35" stroke-width="2" stroke-dasharray="14 12" />
-                <rect x="250" y="344" width="330" height="110" rx="10" fill="#26151f" stroke="#f7ecdc" stroke-opacity=".5" stroke-width="2" />
-                <path d="M360 454v-52a54 54 0 0 1 108 0v52Z" fill="#5a1f42" stroke="#ff8f45" stroke-width="2.500" />
-                <circle cx="408" cy="128" r="15" fill="#23131b" />
-                <text x="408" y="133" text-anchor="middle" font-size="14" fill="#f7ecdc">7</text>
-                <path d="M408 148V300q0 30 6 60" fill="none" stroke="#ff8f45" stroke-width="3.500" stroke-dasharray="2 9" stroke-linecap="round" />
-                <g stroke-width="7" stroke-linecap="round"><path d="M402 404l24 24" stroke="#f27aa5" /><path d="M426 404l-24 24" stroke="#ff8f45" /></g>
-                <g font-size="15" aria-hidden="true">
-                  <text x="24" y="30" fill="#d9c7b6">{t.visit.way.sea}</text>
-                  <text x="24" y="132" fill="#23131b">{t.visit.way.beach}</text>
-                  <text x="776" y="132" text-anchor="end" fill="#5c4650">{t.visit.way.promenade}</text>
-                  <text x="24" y="312" fill="#f7ecdc">{t.visit.way.street}</text>
-                  <text x="264" y="368" fill="#d9c7b6">Riu Center</text>
-                  <text x="480" y="424" fill="#f7ecdc" font-size="17">CHUCCA</text>
-                  <text x="480" y="443" fill="#d9c7b6" font-size="13">{t.visit.way.courtyard}</text>
+                <rect y="372" width="800" height="44" fill="#36202c" />
+                <path d="M0 394h800" stroke="#f7ecdc" stroke-opacity=".35" stroke-width="2" stroke-dasharray="14 12" />
+                <rect x="210" y="440" width="390" height="160" rx="12" fill="#26151f" stroke="#f7ecdc" stroke-opacity=".5" stroke-width="2" />
+                <path d="M330 600v-70a70 70 0 0 1 140 0v70Z" fill="#5a1f42" stroke="#ff8f45" stroke-width="3" />
+                <circle cx="400" cy="158" r="24" fill="#23131b" />
+                <text x="400" y="167" text-anchor="middle" font-size="24" fill="#f7ecdc">7</text>
+                <path d="M400 190V500" fill="none" stroke="#ff8f45" stroke-width="5" stroke-dasharray="2 13" stroke-linecap="round" />
+                <g stroke-width="11" stroke-linecap="round"><path d="M382 528l36 36" stroke="#f27aa5" /><path d="M418 528l-36 36" stroke="#ff8f45" /></g>
+                <g font-size="23" aria-hidden="true">
+                  <text x="24" y="40" fill="#d9c7b6">{t.visit.way.sea}</text>
+                  <text x="24" y="166" fill="#23131b">{t.visit.way.beach}</text>
+                  <text x="776" y="166" text-anchor="end" fill="#5c4650">{t.visit.way.promenade}</text>
+                  <text x="24" y="402" fill="#f7ecdc">{t.visit.way.street}</text>
+                  <text x="228" y="476" fill="#d9c7b6">Riu Center</text>
+                  <text x="490" y="548" fill="#f7ecdc" font-size="25">CHUCCA</text>
+                  <text x="490" y="576" fill="#d9c7b6" font-size="20">{t.visit.way.courtyard}</text>
                 </g>
               </svg>
             </div>
@@ -115,7 +118,7 @@ const clientData = {
       <h2 class="h3" id="hours-title">{t.visit.hours.title}</h2>
       {
         hours.status === 'confirmed' && hours.regular ? (
-          <dl class="hours" data-hours>
+          <dl class="hours" data-hours data-valid-from={hours.validFrom ?? ''} data-valid-until={hours.validUntil ?? ''} data-unconfirmed={t.visit.hours.unconfirmed}>
             {[1, 2, 3, 4, 5, 6, 0].map((day) => {
               const range = hours.regular?.[day];
               return (
@@ -160,25 +163,25 @@ const clientData = {
         <a class="link" href={href(locale, 'group')}>{t.visit.inquiry.plannerCta}<Icon name="arrow" /></a>
       </div>
       <form class="panel" data-inquiry novalidate>
-        <div class="fields">
+        <div class="fields fields--trio">
           <div class="field">
             <label for="inq-people">{t.visit.inquiry.people}</label>
             <input class="input" id="inq-people" name="people" type="number" inputmode="numeric" min="2" max="40" value="6" required />
           </div>
           <div class="field">
             <label for="inq-date">{t.visit.inquiry.date}</label>
-            <input class="input" id="inq-date" name="date" type="date" max="2100-12-31" required />
+            <input class="input" id="inq-date" name="date" type="date" max="2100-12-31" aria-describedby="inq-zone" required />
           </div>
           <div class="field">
             <label for="inq-time">{t.visit.inquiry.time}</label>
-            <input class="input" id="inq-time" name="time" type="time" step="60" required />
+            <input class="input" id="inq-time" name="time" type="time" step="60" aria-describedby="inq-zone" required />
           </div>
         </div>
         <div class="field">
           <label for="inq-note">{t.visit.inquiry.note}</label>
           <input class="input" id="inq-note" name="note" type="text" maxlength="140" placeholder={t.visit.inquiry.notePlaceholder} autocomplete="off" />
         </div>
-        <p class="small">{t.common.localTime} · Europe/Madrid</p>
+        <p class="small" id="inq-zone">{t.common.localTime}</p>
         <button class="btn btn--primary btn--block" type="submit">{t.visit.inquiry.prepare}</button>
         <p class="status" id="inq-status" data-inquiry-status role="status"></p>
         <div class="output" data-inquiry-output hidden>
@@ -189,9 +192,9 @@ const clientData = {
           <div class="actions">
             <button class="btn" type="button" data-inquiry-copy><Icon name="copy" />{t.common.copy}</button>
             {
-              instagram && (
-                <a class="btn" href={instagram.href} target="_blank" rel="noopener">
-                  {t.visit.inquiry.openInstagram}
+              inquiryChannel && (
+                <a class="btn" href={inquiryChannel.href} target="_blank" rel="noopener">
+                  {inquiryChannel.label}
                   <Icon name="out" />
                   <span class="visually-hidden">({t.common.external})</span>
                 </a>
@@ -207,7 +210,7 @@ const clientData = {
     <summary>{t.visit.install.title}</summary>
     <p>{t.visit.install.body}</p>
   </details>
-  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+  <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </div>
 
 <script>

@@ -23,9 +23,9 @@ describe('ICS (RFC 5545)', () => {
     expect(ics).not.toContain('TZID');
   });
   it('maskiert Sonderzeichen und Zeilenumbrüche', () => {
-    expect(escapeText('a\\b;c,d\ne')).toBe('a\\\\b\;c\\,d\\ne');
+    expect(escapeText('a\\b;c,d\ne')).toBe('a\\\\b\\;c\\,d\\ne');
     expect(unfold(ics)).toContain('LOCATION:CHUCCA\\, Riu Center\\, Carrer del Llaüt 23\\, 07610 Palma\\, Mallorca');
-    expect(unfold(ics)).toContain('no una reserva\; cóctel ñ 🍹.\\nhttps://example.com/map?a=1\\,2');
+    expect(unfold(ics)).toContain('no una reserva\\; cóctel ñ 🍹.\\nhttps://example.com/map?a=1\\,2');
   });
   it('faltet auf höchstens 75 Oktette, ohne UTF-8-Zeichen zu zerteilen', () => {
     const encoder = new TextEncoder();

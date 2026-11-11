@@ -155,12 +155,14 @@ describe('Service Worker', () => {
   it('räumt alte Caches (auch aus V3) und übernimmt nur auf Anforderung', async () => {
     const sw = runWorker('preview', () => css());
     sw.stores.set('chucca-x-v4', new Map());
-    sw.stores.set('chucca-v4-alt', new Map());
+    sw.stores.set('chucca-v4:/:assets-alt', new Map());
+    sw.stores.set('chucca-v4:/:pages-alt', new Map());
+    sw.stores.set('chucca-v4:/preview/:assets-b0', new Map()); // andere Installation unter /preview/
     sw.stores.set('fremd', new Map());
     await sw.dispatch('install');
     expect(sw.skipped()).toBe(false);
     await sw.dispatch('activate');
-    expect([...sw.stores.keys()].sort()).toEqual(['chucca-v4-b1', 'fremd']);
+    expect([...sw.stores.keys()].sort()).toEqual(['chucca-v4:/:assets-b1', 'chucca-v4:/preview/:assets-b0', 'fremd']);
     await sw.dispatch('message', { data: 'SKIP_WAITING' });
     expect(sw.skipped()).toBe(true);
   });

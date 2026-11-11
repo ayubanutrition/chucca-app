@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 import Icon from './Icon.astro';
 import { MODE } from '../config/mode';
 import { dictionary, pagePath, type Locale } from '../i18n';
@@ -27,7 +28,7 @@ const clientData = {
   <header class="pagehead">
     <div class="stack" style="--stack: var(--space-4)">
       <p class="eyebrow">{t.group.eyebrow}</p>
-      <h1 class="display h1--page">{t.group.titleA} <em>{t.group.titleB}</em></h1>
+      <h1 class="display h1--page">{t.group.titleA} <em class="block">{t.group.titleB}</em></h1>
     </div>
     <p class="lede">{t.group.intro}</p>
   </header>
@@ -73,7 +74,7 @@ const clientData = {
         <p class="ticket__meta">
           <strong>{venue.shortName} · {venue.address.building}</strong>
           <span>{venue.address.street} · {venue.address.area}</span>
-          <span>{t.common.localTime} · Europe/Madrid</span>
+          <span>{t.common.localTime}</span>
         </p>
       </div>
     </aside>
@@ -94,7 +95,7 @@ const clientData = {
       <a class="link" href={`${href(locale, 'visit')}#anfrage`}>{t.group.facts.reserveLink}<Icon name="arrow" /></a>
     </div>
   </section>
-  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+  <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </div>
 
 <script>

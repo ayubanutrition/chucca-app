@@ -6,6 +6,8 @@ import VisitView from '../../components/VisitView.astro';
 import Base from '../../layouts/Base.astro';
 import { LOCALES, PAGES, SLUGS, type Locale, type PageKey } from '../../i18n';
 import { galleryItems } from '../../lib/gallery';
+import { menuFor } from '../../lib/content';
+import { MODE } from '../../config/mode';
 
 export function getStaticPaths() {
   return LOCALES.flatMap((locale) =>
@@ -15,7 +17,8 @@ export function getStaticPaths() {
 const locale = Astro.params.locale as Locale;
 const { page } = Astro.props as { page: Exclude<PageKey, 'today'> };
 // Eine leere Galerie ist kein Hauptversprechen: Seite bleibt erreichbar, wird aber nicht indexiert.
-const noindex = page === 'gallery' && galleryItems().length === 0;
+// Gleiches gilt für die Karte, solange keine bestätigten Drinks vorliegen.
+const noindex = (page === 'gallery' && galleryItems().length === 0) || (page === 'drinks' && menuFor(MODE).state === 'pending');
 ---
 
 <Base locale={locale} page={page} noindex={noindex}>

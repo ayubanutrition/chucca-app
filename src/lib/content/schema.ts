@@ -74,6 +74,17 @@ export const venueSchema = z
   .strict();
 export type Venue = z.infer<typeof venueSchema>;
 
+/** „confirmed“ ist keine bloße Behauptung: Es braucht eine benannte Quelle und ein Datum. */
+export function unbackedConfirmations(venue: Venue): string[] {
+  const groups: [string, { status: FactStatus; source?: string | undefined; observedAt?: string | undefined; verifiedAt?: string | null | undefined }][] = [
+    ['address', venue.address],
+    ['hours', venue.hours],
+    ['entrance', venue.entrance],
+    ...venue.channels.map((channel): [string, typeof channel] => [`channel:${channel.type}`, channel]),
+  ];
+  return groups.filter(([, fact]) => fact.status === 'confirmed' && (!fact.source?.trim() || !(fact.verifiedAt ?? fact.observedAt))).map(([name]) => name);
+}
+
 export { TASTES, type Taste } from '../tastes';
 
 const price = z

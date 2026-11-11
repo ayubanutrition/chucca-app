@@ -32,8 +32,19 @@ if (root) {
 
   // Ein Einladungslink (oder der Sprachwechsel bei gesperrtem Speicher) bringt den Plan in der URL mit.
   const fromLink = draftFromParams(new URLSearchParams(location.search));
-  let draft: Draft = fromLink ?? loadDraft();
-  if (fromLink) saveDraft(fromLink);
+  const stored = loadDraft();
+  // Fremder Plan = Kennung aus dem Link ist nicht der eigene Entwurf dieser Sitzung.
+  const foreign = Boolean(fromLink && fromLink.uid !== stored.uid);
+  let draft: Draft = fromLink ?? stored;
+  if (fromLink) {
+    saveDraft(fromLink);
+    // Parameter übernehmen und aus der Adresse nehmen: spätere Änderungen sollen nicht vom Link überschrieben werden.
+    try {
+      history.replaceState(null, '', location.pathname + location.hash);
+    } catch {
+      /* Adresse bleibt, Funktion nicht betroffen */
+    }
+  }
   date.value = draft.date;
   time.value = draft.time;
   date.min = madridDate();
@@ -154,7 +165,7 @@ if (root) {
   });
 
   renderTicket();
-  if (fromLink) {
+  if (fromLink && foreign) {
     const result = validatePlan(fromLink);
     if (result.ok) {
       one<HTMLElement>(incoming, '[data-incoming-text]').textContent = fill(s.incoming ?? '', { date: formatLongDate(result.instant, data.locale), time: fromLink.time });

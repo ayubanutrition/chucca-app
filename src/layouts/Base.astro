@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 /** Gemeinsame Hülle aller Sprachseiten: Metadaten, Navigation, Sprachwahl, Fuß. */
 import '@fontsource-variable/fraunces/soft.css';
 import '@fontsource-variable/fraunces/soft-italic.css';
@@ -29,7 +30,7 @@ const indexable = IS_PUBLIC && !noindex && canonical !== null;
 const instagram = venue.channels.find((channel) => channel.type === 'instagram');
 const jsonLd =
   indexable && page === 'today'
-    ? JSON.stringify({
+    ? safeJson({
         '@context': 'https://schema.org',
         '@type': 'BarOrPub',
         name: venue.name,
@@ -84,7 +85,8 @@ const jsonLd =
     {
       IS_PREVIEW && (
         <p class="ribbon">
-          {t.common.preview} · <span>{t.common.previewNote}</span>
+          {t.common.preview}
+          <span> · {t.common.previewNote}</span>
         </p>
       )
     }
@@ -169,11 +171,11 @@ const jsonLd =
       </ul>
     </nav>
 
-    <div class="toast" data-toast role="status" hidden>
+    <div class="toast" data-toast data-open="false" role="status">
       <span data-toast-text></span>
       <button type="button" data-toast-action hidden></button>
     </div>
-    <script type="application/json" id="app-strings" set:html={JSON.stringify({ updateReady: t.common.updateReady, reload: t.common.reload, sw: withBase('/sw.js'), scope: withBase('/') })} />
+    <script type="application/json" id="app-strings" set:html={safeJson({ updateReady: t.common.updateReady, reload: t.common.reload, sw: withBase('/sw.js'), scope: withBase('/') })} />
     <script>
       import '../scripts/app';
     </script>

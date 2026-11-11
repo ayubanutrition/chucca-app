@@ -4,7 +4,7 @@
  * öffentlichen Seiten (network-first) und Sitemap mit hreflang aus der Routentabelle.
  */
 import type { AstroIntegration } from 'astro';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join, relative } from 'node:path';
 import { LOCALES, PAGES, pagePath } from '../src/i18n';
@@ -32,7 +32,15 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
       },
       'astro:build:done': async ({ dir, logger }) => {
         const root = fileURLToPath(dir);
-        const files = await walk(root);
+        let files = await walk(root);
+
+        // Nur ausliefern, was eine Seite tatsächlich verwendet: Der Bildimport erfasst den ganzen
+        // Medienordner, also auch nicht freigegebene Dateien. Unreferenzierte Bilder werden entfernt.
+        const texts = await Promise.all(files.filter((file) => /\.(html|css|js|json|webmanifest)$/.test(file)).map((file) => readFile(join(root, file), 'utf8')));
+        const referenced = texts.join('\n');
+        const orphans = files.filter((file) => /^_astro\/.*\.(webp|avif|png|jpe?g)$/.test(file) && !referenced.includes(file.slice('_astro/'.length)));
+        await Promise.all(orphans.map((file) => unlink(join(root, file))));
+        files = files.filter((file) => !orphans.includes(file));
         const precache = files.filter(
           (file) =>
             file !== 'sw.js' &&
@@ -42,8 +50,10 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
         );
         await writeFile(join(root, 'sw.js'), buildServiceWorker({ ...options, base, assets: precache }));
 
-        const galleryEmpty = (await readFile(join(root, 'de/galerie/index.html'), 'utf8')).includes('data-gallery-empty');
-        const indexable = PAGES.filter((page) => !(page === 'gallery' && galleryEmpty));
+        // Seiten ohne Bestand (leere Galerie, Karte ohne bestätigte Drinks) gehören nicht in die Sitemap.
+        const isNoindex = async (page: (typeof PAGES)[number]) => (await readFile(join(root, `${pagePath('de', page).slice(1)}index.html`), 'utf8')).includes('content="noindex');
+        const indexable: (typeof PAGES)[number][] = [];
+        for (const page of PAGES) if (!(await isNoindex(page))) indexable.push(page);
 
         if (options.mode === 'public' && site) {
           const abs = (path: string) => new URL(`${base.replace(/\/$/, '')}${path}`, site).toString();
@@ -59,10 +69,12 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
           );
           await writeFile(join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${abs('/sitemap.xml')}\n`);
         } else {
+          if (options.mode === 'public') logger.warn('Öffentlicher Build ohne CHUCCA_SITE_URL: bleibt noindex, ohne Canonical, hreflang und Sitemap.');
+          if (base !== '/') logger.warn('robots.txt liegt im Unterpfad und wird von Suchmaschinen nur an der Wurzel der Domain gelesen.');
           // Private Vorschau oder öffentlicher Build ohne Site-URL: nicht indexieren lassen.
           await writeFile(join(root, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
         }
-        logger.info(`mode=${options.mode} · sw.js mit ${precache.length} Assets · robots/sitemap geschrieben`);
+        logger.info(`mode=${options.mode} · sw.js mit ${precache.length} Assets · ${orphans.length} unreferenzierte Bilder entfernt · robots/sitemap geschrieben`);
       },
     },
   };

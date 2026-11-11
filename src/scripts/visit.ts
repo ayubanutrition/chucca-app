@@ -41,8 +41,19 @@ if (root) {
     else showManualCopy(manual, data.addressText);
   });
 
-  const today = root.querySelectorAll<HTMLElement>(`[data-hours] [data-day="${madridWeekday()}"]`);
-  for (const cell of today) cell.dataset.today = 'true';
+  // Zeiten außerhalb ihres bestätigten Zeitraums gelten nicht mehr als bestätigt.
+  const hours = root.querySelector<HTMLElement>('[data-hours]');
+  if (hours) {
+    const day = madridDate();
+    const expired = Boolean((hours.dataset.validFrom && day < hours.dataset.validFrom) || (hours.dataset.validUntil && day > hours.dataset.validUntil));
+    if (expired) {
+      const note = document.createElement('p');
+      note.textContent = hours.dataset.unconfirmed ?? '';
+      hours.replaceWith(note);
+    } else {
+      for (const cell of hours.querySelectorAll<HTMLElement>(`[data-day="${madridWeekday()}"]`)) cell.dataset.today = 'true';
+    }
+  }
 
   // Gruppennachricht: wird nur vorbereitet. Gesendet wird sie von der Person selbst.
   const form = one<HTMLFormElement>(root, '[data-inquiry]');
@@ -61,14 +72,15 @@ if (root) {
     delete inquiryStatus.dataset.kind;
     for (const field of [people, date, time]) {
       field.removeAttribute('aria-invalid');
-      field.removeAttribute('aria-describedby');
+      if (field === people) field.removeAttribute('aria-describedby');
+      else field.setAttribute('aria-describedby', 'inq-zone');
     }
   };
   const fail = (field: HTMLInputElement, message: string): void => {
     inquiryStatus.textContent = message;
     inquiryStatus.dataset.kind = 'error';
     field.setAttribute('aria-invalid', 'true');
-    field.setAttribute('aria-describedby', 'inq-status');
+    field.setAttribute('aria-describedby', field === people ? 'inq-status' : 'inq-zone inq-status');
     output.hidden = true;
     field.focus();
   };

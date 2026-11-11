@@ -54,6 +54,11 @@ test.describe('Kernstrecke', () => {
     await expect(page).toHaveURL(/\/de\/drinks\/$/);
     await page.goto('/gallery.html');
     await expect(page).toHaveURL(/\/de\/galerie\/$/);
+    // Unbekannte oder präparierte Hashes führen nirgendwohin, auch nicht nach /undefined.
+    for (const hash of ['#constructor', '#__proto__', '#unbekannt']) {
+      await page.goto(`/${hash}`);
+      await expect(page).toHaveURL(/\/de\/$/);
+    }
   });
 
   test('Einstieg ist eine Sprachwahl ohne Zwangsumleitung; die Wahl wird gemerkt', async ({ page }) => {
@@ -123,7 +128,7 @@ test.describe('Getränkekarte', () => {
     const page = await context.newPage();
     await page.goto('/de/drinks/');
     await expect(page.locator('[data-drink]')).toHaveCount(16);
-    await expect(page.locator('[data-drink="mojito"]')).toContainText('11,00 €');
+    await expect(page.locator('[data-drink="mojito"]')).toContainText('11 €');
     await context.close();
   });
 
@@ -157,6 +162,10 @@ test.describe('Getränkekarte', () => {
     await page.getByRole('button', { name: 'Fruchtig' }).click();
     await page.goto('/de/drinks/');
     await expect(page.getByRole('button', { name: 'Fruchtig' })).toHaveAttribute('aria-pressed', 'true');
+    // Ein geteilter Filter-Link gilt unverändert, die gespeicherte Vorliebe mischt sich nicht ein.
+    await page.goto('/de/drinks/?k=classics');
+    await expect(page.locator('[data-drink]:visible')).toHaveCount(6);
+    await expect(page).toHaveURL(/\?k=classics$/);
     await page.evaluate(() => localStorage.setItem('chucca-taste', '<img onerror=alert(1)>'));
     await page.goto('/de/drinks/?k=unbekannt');
     await expect(page.locator('.chip[aria-pressed="true"]')).toHaveCount(1); // nur „Alle“
@@ -177,7 +186,7 @@ test.describe('Getränkekarte', () => {
     await expect(page.getByRole('button', { name: 'Frisch' })).toHaveAttribute('aria-pressed', 'true');
     await page.goto('/de/gruppe/');
     await page.getByLabel('Datum').fill('2031-05-02');
-    await page.getByLabel('Treffzeit').fill('20:00');
+    await page.getByLabel('Uhrzeit').fill('20:00');
     await expect(page.locator('[data-ticket-time]')).toHaveText('20:00');
     await page.locator('.langs').getByRole('link', { name: /EN/ }).click();
     await expect(page.getByLabel('Meeting time')).toHaveValue('20:00'); // Übergabe per URL statt Speicher

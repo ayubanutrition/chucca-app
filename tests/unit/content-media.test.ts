@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { eventsFor, fixtureMenu, mediaCatalogue, mediaFor, menuFor, publishedEvents, publishedMenu, venueFor, venueInternal } from '../../src/lib/content';
-import { mediaInternalSchema, menuSchema, venueSchema, type MediaInternal } from '../../src/lib/content/schema';
+import { mediaInternalSchema, menuSchema, unbackedConfirmations, venueSchema, type MediaInternal } from '../../src/lib/content/schema';
 import { PUBLIC_MEDIA_FIELDS, auditMedia, deduplicate, exclusionReasons, selectMedia, toPublicMedia } from '../../src/lib/media';
 
 const L = (text: string) => ({ de: text, en: text, es: text });
@@ -121,6 +121,8 @@ describe('Betriebsmodi', () => {
   it('bestätigte Termine verdrängen Beispieltermine; Entwürfe erscheinen nie', () => {
     const real = { ...eventsFor('preview').events[0]!, id: 'real', kind: 'published' as const };
     expect(eventsFor('preview', new Date(), [real])).toEqual({ events: [real], fixture: false });
+    // Abgelaufene Termine stehen gar nicht erst im HTML.
+    expect(eventsFor('public', new Date(), [{ ...real, date: '2020-01-01' }]).events).toEqual([]);
     expect(eventsFor('public', new Date(), [{ ...real, status: 'draft' }]).events).toEqual([]);
   });
 });
@@ -140,6 +142,11 @@ describe('Datenverträge', () => {
     const drink = fixtureMenu.items[0]!;
     expect(() => menuSchema.parse({ ...fixtureMenu, items: [{ ...drink, name: { de: 'x', en: 'x' } }] })).toThrow();
     expect(() => venueSchema.parse({ ...venueInternal, rating: 4.9 })).toThrow();
+  });
+  it('akzeptiert „confirmed“ nur mit Quelle und Datum', () => {
+    expect(unbackedConfirmations(venueInternal)).toEqual([]);
+    const bare = venueSchema.parse({ ...venueInternal, hours: { regular: null, status: 'confirmed' } });
+    expect(unbackedConfirmations(bare)).toEqual(['hours']);
   });
   it('führt ungeprüfte Fakten als solche', () => {
     expect(venueInternal.hours.status).not.toBe('confirmed');

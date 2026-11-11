@@ -75,6 +75,29 @@ export function toInstant(date: string, time: string): Date | null {
   return hits.length === 1 ? (hits[0] ?? null) : null;
 }
 
+/**
+ * Nachsichtige Variante für Betriebszeiten: Eine Ortszeit in der Frühjahrslücke
+ * rückt auf den ersten gültigen Zeitpunkt danach, eine doppelte Herbststunde
+ * meint ihr erstes Vorkommen. Der Planer nutzt weiter das strenge toInstant.
+ */
+export function toInstantLenient(date: string, time: string): Date | null {
+  const strict = toInstant(date, time);
+  if (strict) return strict;
+  if (!DATE_PATTERN.test(date) || !TIME_PATTERN.test(time)) return null;
+  const base = new Date(`${date}T${time}:00Z`);
+  if (!Number.isFinite(base.getTime()) || base.toISOString().slice(0, 10) !== date) return null;
+  const hits: Date[] = [];
+  let firstAfter: Date | null = null;
+  for (let offset = -14 * 60; offset <= 14 * 60; offset += 15) {
+    const candidate = new Date(base.getTime() + offset * 60_000);
+    const p = madridParts(candidate);
+    const local = `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+    if (local === `${date}T${time}`) hits.push(candidate);
+    else if (!firstAfter && local > `${date}T${time}`) firstAfter = candidate;
+  }
+  return hits[0] ?? firstAfter;
+}
+
 /** Addiert Kalendertage auf ein YYYY-MM-DD-Datum (reine Kalenderrechnung). */
 export function addDays(date: string, days: number): string {
   const [y, m, d] = date.split('-').map(Number) as [number, number, number];

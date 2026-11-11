@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 import Art from './Art.astro';
 import Icon from './Icon.astro';
 import { MODE } from '../config/mode';
@@ -57,7 +58,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
       <p class="small" data-now-phase></p>
     </div>
     <div class="now__cell">
-      <p class="now__label">{t.today.now.sunset}</p>
+      <p class="now__label" data-now-sunset-label>{t.today.now.sunset}</p>
       <p class="now__value"><em data-now-sunset>–:–</em></p>
       <p class="small">{t.common.localTime}</p>
     </div>
@@ -75,7 +76,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
       }
     </div>
   </div>
-  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+  <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </section>
 
 <section class="section paths" aria-labelledby="paths-title">
@@ -122,10 +123,8 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
                 </p>
                 <div class="stack" style="--stack: 0.25rem">
                   <p class="event__meta">
-                    <time datetime={`${event.date}T${event.start}`}>
-                      {weekdayFormat.format(date)} · {event.start}
-                      {event.end ? `–${event.end}` : ''}
-                    </time>
+                    <time datetime={`${event.date}T${event.start}`}>{`${weekdayFormat.format(date)} · ${event.start}${event.end ? `–${event.end}` : ''}`}</time>
+                    {event.kind === 'fixture' && <span class="badge badge--pink">{t.common.sample}</span>}
                   </p>
                   <h3 class="h3">{event.title[locale]}</h3>
                   <p class="small">{event.summary[locale]}</p>
@@ -146,7 +145,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
         <div class="stack" style="--stack: var(--space-5)">
           <p class="eyebrow">{t.today.gallery.eyebrow}</p>
           <h2 class="display h2" id="peek-title">
-            {t.today.gallery.title}
+            {peek.some((item) => item.media.kind === 'concept') ? t.today.gallery.conceptTitle : t.today.gallery.title}
           </h2>
           <a class="btn" href={href(locale, 'gallery')}>
             {t.today.gallery.cta}

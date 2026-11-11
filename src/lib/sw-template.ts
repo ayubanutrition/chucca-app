@@ -4,6 +4,7 @@
  * - Assets mit Hash (/_astro/) cache-first, übrige Assets network-first
  * - Navigation immer network-first; HTML wird nur im öffentlichen Modus gespeichert,
  *   nie in der privaten (authentifizierten) Vorschau
+ * - Seiten-Cache trägt die Build-Kennung: alte HTML-Kopien verschwinden mit ihren Assets
  * - neue Version wartet, bis die Seite sie per Nachricht aktiviert (kein erzwungenes skipWaiting)
  */
 export interface ServiceWorkerOptions {
@@ -24,8 +25,9 @@ const OFFLINE_HTML =
 
 export function buildServiceWorker({ mode, buildId, base, assets }: ServiceWorkerOptions): string {
   return `// CHUCCA V4 Service Worker · ${mode} · ${buildId}
-const CACHE = 'chucca-v4-${buildId}';
-const PAGES = 'chucca-v4-pages';
+const PREFIX = 'chucca-v4:' + ${JSON.stringify(base)} + ':';
+const CACHE = PREFIX + 'assets-${buildId}';
+const PAGES = PREFIX + 'pages-${buildId}';
 const MODE = ${JSON.stringify(mode)};
 const BASE = ${JSON.stringify(base)};
 const ASSETS = ${JSON.stringify(assets)};
@@ -52,7 +54,8 @@ self.addEventListener('message', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(caches.keys().then((keys) => Promise.all(
-    keys.filter((key) => key.startsWith('chucca-') && key !== CACHE && !(MODE === 'public' && key === PAGES)).map((key) => caches.delete(key))
+    // Eigene ältere Stände dieses Pfads und die Caches aus V3; andere Installationen derselben Herkunft bleiben unberührt.
+    keys.filter((key) => (key.startsWith(PREFIX) || key.startsWith('chucca-x-')) && key !== CACHE && key !== PAGES).map((key) => caches.delete(key))
   )).then(() => self.clients.claim()));
 });
 

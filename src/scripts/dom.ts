@@ -22,9 +22,9 @@ export function toast(text: string, action?: { label: string; run: () => void })
   button.hidden = !action;
   button.textContent = action?.label ?? '';
   button.onclick = action ? () => action.run() : null;
-  box.hidden = false;
+  box.dataset.open = 'true';
   clearTimeout(toastTimer);
-  if (!action) toastTimer = setTimeout(() => (box.hidden = true), 5000);
+  if (!action) toastTimer = setTimeout(() => (box.dataset.open = 'false'), 5000);
 }
 
 /** Zeigt den Text zum Markieren an, wenn weder Teilen noch Zwischenablage funktionieren. */

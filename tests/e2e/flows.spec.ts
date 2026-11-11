@@ -34,7 +34,7 @@ test.describe('Gruppenplaner', () => {
   test('meldet Eingabefehler am richtigen Feld und erholt sich', async ({ page }) => {
     await page.goto('/de/gruppe/');
     const date = page.getByLabel('Datum');
-    const time = page.getByLabel('Treffzeit');
+    const time = page.getByLabel('Uhrzeit');
     const status = page.locator('[data-status]');
     await page.getByRole('button', { name: 'Im Kalender speichern' }).click();
     await expect(status).toContainText('gültiges Datum');
@@ -61,7 +61,7 @@ test.describe('Gruppenplaner', () => {
   test('zeigt Ortszeit Mallorca und die abweichende Gerätezeit', async ({ page }) => {
     await page.goto('/de/gruppe/');
     await page.getByLabel('Datum').fill('2030-01-16');
-    await page.getByLabel('Treffzeit').fill('20:00');
+    await page.getByLabel('Uhrzeit').fill('20:00');
     await expect(page.locator('[data-ticket-time]')).toHaveText('20:00');
     await expect(page.locator('[data-ticket-device]')).toContainText('19:00'); // Testgerät steht auf Europe/London
   });
@@ -69,7 +69,7 @@ test.describe('Gruppenplaner', () => {
   test('erzeugt eine gültige Kalenderdatei mit stabiler Kennung für denselben Entwurf', async ({ page }) => {
     await page.goto('/de/gruppe/');
     await page.getByLabel('Datum').fill('2030-01-16');
-    await page.getByLabel('Treffzeit').fill('20:00');
+    await page.getByLabel('Uhrzeit').fill('20:00');
     const download = async () => {
       const [file] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: /Kalender|calendar/i }).click()]);
       expect(file.suggestedFilename()).toBe('chucca-meetup.ics');
@@ -87,6 +87,7 @@ test.describe('Gruppenplaner', () => {
     // Sprachwechsel: derselbe Entwurf, dieselbe Kennung.
     await page.locator('.langs').getByRole('link', { name: /EN/ }).click();
     await expect(page.getByLabel('Meeting time')).toHaveValue('20:00');
+    await expect(page.locator('[data-incoming]')).toBeHidden(); // eigener Plan, kein „über einen Link geöffnet“
     const english = await download();
     expect(uid(english)).toBe(uid(first));
     expect(english).toContain('SUMMARY:CHUCCA · Meetup');
@@ -99,7 +100,7 @@ test.describe('Gruppenplaner', () => {
     await stubSharing(page, 'share-ok');
     await page.goto('/de/gruppe/');
     await page.getByLabel('Datum').fill('2030-01-16');
-    await page.getByLabel('Treffzeit').fill('20:00');
+    await page.getByLabel('Uhrzeit').fill('20:00');
     await page.getByRole('button', { name: 'Einladung teilen' }).click();
     await expect(page.locator('[data-status]')).toHaveText('Einladung geteilt.');
     const shared = await page.evaluate(() => (window as Window & { __shared?: { text: string; url: string }[] }).__shared?.[0]);
@@ -113,7 +114,7 @@ test.describe('Gruppenplaner', () => {
     await stubSharing(page, 'share-abort');
     await page.goto('/de/gruppe/');
     await page.getByLabel('Datum').fill('2030-01-16');
-    await page.getByLabel('Treffzeit').fill('20:00');
+    await page.getByLabel('Uhrzeit').fill('20:00');
     await page.getByRole('button', { name: 'Einladung teilen' }).click();
     await expect(page.locator('[data-status]')).toHaveText('');
     await expect(page.locator('[data-manual]')).toBeHidden();
@@ -123,7 +124,7 @@ test.describe('Gruppenplaner', () => {
     await stubSharing(page, 'clipboard-ok');
     await page.goto('/es/grupo/');
     await page.getByLabel('Fecha').fill('2030-01-16');
-    await page.getByLabel('Hora de encuentro').fill('20:00');
+    await page.getByLabel('Hora', { exact: true }).fill('20:00');
     await page.getByRole('button', { name: 'Compartir invitación' }).click();
     await expect(page.locator('[data-status]')).toHaveText('Invitación copiada.');
     const copied = await page.evaluate(() => (window as Window & { __copied?: string[] }).__copied?.[0]);
@@ -147,7 +148,13 @@ test.describe('Gruppenplaner', () => {
   test('Einladungslink öffnet den Plan; ungültige Parameter werden ignoriert', async ({ page }) => {
     await page.goto('/de/gruppe/?d=2030-02-01&t=21:15&id=abc12345-test');
     await expect(page.locator('[data-incoming]')).toContainText('Ihr trefft euch am Freitag, 1. Februar 2030 um 21:15 Uhr.');
-    await expect(page.getByLabel('Treffzeit')).toHaveValue('21:15');
+    await expect(page.getByLabel('Uhrzeit')).toHaveValue('21:15');
+    // Der Link wird übernommen und aus der Adresse entfernt; eigene Änderungen überstehen das Neuladen.
+    await expect(page).toHaveURL(/\/de\/gruppe\/$/);
+    await page.getByLabel('Uhrzeit').fill('22:00');
+    await page.reload();
+    await expect(page.getByLabel('Uhrzeit')).toHaveValue('22:00');
+    await expect(page.locator('[data-incoming]')).toBeHidden();
     await page.evaluate(() => sessionStorage.clear());
     await page.goto('/de/gruppe/?d=<svg/onload=1>&t=99:99');
     await expect(page.locator('[data-incoming]')).toBeHidden();

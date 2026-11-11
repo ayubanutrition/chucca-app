@@ -3,7 +3,7 @@
  * Ohne bestätigte Zeiten lautet das Ergebnis immer „unconfirmed“ –
  * es wird nie ein Status aus Annahmen berechnet.
  */
-import { addDays, madridDate, madridTime, madridWeekday, toInstant } from './time';
+import { addDays, madridDate, madridTime, madridWeekday, toInstantLenient } from './time';
 
 export interface DayRange {
   /** Öffnung HH:MM (Madrid). */
@@ -34,8 +34,8 @@ function rangeFor(hours: HoursData, date: string, weekday: number): DayRange | n
 }
 
 function instants(date: string, range: DayRange): { open: Date; close: Date } | null {
-  const open = toInstant(date, range.open);
-  const close = toInstant(range.close <= range.open ? addDays(date, 1) : date, range.close);
+  const open = toInstantLenient(date, range.open);
+  const close = toInstantLenient(range.close <= range.open ? addDays(date, 1) : date, range.close);
   return open && close ? { open, close } : null;
 }
 

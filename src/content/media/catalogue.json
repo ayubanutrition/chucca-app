@@ -5,14 +5,14 @@
   "file": "concept-dusk.webp",
   "focus": "55% 70%",
   "alt": {
-   "de": "Illustration: Palmen vor einem Abendhimmel, der von Orange in dunkles Pflaumenblau übergeht; eine Lichterkette spannt sich über einen Innenhof.",
-   "en": "Illustration: palm trees against an evening sky fading from orange to deep plum; a string of lights spans a courtyard.",
-   "es": "Ilustración: palmeras ante un cielo de atardecer que pasa del naranja al ciruela oscuro; una guirnalda de luces cruza un patio."
+   "de": "Illustration: Palmen vor einem Abendhimmel, der von Orange in dunkles Pflaumenblau übergeht; darüber eine Lichterkette.",
+   "en": "Illustration: palm trees against an evening sky fading from orange to deep plum, with a string of lights above.",
+   "es": "Ilustración: palmeras ante un cielo de atardecer que pasa del naranja al ciruela oscuro, con una guirnalda de luces."
   },
   "caption": {
-   "de": "Abend über dem Innenhof",
-   "en": "Evening over the courtyard",
-   "es": "Atardecer sobre el patio"
+   "de": "Abendstimmung",
+   "en": "Evening mood",
+   "es": "Ambiente de atardecer"
   },
   "credit": "CHUCCA V4 · Konzeptillustration",
   "tags": [
@@ -89,14 +89,14 @@
   "file": "concept-arch.webp",
   "focus": "50% 50%",
   "alt": {
-   "de": "Illustration: ein Torbogen führt in einen warm beleuchteten Innenhof mit Topfpalme.",
-   "en": "Illustration: an archway leads into a warmly lit courtyard with a potted palm.",
-   "es": "Ilustración: un arco conduce a un patio con luz cálida y una palmera en maceta."
+   "de": "Illustration: ein Rundbogen rahmt warmes Abendlicht und eine Topfpalme.",
+   "en": "Illustration: a round arch frames warm evening light and a potted palm.",
+   "es": "Ilustración: un arco de medio punto enmarca una luz cálida de atardecer y una palmera en maceta."
   },
   "caption": {
-   "de": "Durch den Bogen in den Hof",
-   "en": "Through the arch into the courtyard",
-   "es": "Por el arco hacia el patio"
+   "de": "Bogenmotiv",
+   "en": "Arch motif",
+   "es": "Motivo del arco"
   },
   "credit": "CHUCCA V4 · Konzeptillustration",
   "tags": [
@@ -168,23 +168,23 @@
   "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
  },
  {
-  "id": "concept-llengues",
+  "id": "concept-night",
   "kind": "concept",
-  "file": "concept-llengues.webp",
+  "file": "concept-night.webp",
   "focus": "50% 50%",
   "alt": {
-   "de": "Illustration: ein Muster nach Art der mallorquinischen Zungenstoffe in Orange, Creme und Pink.",
-   "en": "Illustration: a pattern in the style of Mallorcan “llengües” ikat fabric in orange, cream and pink.",
-   "es": "Ilustración: un estampado al estilo de la tela de lenguas mallorquina en naranja, crema y rosa."
+   "de": "Illustration: Mond und Sterne über einer Reihe von Palmen und warmen Lichtern am Wasser.",
+   "en": "Illustration: moon and stars above a row of palms and warm lights by the water.",
+   "es": "Ilustración: luna y estrellas sobre una hilera de palmeras y luces cálidas junto al agua."
   },
   "caption": {
-   "de": "Roba de llengües – Mallorcas Flammenmuster",
-   "en": "Roba de llengües – Mallorca’s flame pattern",
-   "es": "Roba de llengües: el estampado de llamas de Mallorca"
+   "de": "Später Abend",
+   "en": "Late evening",
+   "es": "Noche cerrada"
   },
   "credit": "CHUCCA V4 · Konzeptillustration",
   "tags": [
-   "place"
+   "atmosphere"
   ],
   "authorization": "self-made",
   "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",
@@ -196,23 +196,23 @@
   "notes": "Platzhalter bis zur Lieferung freigegebener Originalfotos."
  },
  {
-  "id": "concept-night",
+  "id": "concept-llengues",
   "kind": "concept",
-  "file": "concept-night.webp",
+  "file": "concept-llengues.webp",
   "focus": "50% 50%",
   "alt": {
-   "de": "Illustration: Mond und Sterne über einer Reihe von Palmen und warmen Lichtern am Wasser.",
-   "en": "Illustration: moon and stars above a row of palms and warm lights by the water.",
-   "es": "Ilustración: luna y estrellas sobre una hilera de palmeras y luces cálidas junto al agua."
+   "de": "Illustration: ein Muster nach Art der mallorquinischen Zungenstoffe in Orange, Creme und Pink.",
+   "en": "Illustration: a pattern in the style of Mallorcan “llengües” ikat fabric in orange, cream and pink.",
+   "es": "Ilustración: un estampado al estilo de la tela de lenguas mallorquina en naranja, crema y rosa."
   },
   "caption": {
-   "de": "Später Abend an der Playa",
-   "en": "Late evening on the Playa",
-   "es": "Última hora en la Playa"
+   "de": "Roba de llengües – das mallorquinische Zungenmuster",
+   "en": "Roba de llengües – the Mallorcan “tongues” pattern",
+   "es": "Roba de llengües: la tela de lenguas mallorquina"
   },
   "credit": "CHUCCA V4 · Konzeptillustration",
   "tags": [
-   "atmosphere"
+   "place"
   ],
   "authorization": "self-made",
   "authorization_evidence": "Im Projekt per Skript scripts/make-concept-art.mjs erzeugte Vektorillustration.",

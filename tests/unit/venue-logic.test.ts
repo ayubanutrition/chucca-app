@@ -32,6 +32,16 @@ describe('Öffnungsstatus', () => {
     // Do 17.01. Ausnahme geschlossen → Freitag
     expect(openStatus(evening, new Date('2030-01-17T12:00:00Z'))).toEqual({ state: 'closed', opensAt: new Date('2030-01-18T18:00:00Z') });
   });
+  it('bleibt in den Nächten der Zeitumstellung korrekt (Schluss um 02:00 fällt in Lücke bzw. Doppelstunde)', () => {
+    const nightly: HoursData = { status: 'confirmed', regular: Array.from({ length: 7 }, () => ({ open: '20:00', close: '02:30' })) };
+    // Herbst 2026: Sa 24.10. 21:00 und So 25.10. 01:30 Madrid
+    expect(openStatus(nightly, new Date('2026-10-24T19:00:00Z')).state).toBe('open');
+    expect(openStatus(nightly, new Date('2026-10-24T23:30:00Z')).state).toBe('open');
+    // Frühjahr 2026: Sa 28.03. 21:00 Madrid; 02:30 existiert am 29.03. nicht → Schluss beim ersten gültigen Zeitpunkt danach
+    const spring = openStatus(nightly, new Date('2026-03-28T20:00:00Z'));
+    expect(spring).toEqual({ state: 'open', closesAt: new Date('2026-03-29T01:00:00Z') });
+    expect(openStatus(nightly, new Date('2026-03-29T10:00:00Z'))).toEqual({ state: 'closed', opensAt: new Date('2026-03-29T18:00:00Z') });
+  });
   it('gilt außerhalb des bestätigten Zeitraums als unbestätigt', () => {
     expect(openStatus({ ...evening, validUntil: '2029-10-31' }, new Date('2030-01-15T19:30:00Z'))).toEqual({ state: 'unconfirmed' });
     expect(openStatus({ ...evening, validFrom: '2030-04-01' }, new Date('2030-01-15T19:30:00Z'))).toEqual({ state: 'unconfirmed' });
@@ -77,11 +87,11 @@ describe('Getränkekarte', () => {
   });
   it('liefert bei Nulltreffern eine leere Liste', () => {
     expect(filterMenu(items, { ...emptyFilter(), query: 'gibtsnicht' }, 'de')).toEqual([]);
-    expect(filterMenu(items, { ...emptyFilter(), category: 'free', query: 'rum' }, 'en')).toEqual([{ ...items.find((d) => d.id === 'virgin-mojito')! }]);
+    expect(filterMenu(items, { ...emptyFilter(), category: 'free', query: 'virgin' }, 'en')).toEqual([{ ...items.find((d) => d.id === 'virgin-mojito')! }]);
   });
   it('formatiert Preise je Sprache', () => {
-    expect(formatPrice(1100, 'de').replace(/\s/g, ' ')).toBe('11,00 €');
-    expect(formatPrice(1100, 'en')).toBe('€11.00');
+    expect(formatPrice(1100, 'de').replace(/\s/g, ' ')).toBe('11 €');
+    expect(formatPrice(1100, 'en')).toBe('€11');
     expect(formatPrice(950, 'es').replace(/\s/g, ' ')).toBe('9,50 €');
   });
 });

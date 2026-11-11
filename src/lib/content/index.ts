@@ -9,12 +9,15 @@ import eventsRaw from '../../content/published/events.json';
 import fixtureMenuRaw from '../../content/fixtures/menu.json';
 import catalogueRaw from '../../content/media/catalogue.json';
 import { fixtureEvents } from '../../content/fixtures/events';
+import { upcoming } from '../events';
 import { selectMedia, toPublicMedia, type MediaPublic } from '../media';
-import { eventsSchema, mediaCatalogueSchema, menuSchema, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
+import { eventsSchema, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 import type { HoursData } from '../hours';
 import type { Mode } from '../../config/mode';
 
 export const venueInternal: Venue = venueSchema.parse(venueRaw);
+const unbacked = unbackedConfirmations(venueInternal);
+if (unbacked.length > 0) throw new Error(`Als bestätigt geführt, aber ohne Quelle/Datum: ${unbacked.join(', ')}`);
 export const publishedMenu: Menu = menuSchema.parse(menuRaw);
 export const fixtureMenu: Menu = menuSchema.parse(fixtureMenuRaw);
 export const publishedEvents: VenueEvent[] = eventsSchema.parse(eventsRaw);
@@ -80,7 +83,8 @@ export interface EventsView {
 }
 
 export function eventsFor(mode: Mode, now: Date = new Date(), published: VenueEvent[] = publishedEvents): EventsView {
-  const confirmed = published.filter((event) => event.status === 'confirmed');
+  // Nur bestätigte, noch nicht abgelaufene Termine – chronologisch, schon im HTML.
+  const confirmed = upcoming(published, now);
   if (confirmed.length > 0 || mode === 'public') return { events: confirmed, fixture: false };
   return { events: fixtureEvents(now), fixture: true };
 }

@@ -1,4 +1,5 @@
 ---
+import { safeJson } from '../lib/json';
 import { getImage } from 'astro:assets';
 import Art from './Art.astro';
 import Icon from './Icon.astro';
@@ -43,7 +44,10 @@ const clientData = { counter: t.gallery.counter, loadError: t.gallery.loadError,
   <header class="pagehead">
     <div class="stack" style="--stack: var(--space-4)">
       <p class="eyebrow">{t.gallery.eyebrow}</p>
-      <h1 class="display h1--page">{t.gallery.titleA} <em>{t.gallery.titleB}</em></h1>
+      <h1 class="display h1--page">
+        {hasConcepts ? t.gallery.conceptTitleA : t.gallery.titleA}
+        <em>{hasConcepts ? t.gallery.conceptTitleB : t.gallery.titleB}</em>
+      </h1>
     </div>
     <div class="stack">
       <p class="lede">{t.gallery.intro}</p>
@@ -106,7 +110,7 @@ const clientData = { counter: t.gallery.counter, loadError: t.gallery.loadError,
       <button class="iconbtn" type="button" data-lightbox-next aria-label={t.gallery.next}><Icon name="next" /></button>
     </div>
   </dialog>
-  <script type="application/json" data-strings set:html={JSON.stringify(clientData)} />
+  <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </div>
 
 <script>

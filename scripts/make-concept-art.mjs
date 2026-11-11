@@ -172,7 +172,7 @@ const scenes = {
   },
   'concept-citrus': () => {
     const w = 2000, h = 1400;
-    return svg(w, h, `<rect width="${w}" height="${h}" fill="${C.ink}"/><rect x="60" y="60" width="${w - 120}" height="${h - 120}" rx="40" fill="${C.plum}"/>
+    return svg(w, h, `<rect width="${w}" height="${h}" fill="${C.plum}"/>
       ${citrus(520, 520, 330, C.orange, 0.2)}${citrus(1180, 860, 290, C.lemon, 1)}${citrus(1620, 380, 230, C.deep, 0.6)}${citrus(300, 1130, 180, C.lemon, 2)}
       ${leaf(820, 250, 240, 20)}${leaf(900, 330, 200, 70)}${leaf(1500, 1050, 260, -30)}${leaf(1560, 1130, 200, 15)}${leaf(700, 1050, 220, -60)}
       ${Array.from({ length: 9 }, () => `<rect x="-45" y="-45" width="90" height="90" rx="14" fill="${C.cream}" opacity=".3" transform="translate(${between(200, 1800)} ${between(160, 1240)}) rotate(${between(0, 90)})"/>`).join('')}`);

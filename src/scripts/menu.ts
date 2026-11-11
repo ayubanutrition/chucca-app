@@ -24,7 +24,9 @@ if (root) {
   const params = new URLSearchParams(location.search);
   const filter: MenuFilter = emptyFilter();
   // Reihenfolge: Link-Parameter vor gespeicherter Vorliebe; beides wird geprüft.
-  const initialTaste = params.get('g') ?? readStored(TASTE_KEY);
+  // Ein geteilter Link mit Filtern gilt so, wie er ist – die eigene Vorliebe mischt sich nicht ein.
+  const linked = params.has('g') || params.has('k') || params.has('q');
+  const initialTaste = linked ? params.get('g') : readStored(TASTE_KEY);
   let taste: Taste | null = isTaste(initialTaste) ? initialTaste : null;
   filter.query = (params.get('q') ?? '').slice(0, 60);
 
