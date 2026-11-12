@@ -11,18 +11,21 @@ import catalogueRaw from '../../content/media/catalogue.json';
 import { fixtureEvents } from '../../content/fixtures/events';
 import { upcoming } from '../events';
 import { selectMedia, toPublicMedia, type MediaPublic } from '../media';
-import { eventsSchema, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
+import { parseOrThrow } from './report';
+import { eventsSchema, incompleteConfirmations, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 import type { HoursData } from '../hours';
 import { TEST_HOURS, type Mode } from '../../config/mode';
 import { fixtureHours, HOURS_FIXTURE_NOTICE } from '../../content/fixtures/hours';
 
-export const venueInternal: Venue = venueSchema.parse(venueRaw);
+export const venueInternal: Venue = parseOrThrow('src/content/published/venue.json', venueSchema, venueRaw);
 const unbacked = unbackedConfirmations(venueInternal);
-if (unbacked.length > 0) throw new Error(`Als bestätigt geführt, aber ohne Quelle/Datum: ${unbacked.join(', ')}`);
-export const publishedMenu: Menu = menuSchema.parse(menuRaw);
-export const fixtureMenu: Menu = menuSchema.parse(fixtureMenuRaw);
-export const publishedEvents: VenueEvent[] = eventsSchema.parse(eventsRaw);
-export const mediaCatalogue: MediaInternal[] = mediaCatalogueSchema.parse(catalogueRaw);
+if (unbacked.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json steht „confirmed“ ohne Quelle oder Datum bei: ${unbacked.join(', ')}. Bitte „source“ und „observedAt“ (oder „verifiedAt“) eintragen oder den Status zurücksetzen.`);
+const incomplete = incompleteConfirmations(venueInternal);
+if (incomplete.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json steht „confirmed“, aber es fehlen Angaben: ${incomplete.join(', ')}.`);
+export const publishedMenu: Menu = parseOrThrow('src/content/published/menu.json', menuSchema, menuRaw);
+export const fixtureMenu: Menu = parseOrThrow('src/content/fixtures/menu.json', menuSchema, fixtureMenuRaw);
+export const publishedEvents: VenueEvent[] = parseOrThrow('src/content/published/events.json', eventsSchema, eventsRaw);
+export const mediaCatalogue: MediaInternal[] = parseOrThrow('src/content/media/catalogue.json', mediaCatalogueSchema, catalogueRaw);
 
 if (publishedMenu.kind !== 'published') throw new Error('published/menu.json muss kind=published tragen.');
 if (fixtureMenu.kind !== 'fixture') throw new Error('fixtures/menu.json muss kind=fixture tragen.');

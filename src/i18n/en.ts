@@ -65,6 +65,7 @@ export const en: Dictionary = {
       phaseNight: 'Night has fallen.',
       hours: 'Opening hours',
       hoursUnconfirmed: 'Current opening hours have not been confirmed yet. Check CHUCCA on Instagram before you head out.',
+      hoursSeeVisit: 'Opening hours are on the Visit page.',
       open: 'Open now – until {time}.',
       closedOpens: 'Closed right now. Opens {day} at {time}.',
       closed: 'Closed right now.',

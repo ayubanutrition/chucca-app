@@ -65,7 +65,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
     </div>
     <div class="now__cell">
       <p class="now__label">{t.today.now.hours}</p>
-      <p data-now-hours>{t.today.now.hoursUnconfirmed}</p>
+      <p data-now-hours>{venue.hours.status === 'confirmed' ? t.today.now.hoursSeeVisit : t.today.now.hoursUnconfirmed}</p>
       {venue.testFixtureNotice && <p class="small" data-test-fixture>{venue.testFixtureNotice}</p>}
       {
         instagram && (

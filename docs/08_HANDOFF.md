@@ -49,5 +49,8 @@ Keine Veröffentlichung, keine Geräteabnahme, keine Felddaten, keine WCAG-Zerti
 2. Hosting festlegen, Vorschau deployen, Service Worker und Unterpfad dort prüfen – Aufgaben 13, 15, 16.
 3. Gerätetests auf iPhone und Android inkl. In-App-Browsern – Aufgabe 14.
 
+## Betreiber-Datenweg (Trockenlauf 12.11.2026)
+Mit erfundenen Daten in einer Wegwerfkopie durchgespielt (nichts davon im Repo): Tabelle → `npm run menu:import` → `venue.json` (Zeiten, Kanal bestätigt) + Fotoeintrag + Termin → `npm run content:check` → öffentlicher Build mit `CHUCCA_SITE_URL`. Ergebnis: Karte, Zeiten/Status, Kanal, Foto und Termin erscheinen; Drinks und Galerie ohne `noindex` und in der Sitemap; keine Rechte-/Quellenfelder und kein Fixture-/Konzepttext im Output. Dabei behoben: rohe Zod-Ausgabe beim Build-Abbruch (jetzt deutsche Meldung mit Datei und Feld), `confirmed` ohne Wochentage und freigegebenes Foto ohne Datei ließen den Build still durch, doppelte Medien-/Termin-IDs wurden nicht gemeldet, Startseite zeigte ohne JavaScript „Zeiten nicht bestätigt“ trotz bestätigter Zeiten, Doku (`menu:import`, Zeilenzahl der Vorlage, Fotodateinamen) lückenhaft. Nicht gefahren: echte Betreiberdaten, Scan/Druck des QR-Codes, Gerätetest.
+
 ## Test-Build mit erfundenen Öffnungszeiten
 `npm run build:hours` baut `dist-hours/` mit Fixture-Zeiten (Jahr 2099, Kennung `TESTFIXTURE-HOURS`) für `tests/e2e/hours-fixture.spec.ts`. Nur Vorschau-Modus; der Schalter bricht Public-Builds und andere Ziele ab. Details: `docs/06_QA.md`, `docs/03_ARCHITECTURE.md`.

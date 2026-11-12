@@ -64,6 +64,7 @@ export const de = {
       phaseNight: 'Die Nacht hat begonnen.',
       hours: 'Öffnungszeiten',
       hoursUnconfirmed: 'Aktuelle Öffnungszeiten sind noch nicht bestätigt. Schau vor dem Losgehen kurz bei CHUCCA auf Instagram vorbei.',
+      hoursSeeVisit: 'Die Öffnungszeiten stehen auf der Seite „Besuch“.',
       open: 'Jetzt geöffnet – bis {time} Uhr.',
       closedOpens: 'Gerade geschlossen. Öffnet am {day} um {time} Uhr.',
       closed: 'Gerade geschlossen.',

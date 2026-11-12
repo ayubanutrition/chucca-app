@@ -77,7 +77,7 @@ Wichtig: Wir schalten einen Kanal für Anfragen nur frei, wenn Sie hier ausdrüc
 
 ## 4. Getränkekarte
 
-Bitte tragen Sie die Karte in die **Tabellenvorlage** `docs/templates/menu-vorlage.csv` ein (öffnet sich in Excel oder Google Tabellen; die drei Zeilen mit „BEISPIEL“ bitte durch Ihre Drinks ersetzen). Speichern als **„CSV UTF-8“**, damit Umlaute erhalten bleiben.
+Bitte tragen Sie die Karte in die **Tabellenvorlage** `docs/templates/menu-vorlage.csv` ein (öffnet sich in Excel oder Google Tabellen; die vier Zeilen mit „BEISPIEL“ bitte durch Ihre Drinks ersetzen – solange eine solche Zeile stehen bleibt, lehnt die Prüfung die Tabelle ab). Speichern als **„CSV UTF-8“**, damit Umlaute erhalten bleiben.
 
 | Spalte | Was hinein gehört |
 |---|---|
@@ -85,14 +85,14 @@ Bitte tragen Sie die Karte in die **Tabellenvorlage** `docs/templates/menu-vorla
 | Name DE / EN / ES | Name des Drinks in jeder Sprache (auch bei gleichem Namen in alle drei eintragen) |
 | Zutaten | Zutaten auf Deutsch, durch Komma getrennt; die Übersetzungen in „Zutaten EN“ und „Zutaten ES“ in gleicher Reihenfolge |
 | Größe | z. B. „0,3 l“ – leer, wenn es nur eine Größe gibt |
-| Preis € | Endpreis inkl. Steuer, z. B. 9,50 |
+| Preis € | Endpreis inkl. Steuer, z. B. 9,50 oder 9.50 (ohne Tausenderpunkt; 0 ist nicht erlaubt). Preis unbekannt: Feld leer lassen, der Drink erscheint dann ohne Preis |
 | alkoholfrei | ja oder nein |
 | Allergene | optional |
 | verfügbar | ja oder nein (leer = ja) |
 
 Hat ein Drink mehrere Größen, schreiben Sie **eine Zeile pro Größe** mit demselben deutschen Namen; Zutaten und Übersetzungen genügen in der ersten Zeile.
 
-- [ ] Stand der Karte (Datum): ____.____.______
+- [ ] Stand der Karte (Datum): ____.____.______ (Als „Stand“ trägt die Umwandlung den Tag ein, an dem die Tabelle eingelesen wird. Weicht das Datum Ihrer Karte ab, sagen Sie es uns.)
 - [ ] Die Preise sind aktuell und gelten für die ganze Saison.
 - [ ] Spanische und englische Namen/Zutaten wurden von jemandem mit Sprachkenntnis geprüft.
 
@@ -168,7 +168,7 @@ Technik (für die Betreuung):
 node scripts/qr-link.mjs https://<Host>/<Unterpfad-falls-vorhanden> de [https://kurz.example/d] [--out aufsteller-de.svg]
 ```
 
-Das Skript gibt den Deep-Link aus (z. B. `…/de/drinks/`, `…/en/drinks/`, `…/es/bebidas/`), prüft die URLs (https, keine UTM-Parameter, keine Zugangsdaten) und schreibt ein druckbares SVG ohne externe Verweise. Mit Kurz-URL kodiert der Code diese, sonst den Deep-Link. Nicht geprüft: Scanbarkeit nach dem Druck, Kontrast auf dem gewählten Material.
+Das Skript gibt den Deep-Link aus (z. B. `…/de/drinks/`, `…/en/drinks/`, `…/es/bebidas/`), prüft die URLs (https, keine UTM-Parameter, keine Zugangsdaten) und schreibt ein druckbares SVG ohne externe Verweise. Ohne `--out` heißt die Datei `qr-drinks-<Sprache>.svg` und landet im aktuellen Ordner. Mit Kurz-URL kodiert der Code diese, sonst den Deep-Link. Nicht geprüft: Scanbarkeit nach dem Druck, Kontrast auf dem gewählten Material.
 
 ## Texte, die Sie freigeben müssen
 
@@ -179,6 +179,15 @@ Diese Aussagen stehen auf der Website, sind aber keine Angaben von Ihnen. Bitte 
 | „Alkohol nur für Erwachsene“ / „Alcohol is served to adults only“ / „Solo se sirve alcohol a mayores de edad“ | Fußzeile | Stimmt das so für Ihr Lokal? |
 | „Gute Drinks, warmes Licht“ und die Bezeichnung „Cocktailbar“ | Startseite, Meta-Texte | Wollen Sie das so sagen? |
 | Schreibweise „Playa de Palma“ mit oder ohne Artikel („la“) | Spanisch | Welche Schreibweise nutzen Sie selbst? |
+
+## Technik für die Betreuung: von der Angabe zur Seite
+
+Nur für die Person, die die Angaben einträgt. Alle Befehle im Projektordner; alle Prüfmeldungen sind deutsch. Ein Fehler (✖, „Fehler“) stoppt den Vorgang, ein Hinweis (⚠) nicht.
+
+1. **Karte einlesen:** `npm run menu:import -- karte.csv` zeigt das Ergebnis nur an (nichts wird überschrieben). Stimmt es: `npm run menu:import -- karte.csv --out src/content/published/menu.json`. Bei Fehlern nennt das Skript Zeile und Spalte der Tabelle und schreibt nichts.
+2. **Zeiten, Kanal, Termine, Fotos eintragen:** in `src/content/published/venue.json`, `events.json` und `src/content/media/catalogue.json` (Feldbeschreibung: `docs/04_CONTENT_MEDIA.md`, Abschnitt „Pflege“). Jede Angabe mit `status: "confirmed"` braucht `source` (Quelle, z. B. „Mail vom 12.11.“) und `observedAt` (Datum).
+3. **Prüfen:** `npm run content:check` nennt Datei, Feld und Grund jedes Fehlers und listet, was öffentlich noch fehlt. Dieselben Fehler stoppen auch den Build.
+4. **Bauen:** `npm run build` erzeugt die private Vorschau (`dist/`, mit gekennzeichneten Beispielen). Die öffentliche Fassung ohne Beispiele: `CHUCCA_SITE_URL=https://<Adresse> npm run build:public` → `dist-public/`. Ohne `CHUCCA_SITE_URL` bleibt sie bewusst `noindex`, ohne Sitemap und Canonical.
 
 ## Wie läuft es danach?
 

@@ -19,7 +19,7 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 ## Offene Aufgaben nach Priorität
 | ID | Aufgabe | Abhängigkeit | Abnahme |
 |---|---|---|---|
-| 12 | Betreiberdaten einholen und einpflegen (Karte, Zeiten, Adresse bestätigen, Fotos, Rechtstexte) | Betrieb | Öffentlicher Build zeigt Karte, Zeiten, Fotos; Beispieldaten verschwinden automatisch |
+| 12 | Betreiberdaten einholen und einpflegen (Karte, Zeiten, Adresse bestätigen, Fotos, Rechtstexte) | Betrieb | Öffentlicher Build zeigt Karte, Zeiten, Fotos; Beispieldaten verschwinden automatisch. Datenweg mit erfundenen Wegwerfdaten am 12.11.2026 Ende-zu-Ende gefahren (CSV → `menu:import` → `content:check` → Public-Build; Karte, Zeiten, Kanal, Foto, Termin erscheinen, Drinks/Galerie indexierbar und in der Sitemap, keine internen Felder im Output); echte Betreiberdaten fehlen weiter |
 | 13 | Hosting-Ziel und Domain festlegen, Vorschau deployen | Entscheidung Betreiber | URL erreichbar; Header für `sw.js`/HTML `no-cache`; `404.html` greift |
 | 14 | Gerätetests iPhone (Safari, Instagram-/WhatsApp-In-App) und Android (Chrome) | 13 | Installation, Standalone, Teilen, ICS-Import, Safe Areas, Lightbox-Scroll |
 | 15 | Update-Hinweis des Service Workers im Browser prüfen (Offline und Registrierung sind getestet) | 13 | DONE (Chromium, lokal): `tests/e2e/sw-update.spec.ts` über `npm run test:sw-update` mit zwei Build-Ständen; Details und Grenzen `docs/06_QA.md`. Auf dem echten Host (Aufgabe 13) mit `sw.js` hinter CDN wiederholen |

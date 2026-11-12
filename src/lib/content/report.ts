@@ -4,7 +4,7 @@
  * Alle Ausgaben sind für Nicht-Entwickler auf Deutsch formuliert.
  */
 import { exclusionReasons, isPreviewConcept, type ExclusionReason } from '../media';
-import { LOCALE_CODES, unbackedConfirmations, type FactStatus, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
+import { incompleteConfirmations, LOCALE_CODES, unbackedConfirmations, type FactStatus, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 
 export type Level = 'ok' | 'warn' | 'error';
 export const ICON: Record<Level, string> = { ok: '✔', warn: '⚠', error: '✖' };
@@ -50,9 +50,10 @@ function germanMessage(issue: IssueLike): string {
       return `ungültiger Wert; erlaubt: ${values}`;
     }
     case 'too_small':
-      return 'zu kurz, leer oder zu wenige Einträge';
+      if (extra.origin === 'number') return extra.inclusive === false ? `Zahl muss größer als ${String(extra.minimum)} sein (Preise in Cent, z. B. 950 für 9,50 €; unbekannter Preis: Eintrag weglassen)` : `Zahl muss mindestens ${String(extra.minimum)} sein`;
+      return issue.path.includes('regular') ? 'es müssen genau sieben Einträge sein (Sonntag zuerst, geschlossen = null)' : 'Text fehlt oder ist leer (jeder Text braucht DE, EN und ES)';
     case 'too_big':
-      return 'zu lang oder zu viele Einträge';
+      return issue.path.includes('regular') ? 'es müssen genau sieben Einträge sein (Sonntag zuerst, geschlossen = null)' : 'zu lang oder zu viele Einträge';
     case 'invalid_format':
       return 'falsches Format (z. B. Datum JJJJ-MM-TT, Uhrzeit HH:MM, ID nur a-z 0-9 und -)';
     default:
@@ -63,6 +64,16 @@ function germanMessage(issue: IssueLike): string {
 /** Eine Zeile je Verstoß: „src/content/published/menu.json → items[3].prices: …“ */
 export function describeIssues(file: string, issues: readonly IssueLike[]): string[] {
   return issues.map((issue) => `${file} → ${jsonPath(issue.path)}: ${germanMessage(issue)}`);
+}
+
+/**
+ * Wie `describeIssues`, aber für den Build: wirft einen Fehler mit deutscher Meldung (Datei, Feld, Grund)
+ * statt der rohen Schema-Ausgabe.
+ */
+export function parseOrThrow<T>(file: string, schema: { safeParse(raw: unknown): { success: true; data: T } | { success: false; error: { issues: readonly IssueLike[] } } }, raw: unknown): T {
+  const result = schema.safeParse(raw);
+  if (result.success) return result.data;
+  throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. Bitte beheben (Prüfung mit „npm run content:check“):\n  ${describeIssues(file, result.error.issues).join('\n  ')}`);
 }
 
 /* ---------- Hilfen ---------- */
@@ -299,6 +310,8 @@ export function buildReport(input: ReportInput): Report {
       if (s) s.status = 'error';
       hardBlockers.push(`venue.json: bestätigt ohne Quelle/Datum: ${unbacked.join(', ')}`);
     }
+    const incomplete = incompleteConfirmations(input.venue);
+    if (incomplete.length > 0) hardBlockers.push(`venue.json: als bestätigt geführt, aber unvollständig: ${incomplete.join(', ')}`);
     if (input.venue.address.status !== 'confirmed') hardBlockers.push('Besucheradresse ist nicht „confirmed“ – ohne sie kein Build.');
     if (!(input.venue.hours.status === 'confirmed' && input.venue.hours.regular)) publicGaps.push('Öffnungszeiten: öffentlich nur „noch nicht bestätigt“.');
     if (input.venue.entrance.status !== 'confirmed') publicGaps.push('Eingang: nicht bestätigt, wird öffentlich nicht gezeigt.');

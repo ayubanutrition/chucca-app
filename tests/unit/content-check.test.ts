@@ -1,8 +1,8 @@
 /** Auswertungslogik von `npm run content:check` (src/lib/content/report.ts). */
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { buildReport, daysBetween, describeIssues, jsonPath, renderReport, reviewEvents, reviewMedia, reviewMenu, reviewVenue, type ReportInput } from '../../src/lib/content/report';
-import { eventsSchema, mediaCatalogueSchema, menuSchema, venueSchema, type MediaInternal, type Menu, type Venue } from '../../src/lib/content/schema';
+import { buildReport, daysBetween, describeIssues, jsonPath, parseOrThrow, renderReport, reviewEvents, reviewMedia, reviewMenu, reviewVenue, type ReportInput } from '../../src/lib/content/report';
+import { eventsSchema, incompleteConfirmations, mediaCatalogueSchema, menuSchema, venueSchema, type MediaInternal, type Menu, type Venue } from '../../src/lib/content/schema';
 import venueRaw from '../../src/content/published/venue.json';
 
 const TODAY = '2026-11-12';
@@ -182,5 +182,36 @@ describe('Gesamtbericht', () => {
     const failed = renderReport(buildReport(base({ schemaErrors: [{ file: 'f.json', lines: ['f.json → a: kaputt'] }] })), TODAY);
     expect(failed).toContain('✖ Schema-Verstöße');
     expect(failed).toContain('Exit-Code 1');
+  });
+});
+
+describe('Betreiber-Datenweg: Fehlermeldungen', () => {
+  it('Build-Parser wirft deutsche Meldung mit Datei und Feld statt roher Schema-Ausgabe', () => {
+    const bad = { ...menu([drink('a')]), items: [drink('a', { prices: [{ amountCents: 0, currency: 'EUR' }] })] };
+    expect(() => parseOrThrow('src/content/published/menu.json', menuSchema, bad)).toThrow(/Inhalte fehlerhaft.*content:check[\s\S]*src\/content\/published\/menu\.json → items\[0\]\.prices\[0\]\.amountCents: Zahl muss größer als 0 sein/);
+    expect(parseOrThrow('x.json', z.object({ a: z.string() }), { a: 'ok' })).toEqual({ a: 'ok' });
+  });
+  it('Fehlende Übersetzung und Wochentage werden verständlich benannt', () => {
+    const noEs = menuSchema.safeParse({ ...menu([drink('a')]), items: [drink('a', { name: { de: 'a', en: 'a', es: '' } })] });
+    expect(describeIssues('m.json', noEs.error!.issues).join()).toContain('items[0].name.es: Text fehlt oder ist leer');
+    const short = venueSchema.safeParse({ ...venueRaw, hours: { status: 'unknown', regular: [null] } });
+    expect(describeIssues('v.json', short.error!.issues).join()).toContain('genau sieben Einträge');
+  });
+  it('„confirmed“ ohne Wochentage blockiert den Build', () => {
+    const v = venue({ hours: { status: 'confirmed', regular: null, source: 'Mail', observedAt: '2026-11-12' } });
+    expect(incompleteConfirmations(v)).toHaveLength(1);
+    const report = buildReport({ today: TODAY, schemaErrors: [], venue: v, menu: null, fixtureMenu: null, events: null, media: null, existingMediaFiles: null });
+    expect(report.failed).toBe(true);
+    expect(report.hardBlockers.join()).toContain('unvollständig');
+    expect(incompleteConfirmations(venue())).toEqual([]);
+  });
+  it('doppelte Medien- und Termin-IDs werden abgelehnt', () => {
+    const photo = { id: 'bar', kind: 'photograph', file: 'bar.webp', alt: L('Bar'), authorization: 'owner-supplied', authorization_evidence: 'Mail', rights_status: 'approved', rights_evidence: 'Mail', venue_name: 'CHUCCA', venue_verified: true, venue_evidence: 'vor Ort' };
+    const dup = mediaCatalogueSchema.safeParse([photo, photo]);
+    expect(dup.success).toBe(false);
+    expect(describeIssues('c.json', dup.error!.issues).join()).toContain('[1].id: Doppelte Medien-ID: bar');
+    const event = { id: 'e', kind: 'published', status: 'confirmed', title: L('T'), summary: L('S'), date: '2026-12-05', start: '20:00' };
+    expect(eventsSchema.safeParse([event, event]).success).toBe(false);
+    expect(eventsSchema.safeParse([event]).success).toBe(true);
   });
 });

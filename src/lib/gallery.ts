@@ -15,7 +15,9 @@ export function galleryItems(): GalleryItem[] {
   const items: GalleryItem[] = [];
   for (const { record, public: media } of mediaFor(MODE)) {
     const image = imageFor(record.file);
-    if (image) items.push({ media, image });
+    // Freigegebenes Foto ohne Datei ist ein Fehler im Katalog (Tippfehler im Dateinamen, Datei nicht kopiert) – nicht still weglassen.
+    if (!image) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. Die Bilddatei „${record.file ?? '?'}“ zum Foto „${record.id}“ fehlt in src/assets/media (Dateiname prüfen oder Datei dorthin kopieren).`);
+    items.push({ media, image });
   }
   return items;
 }

@@ -90,6 +90,11 @@ export function unbackedConfirmations(venue: Venue): string[] {
   return groups.filter(([, fact]) => fact.status === 'confirmed' && (!fact.source?.trim() || !(fact.verifiedAt ?? fact.observedAt))).map(([name]) => name);
 }
 
+/** „confirmed“ bei den Öffnungszeiten ohne eingetragene Wochentage wäre eine leere Zusage. */
+export function incompleteConfirmations(venue: Venue): string[] {
+  return venue.hours.status === 'confirmed' && !venue.hours.regular ? ['hours: regular (die sieben Wochentage) fehlt'] : [];
+}
+
 export { TASTES, type Taste } from '../tastes';
 
 const price = z
@@ -160,7 +165,13 @@ export const eventSchema = z
   })
   .strict();
 export type VenueEvent = z.infer<typeof eventSchema>;
-export const eventsSchema = z.array(eventSchema);
+export const eventsSchema = z.array(eventSchema).superRefine((events, ctx) => {
+  const seen = new Set<string>();
+  events.forEach((event, index) => {
+    if (seen.has(event.id)) ctx.addIssue({ code: 'custom', path: [index, 'id'], message: `Doppelte Termin-ID: ${event.id} (jede ID darf nur einmal vorkommen)` });
+    seen.add(event.id);
+  });
+});
 
 /** Interner Medienkatalog – inklusive Rechte- und Rechercheangaben. Wird nie ausgeliefert. */
 export const mediaInternalSchema = z
@@ -200,4 +211,10 @@ export const mediaInternalSchema = z
   })
   .strict();
 export type MediaInternal = z.infer<typeof mediaInternalSchema>;
-export const mediaCatalogueSchema = z.array(mediaInternalSchema);
+export const mediaCatalogueSchema = z.array(mediaInternalSchema).superRefine((records, ctx) => {
+  const seen = new Set<string>();
+  records.forEach((record, index) => {
+    if (seen.has(record.id)) ctx.addIssue({ code: 'custom', path: [index, 'id'], message: `Doppelte Medien-ID: ${record.id} (jede ID darf nur einmal im Katalog stehen)` });
+    seen.add(record.id);
+  });
+});

@@ -28,12 +28,12 @@ Annahme, die vor dem Release der Betreiber bestätigen sollte: die Adresse. Sie 
 6. Logo/Markenvorgaben, falls vorhanden.
 
 ## Pflege (ohne Eingriff in Komponenten)
-- **Karte**: `src/content/published/menu.json` füllen, `status: "confirmed"`, `updatedAt` setzen. Vorlage: `src/content/fixtures/menu.json`. Ab dann ersetzt sie die Beispielkarte in beiden Modi.
+- **Karte**: Tabelle `docs/templates/menu-vorlage.csv` ausfüllen und `npm run menu:import -- karte.csv --out src/content/published/menu.json` ausführen (ohne `--out` nur Anzeige). Das Skript setzt `status: "confirmed"` und `updatedAt` = Importtag, prüft gegen das Schema und meldet Fehler mit Zeile und Spalte; Beispielzeilen („BEISPIEL“) werden abgelehnt. Von Hand geht es auch (Vorlage: `src/content/fixtures/menu.json`; Preise in Cent). Ab dann ersetzt die Karte die Beispielkarte in beiden Modi; Die Drinks-Seite wird dann indexierbar (die Galerie-Seite erst mit mindestens einem freigegebenen Foto); erst dann stehen sie auch in der Sitemap.
 - **Öffnungszeiten**: in `venue.json` `hours.status: "confirmed"`, `regular` mit sieben Einträgen (Sonntag zuerst; `null` = geschlossen; `close` kleiner als `open` = nach Mitternacht), optional `validFrom`/`validUntil` und `exceptions`.
 - **Termine**: Einträge in `published/events.json` mit `kind: "published"`, `status: "confirmed"`.
 - **Anfragekanal**: beim Kanal `acceptsInquiries: true` – die Übergabe an ein Backend ist danach eigene Arbeit (`docs/05_PLAN.md`, Aufgabe 08).
-- **Fotos**: Datei nach `src/assets/media/`, Katalogeintrag mit `kind: "photograph"`, `rights_status: "approved"` samt Beleg, `venue_verified: true` samt Beleg, `alt` in drei Sprachen. Erst dann erscheint das Bild.
-- Prüfen: `npm test` (Schema, Freigaben), danach `npm run build:test && npm run test:e2e`.
+- **Fotos**: Datei nach `src/assets/media/` (Dateiname nur Kleinbuchstaben, Ziffern, `-`, Endung webp/png/jpg/avif; der Name erscheint in der öffentlichen Bild-URL, also keine Personennamen), Katalogeintrag mit `file`, `credit`, `authorization`, `authorization_evidence`, `venue_name`, jede `id` nur einmal; dazu `kind: "photograph"`, `rights_status: "approved"` samt Beleg, `venue_verified: true` samt Beleg, `alt` in drei Sprachen. Erst dann erscheint das Bild.
+- Prüfen: `npm run content:check` (deutscher Bericht: Fehler, Hinweise, was öffentlich fehlt; Exit 1 bei Fehlern), `npm test` (Schema, Freigaben), danach `npm run build:test && npm run test:e2e`. Ein freigegebenes Foto, dessen Datei fehlt, und jeder Schemafehler stoppen auch den Build mit deutscher Meldung. Fotos ohne Rechte-/Standortfreigabe oder Alternativtext werden dagegen still ausgelassen; `content:check` nennt den Grund.
 
 Ein CMS ist bewusst nicht eingebaut: Es gibt noch keinen bestätigten Pflegeprozess. Die JSON-Dateien sind so geschnitten, dass ein Git-basiertes CMS später darauf aufsetzen kann.
 

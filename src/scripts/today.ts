@@ -55,8 +55,7 @@ if (root) {
         hours.textContent = status.opensAt
           ? fill(s.closedOpens ?? '', { day: weekday.format(status.opensAt), time: formatClock(status.opensAt, data.locale) })
           : (s.closed ?? '');
-      }
-      // „unconfirmed“: der statische Hinweis aus dem HTML bleibt stehen.
+      } else if (s.hoursUnconfirmed) hours.textContent = s.hoursUnconfirmed; // auch bestätigte Zeiten außerhalb ihres Zeitraums
     }
     // Termine, deren Tag vorbei ist, verschwinden auch ohne neuen Build.
     const section = document.querySelector<HTMLElement>('[data-events]');
