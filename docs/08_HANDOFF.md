@@ -48,3 +48,6 @@ Keine Veröffentlichung, keine Geräteabnahme, keine Felddaten, keine WCAG-Zerti
 1. Betreiberdaten anfordern (Liste in `docs/04_CONTENT_MEDIA.md`) und einpflegen – Aufgabe 12.
 2. Hosting festlegen, Vorschau deployen, Service Worker und Unterpfad dort prüfen – Aufgaben 13, 15, 16.
 3. Gerätetests auf iPhone und Android inkl. In-App-Browsern – Aufgabe 14.
+
+## Test-Build mit erfundenen Öffnungszeiten
+`npm run build:hours` baut `dist-hours/` mit Fixture-Zeiten (Jahr 2099, Kennung `TESTFIXTURE-HOURS`) für `tests/e2e/hours-fixture.spec.ts`. Nur Vorschau-Modus; der Schalter bricht Public-Builds und andere Ziele ab. Details: `docs/06_QA.md`, `docs/03_ARCHITECTURE.md`.
