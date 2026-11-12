@@ -3,7 +3,7 @@
 Stand 11.11.2026.
 
 ## Was fertig ist
-V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 62 Unit- und 55 Browser-Tests.
+V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 62 Unit- und 60 Browser-Tests.
 
 ## Wo es läuft
 Nur lokal. Kein Deployment, keine öffentliche URL, kein PR.
@@ -19,8 +19,10 @@ npm run check                    # vollständige Prüfung
 |---|---|---|
 | Ausgangspunkt `main` | `8dec65b` | Remote und lokal |
 | V4 Erstfassung | `cc92395` | Branch `claude/trusting-wozniak-wer4jd`, gepusht |
-| Review-Fixes (geprüfter Code-Stand) | `c2ac62c` | derselbe Branch |
-| Dokumentation zu diesem Stand | Folge-Commit nach `c2ac62c` | derselbe Branch – maßgeblich ist `git log origin/claude/trusting-wozniak-wer4jd` |
+| Review-Fixes | `c2ac62c` | derselbe Branch |
+| Dokumentation, QA, Recherche | `1940e43` | derselbe Branch |
+| Service-Worker- und Unterpfad-Tests, Planer-Layout | `7f46e85` | derselbe Branch, gepusht; letzter Stand mit `npm run check` Exit 0 |
+Spätere Commits (nur Doku) ändern nichts am Code; maßgeblich ist `git log origin/claude/trusting-wozniak-wer4jd`.
 
 Der Branchname folgt der Vorgabe der Arbeitsumgebung, nicht `rebuild/chucca-v4`.
 
