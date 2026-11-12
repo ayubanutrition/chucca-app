@@ -37,6 +37,18 @@ const layout = shots.map((shot, index) => {
   used = (used + span) % 12;
   return alone ? 'full' : shot.wide ? 'wide' : 'tall';
 });
+// Schmales Raster (2 Spalten): ein einzelnes Hochformat vor einem breiten Bild bliebe halb leer, es füllt dann die Zeile.
+const solo = layout.map((kind, index) => {
+  if (kind !== 'tall') return false;
+  let start = index;
+  while (start > 0 && layout[start - 1] === 'tall') start -= 1;
+  const runLength = (() => {
+    let end = index;
+    while (end + 1 < layout.length && layout[end + 1] === 'tall') end += 1;
+    return end - start + 1;
+  })();
+  return runLength % 2 === 1 && index === start + runLength - 1;
+});
 const clientData = { counter: t.gallery.counter, loadError: t.gallery.loadError, credit: t.gallery.credit };
 ---
 
@@ -59,7 +71,7 @@ const clientData = { counter: t.gallery.counter, loadError: t.gallery.loadError,
     shots.length > 0 ? (
       <ul class="gallery" role="list">
         {shots.map(({ item, index, large, caption }) => (
-          <li class:list={['shot', layout[index] === 'wide' && 'shot--wide', layout[index] === 'full' && 'shot--full']}>
+          <li class:list={['shot', layout[index] === 'wide' && 'shot--wide', layout[index] === 'full' && 'shot--full', solo[index] && 'shot--solo']}>
             <figure style="display:contents">
               <a
                 href={large.src}

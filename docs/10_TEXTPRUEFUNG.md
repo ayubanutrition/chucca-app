@@ -93,3 +93,13 @@ Angepasster Test: `tests/e2e/core.spec.ts` (Größenangabe `0,3 l` wird zu `30 c
 12. **Alternativtexte** nicht mit echtem Screenreader (VoiceOver/TalkBack) gehört; ob Länge und Detailgrad angenehm sind, sollte jemand prüfen.
 13. **Britisches Englisch** („fancy“, „agree a time“, „flavour“): von mir gewählt, nicht von Muttersprachlern gegengelesen.
 14. **Ausnahmetage auf „Besuch“** (`visit.hours.exceptionsTitle`): DE „An diesen Tagen anders“, EN „Different on these days“, ES „Estos días es distinto“ sind nach dem Lektorat entstanden und von keinem Muttersprachler gelesen.
+
+## Nachtrag visuelles Review 2 (12.11.2026) – ungeprüft
+
+KI-Änderung, nicht muttersprachlich gegengelesen:
+
+| Sprache | Schlüssel | vorher | nachher | Grund |
+|---|---|---|---|---|
+| EN | `drinks.taste.hint` | 'Pick a flavour. The menu shows matching drinks; at the bar it helps you order.' | 'Pick a flavour and the menu shows the drinks that match. It also helps you order at the bar.' | Semikolon-Satz brach auf Tablet in Waise „order.“ um; zwei klare Sätze |
+
+Sonst keine neuen oder geänderten EN/ES-Texte. Beim Durchsehen der EN-Seiten (Heute, Drinks, Besuch, Gruppe, Galerie, 404) fielen keine weiteren Textmängel auf; die übrigen Punkte oben bleiben offen.

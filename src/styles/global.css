@@ -1054,6 +1054,7 @@ textarea.input {
 .closing p {
   color: var(--paper-mute);
   max-width: var(--measure);
+  text-wrap: pretty;
 }
 .closing .btn {
   border-color: var(--paper-ink);
@@ -1213,7 +1214,15 @@ details.fold p {
     align-items: start;
   }
   .row {
-    grid-template-columns: 12rem 1fr;
+    grid-template-columns: 12rem minmax(0, 1fr);
+  }
+  /* Überschrift links, alles andere gestapelt in der rechten Spalte (Zeiten, Ausnahmen, Hinweise) */
+  .row > :first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .row > :not(:first-child) {
+    grid-column: 2;
   }
 }
 
@@ -1679,10 +1688,12 @@ body.bare {
   min-width: 0;
 }
 @media (max-width: 47.99rem) {
-  .gallery .shot--full {
+  .gallery .shot--full,
+  .gallery .shot--solo {
     grid-column: 1 / -1;
   }
-  .gallery .shot--full .art {
+  .gallery .shot--full .art,
+  .gallery .shot--solo .art {
     aspect-ratio: 16 / 10;
   }
 }

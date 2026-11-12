@@ -104,7 +104,7 @@ export const en: Dictionary = {
     intro: 'Choose something before you reach the bar – or let the team guide you.',
     taste: {
       title: 'What are you in the mood for?',
-      hint: 'Pick a flavour. The menu shows matching drinks; at the bar it helps you order.',
+      hint: 'Pick a flavour and the menu shows the drinks that match. It also helps you order at the bar.',
       hintNoMenu: 'Pick a flavour. It helps you order the right thing at the bar.',
       group: 'Flavour',
       all: 'Everything',

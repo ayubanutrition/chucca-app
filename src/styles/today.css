@@ -54,6 +54,19 @@
     object-position: 40% 60%;
   }
 }
+/* Ohne Bild (öffentlicher Stand ohne freigegebene Fotos): keine leere Hälfte, Überschrift über die volle Breite */
+@media (min-width: 60rem) {
+  .hero.hero--wide.hero--bare {
+    min-height: 0;
+  }
+  .hero.hero--wide.hero--bare .hero__grid {
+    min-height: 0;
+    padding-block: var(--space-8);
+  }
+  .hero.hero--wide.hero--bare .hero__copy {
+    max-width: 52rem;
+  }
+}
 @media (min-width: 60rem) and (max-width: 75rem) {
   .hero.hero--wide .hero__copy {
     max-width: 30rem;
