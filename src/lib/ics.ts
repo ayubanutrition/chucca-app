@@ -20,7 +20,7 @@ export const stamp = (date: Date): string =>
   date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 export const escapeText = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  value.replace(/\\/g, '\\\\').replace(/\r\n|\r|\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
 
 const encoder = new TextEncoder();
 

@@ -36,7 +36,8 @@ function sunEventUtcMinutes(dayStartUtc: number, lat: number, lon: number, zenit
 
 function sunEvent(date: string, lat: number, lon: number, zenith: number, rising: boolean): Date | null {
   const dayStart = Date.parse(`${date}T00:00:00Z`);
-  if (!Number.isFinite(dayStart)) return null;
+  // Nicht existierende Kalendertage (30.02.) kann Date.parse großzügig auf den Folgemonat abbilden.
+  if (!Number.isFinite(dayStart) || new Date(dayStart).toISOString().slice(0, 10) !== date) return null;
   // Zwei Durchläufe: erst grob (Mittag), dann am gefundenen Zeitpunkt verfeinern.
   let minutes = sunEventUtcMinutes(dayStart + 12 * 3_600_000, lat, lon, zenith, rising);
   if (minutes === null) return null;

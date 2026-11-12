@@ -49,6 +49,8 @@ export function openStatus(hours: HoursData, now: Date = new Date()): OpenStatus
   // Gestern begonnene Schicht kann nach Mitternacht noch laufen.
   for (const offset of [-1, 0]) {
     const date = addDays(today, offset);
+    // Eine Schicht zählt nach ihrem Beginn: vor Gültigkeitsbeginn begonnene Schichten sind nicht bestätigt.
+    if (hours.validFrom && date < hours.validFrom) continue;
     const range = rangeFor(hours, date, (weekday + offset + 7) % 7);
     const span = range && instants(date, range);
     if (span && now >= span.open && now < span.close) return { state: 'open', closesAt: span.close };
