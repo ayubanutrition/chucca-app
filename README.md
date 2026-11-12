@@ -55,3 +55,4 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 | `docs/07_DECISIONS.md` | Entscheidungen |
 | `docs/08_HANDOFF.md` | Übergabe, nächste Schritte |
 | `docs/09_RESEARCH.md` | Recherche, Übernahmen, Validierung |
+| `docs/11_HOSTING.md` | Header, CSP, Abbildung auf Hosts |
