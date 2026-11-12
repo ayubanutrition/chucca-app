@@ -17,7 +17,9 @@
     "check": "npm run typecheck && npm run lint && npm run test && npm run build:test && npm run test:e2e",
     "build:test": "astro build && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example astro build --outDir dist-public && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example CHUCCA_BASE=/preview/app/ astro build --outDir dist-sub",
     "serve": "node scripts/serve.mjs dist 4321",
-    "media:audit": "vitest run tests/unit/content-media.test.ts"
+    "media:audit": "vitest run tests/unit/content-media.test.ts",
+    "content:check": "node scripts/run-ts.mjs scripts/content-check.ts",
+    "menu:import": "node scripts/run-ts.mjs scripts/menu-from-csv.ts"
   },
   "dependencies": {
     "astro": "^7.4.11",
