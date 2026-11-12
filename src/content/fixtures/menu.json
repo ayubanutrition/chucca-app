@@ -156,7 +156,7 @@
     {
      "de": "Espresso",
      "en": "espresso",
-     "es": "café expreso"
+     "es": "espresso"
     },
     {
      "de": "Kaffeelikör",
@@ -185,9 +185,9 @@
     "es": "Margarita"
    },
    "description": {
-    "de": "Zitrisch und klar, mit halbem Salzrand.",
+    "de": "Frisch-zitronig und klar, mit halbem Salzrand.",
     "en": "Citrusy and clean, with half a salt rim.",
-    "es": "Cítrica y limpia, con medio borde de sal."
+    "es": "Cítrica y fresca, con medio borde de sal."
    },
    "ingredients": [
     {
@@ -334,7 +334,7 @@
    "description": {
     "de": "Der Aperitif zum Sonnenuntergang.",
     "en": "The sunset aperitif.",
-    "es": "El aperitivo de la puesta de sol."
+    "es": "El aperitivo para la puesta de sol."
    },
    "ingredients": [
     {
@@ -410,12 +410,12 @@
     {
      "amountCents": 1000,
      "currency": "EUR",
-     "size": "0,3 l"
+     "size": "30 cl"
     },
     {
      "amountCents": 1300,
      "currency": "EUR",
-     "size": "0,5 l"
+     "size": "50 cl"
     }
    ],
    "alcoholFree": false,
@@ -666,7 +666,7 @@
     {
      "de": "alkoholfreie Gin-Alternative",
      "en": "alcohol-free gin alternative",
-     "es": "alternativa a la ginebra sin alcohol"
+     "es": "alternativa sin alcohol a la ginebra"
     },
     {
      "de": "Tonic Water",

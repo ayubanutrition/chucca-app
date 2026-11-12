@@ -151,7 +151,7 @@ test.describe('Getränkekarte', () => {
   test('zeigt fehlenden Preis, Größen, Nichtverfügbarkeit und alkoholfreie Auswahl gleichwertig', async ({ page }) => {
     await page.goto('/de/drinks/');
     await expect(page.locator('[data-drink="sangria"]')).toContainText('Preis an der Bar');
-    await expect(page.locator('[data-drink="gin-tonic"] .drink__price')).toContainText('0,3 l');
+    await expect(page.locator('[data-drink="gin-tonic"] .drink__price')).toContainText('30 cl');
     await expect(page.locator('[data-drink="whiskey-sour"]')).toContainText('Heute nicht verfügbar');
     await page.getByRole('button', { name: 'Alkoholfrei', exact: true }).first().click();
     await expect(page.locator('[data-drink]:visible')).toHaveCount(6);
