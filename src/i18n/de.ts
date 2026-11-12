@@ -11,10 +11,10 @@ export const de = {
     },
     descriptions: {
       today: 'CHUCCA ist eine Cocktailbar im Riu Center an der Playa de Palma, Mallorca. Drinks ansehen, Route öffnen und den Abend mit deiner Gruppe planen.',
-      drinks: 'Drinks bei CHUCCA Playa de Palma: Finde heraus, worauf du Lust hast – mit und ohne Alkohol.',
-      visit: 'So findest du CHUCCA: Riu Center, Carrer del Llaüt 23, Playa de Palma. Route und Kontakt.',
+      drinks: 'Drinks bei CHUCCA, der Cocktailbar an der Playa de Palma: Finde heraus, worauf du Lust hast – mit und ohne Alkohol.',
+      visit: 'So findest du die Cocktailbar CHUCCA: Riu Center, Carrer del Llaüt 23, Playa de Palma. Route und Kontakt.',
       group: 'Lege Datum und Uhrzeit in Ortszeit Mallorca fest, teile die Einladung und speichere den Termin im Kalender.',
-      gallery: 'Bilder von CHUCCA Playa de Palma.',
+      gallery: 'Galerie von CHUCCA, Cocktailbar an der Playa de Palma auf Mallorca: Licht, Gläser und Abendstimmung.',
     },
   },
   nav: {
@@ -50,7 +50,7 @@ export const de = {
     eyebrow: 'Cocktailbar · Playa de Palma · Mallorca',
     titleA: 'Der Abend',
     titleB: 'gehört euch.',
-    intro: 'Gute Drinks, warmes Licht und ein Platz für eure Leute an der Playa de Palma. Schaut in die Karte, findet den Weg und macht eine Zeit aus.',
+    intro: 'Gute Drinks, warmes Licht und ein Platz für eure Leute an der Playa de Palma. Schaut in die Karte, findet den Weg und verabredet euch.',
     drinksCta: 'Drinks ansehen',
     addressLine: 'Riu Center · Carrer del Llaüt 23',
     now: {
@@ -64,7 +64,7 @@ export const de = {
       hours: 'Öffnungszeiten',
       hoursUnconfirmed: 'Aktuelle Öffnungszeiten sind noch nicht bestätigt. Schau vor dem Losgehen kurz bei CHUCCA auf Instagram vorbei.',
       open: 'Jetzt geöffnet – bis {time} Uhr.',
-      closedOpens: 'Gerade geschlossen. Öffnet {day} um {time} Uhr.',
+      closedOpens: 'Gerade geschlossen. Öffnet am {day} um {time} Uhr.',
       closed: 'Gerade geschlossen.',
       instagram: 'Instagram öffnen',
       hoursUnit: 'Std.',
@@ -117,7 +117,7 @@ export const de = {
         fresh: 'Leicht, spritzig, mit Zitrus oder Kräutern. Sag an der Bar, wie herb es sein darf.',
         fruity: 'Sag dem Team, welche Früchte du magst und wie süß dein Drink sein soll.',
         classic: 'Du hast einen Lieblingsdrink? Frag nach, wie das Team ihn zubereitet.',
-        free: 'Voller Geschmack ohne Alkohol. Frag nach den alkoholfreien Drinks des Abends.',
+        free: 'Voller Geschmack ohne Alkohol. Frag das Team nach den alkoholfreien Optionen.',
       },
     },
     filter: {
@@ -133,7 +133,7 @@ export const de = {
     },
     item: {
       alcoholFree: 'alkoholfrei',
-      priceMissing: 'Preis an der Bar',
+      priceMissing: 'Preis an der Bar erfragen',
       unavailable: 'Heute nicht verfügbar',
       ingredients: 'Zutaten',
     },
@@ -168,7 +168,7 @@ export const de = {
     way: {
       title: 'Der Weg hinein',
       unconfirmed: 'Angabe aus Verzeichnissen – vor Ort noch nicht bestätigt.',
-      mapAlt: 'Schematische Skizze: Strand und Promenade, dahinter die zweite Linie mit dem Riu Center. CHUCCA liegt im Innenhof, etwa auf Höhe von Balneario 7.',
+      mapAlt: 'Schematische Skizze: Strand und Promenade, dahinter die zweite Linie mit dem Riu Center. CHUCCA ist im Innenhof eingezeichnet, etwa auf Höhe von Balneario 7 (Angabe aus Verzeichnissen, nicht bestätigt).',
       mapCaption: 'Schematische Skizze, nicht maßstabsgetreu.',
       sea: 'Meer',
       beach: 'Strand · Balneario 7',
@@ -190,7 +190,7 @@ export const de = {
       title: 'Mit einer Gruppe kommen',
       limited: 'Eine Online-Reservierung gibt es hier noch nicht. Diese Seite sendet nichts an CHUCCA und bestätigt keine Plätze.',
       lead: 'Du kannst eine Nachricht vorbereiten und sie selbst an CHUCCA schicken. Erst die Antwort von CHUCCA ist eine Zusage.',
-      people: 'Personen',
+      people: 'Anzahl Personen',
       date: 'Datum',
       time: 'Uhrzeit',
       note: 'Anmerkung (optional)',
@@ -275,7 +275,7 @@ export const de = {
     tagline: 'Cocktailbar · Playa de Palma · Mallorca',
     privacy: 'Kein Konto, keine Cookies, kein Tracking. Sprache, Geschmack und Treffplan merkt sich nur dein Browser.',
     preview: 'Private Vorschau. Karte, Preise, Öffnungszeiten und Reservierungsablauf sind noch nicht vom Betrieb bestätigt; Bilder sind Konzeptmotive.',
-    drinkResponsibly: 'Bitte genießt verantwortungsvoll. Alkohol nur für Erwachsene.',
+    drinkResponsibly: 'Alkohol nur für Erwachsene. Bitte verantwortungsvoll genießen.',
   },
   notFound: {
     title: 'Diese Seite gibt es nicht.',
