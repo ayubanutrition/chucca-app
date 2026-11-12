@@ -7,9 +7,9 @@ Aufruf (nur Entwicklungswerkzeug, keine Laufzeit-Abhängigkeit):
 
 Was passiert:
   - Fraunces (wght + SOFT, normal und kursiv): SOFT wird auf 100 festgelegt (das Design nutzt ausschließlich
-    font-variation-settings 'SOFT' 100), wght auf 340-700 begrenzt (genutzt: 340-700).
+    font-variation-settings 'SOFT' 100), wght auf 340-700 begrenzt (genutzt: 340-560; 700 bleibt als Reserve, die Kürzung auf 560 würde nur ca. 4 kB sparen).
   - Instrument Sans (wght): 400-700 bleibt (genutzt: 400-700).
-  - Alle: Teilmenge auf Latin für DE/EN/ES/Katalanisch + Satzzeichen (UNICODES unten), WOFF2.
+  - Alle: Teilmenge auf die tatsächlich gebrauchten Zeichen (UNICODES unten: fester Sockel + Zeichen der Quelltexte), WOFF2.
   - Ausgabe der metrikangepassten Fallback-Werte (size-adjust usw.) für src/styles/fonts.css.
 Die Lizenzen (SIL OFL 1.1) werden nach public/fonts/ kopiert und mit ausgeliefert.
 """
@@ -25,13 +25,32 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FS = os.path.join(ROOT, 'node_modules', '@fontsource-variable')
 OUT = os.path.join(ROOT, 'src', 'assets', 'fonts')
 
-# Basis-Latin, Latin-1, Œ œ ı ŀ, Gedankenstriche, typografische Anführungszeichen, Aufzählungspunkt, Auslassung, Euro, TM, Minus.
-UNICODES = (
+# Zeichenbestand: ein fester Sockel (ASCII, Pflichtbuchstaben für DE/ES/Katalanisch, typografische Satzzeichen) plus
+# jedes Zeichen aus den Quelltexten, die Besucher sehen können. Neue Texte erweitern die Schriften beim nächsten Lauf
+# automatisch; der Test tests/unit/fonts.test.ts schlägt fehl, solange eine Schrift ein Zeichen des Textbestands nicht hat.
+# Die Quellordner müssen mit CORPUS_DIRS in tests/unit/fonts.test.ts übereinstimmen.
+CORPUS_DIRS = ['i18n', 'content', 'components', 'layouts', 'pages', 'scripts', 'styles']
+CORPUS_EXT = ('.ts', '.astro', '.json', '.css')
+FLOOR = (
     list(range(0x20, 0x7F))
-    + list(range(0xA0, 0x100))
-    + [0x131, 0x152, 0x153, 0x13F, 0x140, 0x2C6, 0x2DC]
-    + [0x2013, 0x2014, 0x2018, 0x2019, 0x201A, 0x201C, 0x201D, 0x201E, 0x2022, 0x2026, 0x2039, 0x203A, 0x20AC, 0x2122, 0x2212]
+    + [ord(c) for c in 'ÄÖÜäöüß' 'ÁÉÍÓÚáéíóúÑñ¿¡' 'ÀÈÒàèòÇçÏï·' '«»‘’‚“”„–—…•€×−\u00a0']
 )
+# Zeichen, die bewusst aus der Systemschrift kommen (stehen nicht in den Schriften): Pfeile.
+SYSTEM_ONLY = set(range(0x2190, 0x2200))
+
+
+def corpus_chars():
+    found = set()
+    for d in CORPUS_DIRS:
+        for dirpath, _, files in os.walk(os.path.join(ROOT, 'src', d)):
+            for name in files:
+                if name.endswith(CORPUS_EXT):
+                    with open(os.path.join(dirpath, name), encoding='utf8') as fh:
+                        found.update(ord(c) for c in fh.read() if ord(c) > 0x7E)
+    return found - SYSTEM_ONLY
+
+
+UNICODES = sorted(set(FLOOR) | corpus_chars())
 
 JOBS = [
     # (Paket, Quelldatei, Ausgabe, Achsen-Grenzen)
@@ -51,7 +70,8 @@ for pkg, src, dst, limits in JOBS:
     font = TTFont(buf)
     opts = subset.Options()
     opts.flavor = 'woff2'
-    opts.layout_features = ['rvrn', 'kern', 'liga', 'calt', 'ccmp', 'locl', 'mark', 'mkmk', 'case', 'tnum']
+    # Nur Merkmale, die die Seiten brauchen: rvrn (Zeichenbreiten), kern, liga, ccmp, locl, tnum (tabular-nums in CSS).
+    opts.layout_features = ['rvrn', 'kern', 'liga', 'ccmp', 'locl', 'tnum']
     opts.name_IDs = [1, 2, 3, 4, 6, 13, 14]
     opts.notdef_outline = True
     opts.hinting = False
@@ -61,7 +81,8 @@ for pkg, src, dst, limits in JOBS:
     path = os.path.join(OUT, dst)
     font.flavor = 'woff2'
     font.save(path)
-    print(f'{dst}: {os.path.getsize(path) / 1000:.1f} kB')
+    missing = [chr(c) for c in UNICODES if c not in font.getBestCmap()]
+    print(f'{dst}: {os.path.getsize(path) / 1000:.1f} kB · {len(font.getBestCmap())} Zeichen' + (f' · nicht in der Quellschrift: {"".join(missing)}' if missing else ''))
 
 # Lizenzen (OFL) mitliefern.
 for pkg, name in (('fraunces', 'Fraunces'), ('instrument-sans', 'Instrument-Sans')):
