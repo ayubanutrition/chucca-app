@@ -19,8 +19,26 @@ export interface CalendarEvent {
 export const stamp = (date: Date): string =>
   date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
+// U+2028/2029 (Unicode-Zeilentrenner) werden wie Zeilenumbrüche behandelt: node-ical zerreißt sonst die Zeile. Steuerzeichen außer Tab und Zeilenumbruch sind in TEXT nicht erlaubt (RFC 5545, 3.3.11); alleinstehende Surrogate sind kein gültiges UTF-8.
+const ILLEGAL_TEXT = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g;
+const LONE_SURROGATE = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/g;
+
 export const escapeText = (value: string): string =>
-  value.replace(/\\/g, '\\\\').replace(/\r\n|\r|\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+  value
+    .replace(ILLEGAL_TEXT, '')
+    .replace(LONE_SURROGATE, '\ufffd')
+    .replace(/\\/g, '\\\\')
+    .replace(/\r\n|[\r\n\u2028\u2029]/g, '\\n')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;');
+
+/** UID und URL werden unmaskiert geschrieben; Leer- und Steuerzeichen würden dort eine Zeile beenden oder neue Eigenschaften einschleusen. */
+function plainValue(name: string, value: string): string {
+  if (value === '' || /[\u0000-\u0020\u007f-\u009f\u2028\u2029]/.test(value)) {
+    throw new RangeError(`${name} darf nicht leer sein und keine Leer- oder Steuerzeichen enthalten`);
+  }
+  return value;
+}
 
 const encoder = new TextEncoder();
 
@@ -50,7 +68,7 @@ export function buildCalendar(event: CalendarEvent): string {
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',
-    `UID:${event.uid}`,
+    `UID:${plainValue('UID', event.uid)}`,
     `DTSTAMP:${stamp(event.now ?? new Date())}`,
     `DTSTART:${stamp(event.start)}`,
   ];
@@ -62,7 +80,7 @@ export function buildCalendar(event: CalendarEvent): string {
     `LOCATION:${escapeText(event.location)}`,
     `DESCRIPTION:${escapeText(event.description)}`,
   );
-  if (event.url) lines.push(`URL:${event.url}`);
+  if (event.url) lines.push(`URL:${plainValue('URL', event.url)}`);
   lines.push('END:VEVENT', 'END:VCALENDAR');
   return `${lines.map(fold).join('\r\n')}\r\n`;
 }
