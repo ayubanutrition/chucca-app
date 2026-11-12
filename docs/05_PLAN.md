@@ -13,7 +13,7 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 | 07 | Galerie, Medienpipeline, bedingte Events | DONE | `content-media.test.ts`, `flows.spec.ts`, `public.spec.ts` |
 | 08 | Betreiber-Content einpflegen, Anfrageweg anbinden | BLOCKED | Karte, Zeiten, Fotos, Kanal fehlen (`docs/04_CONTENT_MEDIA.md`). Technik ist vorbereitet; Anfrage bleibt „vorbereitete Nachricht“ |
 | 09 | Responsive, Barrierefreiheit, Motion, Performance | DONE (Labor) | `docs/06_QA.md`; Gerätetests offen |
-| 10 | PWA, SEO, Release-Modi | DONE (ohne Host) | `sw-browser.spec.ts`, `subpath.spec.ts`, `public.spec.ts`. Offen: echter Host, Update-Hinweis im Browser |
+| 10 | PWA, SEO, Release-Modi | DONE (ohne Host) | `sw-browser.spec.ts`, `subpath.spec.ts`, `public.spec.ts`. Offen: echter Host |
 | 11 | Konsistenzprüfung, Commits, Handoff | DONE | `docs/08_HANDOFF.md` |
 
 ## Offene Aufgaben nach Priorität
@@ -22,7 +22,7 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 | 12 | Betreiberdaten einholen und einpflegen (Karte, Zeiten, Adresse bestätigen, Fotos, Rechtstexte) | Betrieb | Öffentlicher Build zeigt Karte, Zeiten, Fotos; Beispieldaten verschwinden automatisch |
 | 13 | Hosting-Ziel und Domain festlegen, Vorschau deployen | Entscheidung Betreiber | URL erreichbar; Header für `sw.js`/HTML `no-cache`; `404.html` greift |
 | 14 | Gerätetests iPhone (Safari, Instagram-/WhatsApp-In-App) und Android (Chrome) | 13 | Installation, Standalone, Teilen, ICS-Import, Safe Areas, Lightbox-Scroll |
-| 15 | Update-Hinweis des Service Workers im Browser prüfen (Offline und Registrierung sind getestet) | 13 | Test mit zwei Builds nacheinander oder manuelles Protokoll |
+| 15 | Update-Hinweis des Service Workers im Browser prüfen (Offline und Registrierung sind getestet) | 13 | DONE (Chromium, lokal): `tests/e2e/sw-update.spec.ts` über `npm run test:sw-update` mit zwei Build-Ständen; Details und Grenzen `docs/06_QA.md`. Auf dem echten Host (Aufgabe 13) mit `sw.js` hinter CDN wiederholen |
 | 16 | Unterpfad auf dem echten Host wiederholen | 13 | `subpath.spec.ts`-Fälle gegen die Live-URL (lokal DONE) |
 | 17 | Muttersprachliche Durchsicht EN/ES | Person | Freigabe der Texte |
 | 18 | Betreuter Anfrageweg (Formular-Backend oder bestätigter Kanal) | 12 | Erfolg erst nach echter Zustellung; Fehler- und Timeout-Zustände getestet |

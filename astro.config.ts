@@ -9,7 +9,8 @@ import { chuccaBuild } from './integrations/chucca-build';
 const mode = process.env.CHUCCA_MODE === 'public' ? 'public' : 'preview';
 const site = process.env.CHUCCA_SITE_URL || undefined;
 const base = process.env.CHUCCA_BASE || '/';
-const buildId = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
+// CHUCCA_BUILD_ID erlaubt feste Kennungen (Update-Test mit zwei Ständen); sonst Zeitstempel.
+const buildId = process.env.CHUCCA_BUILD_ID || new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
 
 export default defineConfig({
   ...(site ? { site } : {}),

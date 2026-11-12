@@ -21,6 +21,7 @@ npm run lint         # ESLint
 npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker
 npm run build:test   # beide Builds: dist/ (Vorschau) und dist-public/ (öffentlich, Test-URL)
 npm run test:e2e     # Playwright gegen beide Builds, inkl. axe
+npm run test:sw-update # Update-Pfad des Service Workers mit zwei Build-Ständen (Playwright)
 npm run check        # alles in dieser Reihenfolge
 ```
 Beim ersten Mal lokal: `npx playwright install chromium`.

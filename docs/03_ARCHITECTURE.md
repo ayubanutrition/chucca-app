@@ -63,7 +63,7 @@ Alle Zugriffe sind fehlertolerant (`src/lib/storage.ts`). Bei gesperrtem Speiche
 Alle Zeiten gelten in Europe/Madrid (`src/lib/time.ts`, aus V3 portiert). Nicht existierende und doppelte Ortszeiten der Zeitumstellung werden abgelehnt. ICS: UTC-Zeiten ohne TZID, Faltung nach Oktetten, CRLF, stabile UID je Entwurf (`src/lib/ics.ts`).
 
 ## PWA
-Manifest mit Basis-Pfad, Icons (192/512/maskable/apple-touch). Service Worker aus `src/lib/sw-template.ts`: nur GET und eigene Herkunft; `/_astro/` cache-first, übrige Assets network-first; Navigation network-first; neue Version wartet, bis die Seite sie über den Hinweis „Neu laden“ aktiviert. Alte Caches (`chucca-*`, auch V3) werden entfernt.
+Manifest mit Basis-Pfad, Icons (192/512/maskable/apple-touch). Service Worker aus `src/lib/sw-template.ts`: nur GET und eigene Herkunft; `/_astro/` cache-first, übrige Assets network-first; Navigation network-first; neue Version wartet, bis die Seite sie über den Hinweis „Neu laden“ aktiviert. Alte Caches (`chucca-*`, auch V3) werden entfernt. Der Update-Pfad ist im Browser belegt (`tests/e2e/sw-update.spec.ts`; die Build-Kennung steht auch als `<meta name="chucca-build">` im HTML und lässt sich mit `CHUCCA_BUILD_ID` festlegen).
 
 ## SEO
 Je Seite Titel, Beschreibung, Open Graph; im öffentlichen Modus mit Site-URL zusätzlich Canonical, wechselseitige hreflang inkl. `x-default`, `sitemap.xml`, JSON-LD `BarOrPub` (nur Name, Adresse, Instagram – keine Zeiten, Preise oder Bewertungen).

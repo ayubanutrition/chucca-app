@@ -4,6 +4,8 @@ import { ORIGIN, PORT } from './tests/e2e/ports';
 /** Browsertests laufen gegen die gebauten Stände: Vorschau (dist) und öffentlich (dist-public). */
 export default defineConfig({
   testDir: 'tests/e2e',
+  // Eigener Lauf mit zwei Build-Ständen: playwright.update.config.ts (npm run test:sw-update).
+  testIgnore: 'sw-update.spec.ts',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: [['list']],

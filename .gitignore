@@ -2,6 +2,7 @@ node_modules/
 dist/
 dist-public/
 dist-sub/
+dist-update/
 .astro/
 test-results/
 playwright-report/

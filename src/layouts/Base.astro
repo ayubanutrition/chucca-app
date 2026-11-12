@@ -54,6 +54,7 @@ const jsonLd =
     <title>{t.meta.titles[page]}</title>
     <meta name="description" content={t.meta.descriptions[page]} />
     <meta name="robots" content={indexable ? 'index,follow' : 'noindex,nofollow'} />
+    <meta name="chucca-build" content={__CHUCCA_BUILD_ID__} />
     <meta name="theme-color" content="#1b0f17" />
     <meta name="color-scheme" content="dark" />
     <meta name="format-detection" content="telephone=no" />
