@@ -180,7 +180,7 @@ export const es: Dictionary = {
     },
     hours: {
       title: 'Horario',
-      exceptionsTitle: 'Estos días es distinto',
+      exceptionsTitle: 'Días con horario distinto',
       unconfirmed: 'El horario actual aún no está confirmado, por eso no lo mostramos. Consulta con CHUCCA antes de venir.',
       days: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
       closed: 'cerrado',
@@ -197,7 +197,7 @@ export const es: Dictionary = {
       date: 'Fecha',
       time: 'Hora',
       note: 'Comentario (opcional)',
-      notePlaceholder: 'p. ej. cumpleaños, si puede ser fuera',
+      notePlaceholder: 'p. ej. cumpleaños, mejor fuera',
       prepare: 'Preparar mensaje',
       prepared: 'Preparado: aún no enviado. Envía tú el texto a CHUCCA.',
       copied: 'Mensaje copiado: aún no enviado. Pégalo en tu mensaje a CHUCCA.',

@@ -274,7 +274,8 @@
   font-size: 0.95rem;
   color: var(--paper-mute);
   white-space: normal;
-  max-width: 7rem;
+  max-width: 10.5rem;
+  text-wrap: balance;
 }
 [data-all-free='true'] .drink__zero {
   display: none;

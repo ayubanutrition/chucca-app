@@ -737,6 +737,8 @@ textarea.input {
 @media (min-width: 34rem) {
   .fields.fields--trio {
     grid-template-columns: 6.5rem minmax(0, 1fr) minmax(0, 1fr);
+    /* Das Label der Personenzahl bricht um; die Eingabefelder bleiben auf einer Linie. */
+    align-items: end;
   }
 }
 @media (max-width: 30rem) {
@@ -1140,7 +1142,8 @@ textarea.input {
 }
 .hours {
   display: grid;
-  grid-template-columns: auto 1fr;
+  /* feste Mindestbreite: Wochentabelle und Ausnahmeliste teilen sich dieselbe Zeitenspalte */
+  grid-template-columns: minmax(7.5rem, auto) 1fr;
   gap: 0.2rem var(--space-5);
   font-variant-numeric: tabular-nums;
 }

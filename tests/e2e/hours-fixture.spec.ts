@@ -20,7 +20,7 @@ const VISIT: Record<L, string> = { de: '/de/besuch/', en: '/en/visit/', es: '/es
 const TEXT = {
   de: { open: (t: string) => new RegExp(`^Jetzt geöffnet – bis ${t} Uhr\\.$`), closed: (d: string, t: string) => new RegExp(`^Gerade geschlossen\\. Öffnet am ${d} um ${t} Uhr\\.$`), unconfirmed: /noch nicht bestätigt/, closedWord: 'geschlossen', exceptionsTitle: 'An diesen Tagen anders', sat: 'Samstag' },
   en: { open: (t: string) => new RegExp(`^Open now – until ${t}\\.$`), closed: (d: string, t: string) => new RegExp(`^Closed right now\\. Opens ${d} at ${t}\\.$`), unconfirmed: /have not been confirmed/, closedWord: 'closed', exceptionsTitle: 'Different on these days', sat: 'Saturday' },
-  es: { open: (t: string) => new RegExp(`^Abierto ahora\\. Hora de cierre: ${t}\\.$`), closed: (d: string, t: string) => new RegExp(`^Cerrado ahora\\. Vuelve a abrir el ${d} \\(${t}\\)\\.$`), unconfirmed: /aún no está confirmado/, closedWord: 'cerrado', exceptionsTitle: 'Estos días es distinto', sat: 'sábado' },
+  es: { open: (t: string) => new RegExp(`^Abierto ahora\\. Hora de cierre: ${t}\\.$`), closed: (d: string, t: string) => new RegExp(`^Cerrado ahora\\. Vuelve a abrir el ${d} \\(${t}\\)\\.$`), unconfirmed: /aún no está confirmado/, closedWord: 'cerrado', exceptionsTitle: 'Días con horario distinto', sat: 'sábado' },
 } as const;
 const DAY: Record<L, Record<'mon' | 'fri', string>> = {
   de: { mon: 'Montag', fri: 'Freitag' },
