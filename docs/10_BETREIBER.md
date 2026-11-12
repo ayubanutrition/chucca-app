@@ -170,6 +170,16 @@ node scripts/qr-link.mjs https://<Host>/<Unterpfad-falls-vorhanden> de [https://
 
 Das Skript gibt den Deep-Link aus (z. B. `…/de/drinks/`, `…/en/drinks/`, `…/es/bebidas/`), prüft die URLs (https, keine UTM-Parameter, keine Zugangsdaten) und schreibt ein druckbares SVG ohne externe Verweise. Mit Kurz-URL kodiert der Code diese, sonst den Deep-Link. Nicht geprüft: Scanbarkeit nach dem Druck, Kontrast auf dem gewählten Material.
 
+## Texte, die Sie freigeben müssen
+
+Diese Aussagen stehen auf der Website, sind aber keine Angaben von Ihnen. Bitte bestätigen oder ändern (Quelle: `src/i18n/*.ts`):
+
+| Text | Wo | Frage an Sie |
+|---|---|---|
+| „Alkohol nur für Erwachsene“ / „Alcohol is served to adults only“ / „Solo se sirve alcohol a mayores de edad“ | Fußzeile | Stimmt das so für Ihr Lokal? |
+| „Gute Drinks, warmes Licht“ und die Bezeichnung „Cocktailbar“ | Startseite, Meta-Texte | Wollen Sie das so sagen? |
+| Schreibweise „Playa de Palma“ mit oder ohne Artikel („la“) | Spanisch | Welche Schreibweise nutzen Sie selbst? |
+
 ## Wie läuft es danach?
 
 1. **Prüfen.** Wir tragen Ihre Angaben ein und lassen automatisch prüfen, ob alles vollständig und widerspruchsfrei ist. Offene Punkte schicken wir Ihnen als kurze Liste.
