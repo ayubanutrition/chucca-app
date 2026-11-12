@@ -32,7 +32,7 @@ const paths = [
 const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: t.today.now };
 ---
 
-<section class="hero hero--wide">
+<section class:list={['hero', 'hero--wide', !heroArt && 'hero--bare']}>
   <div class="wrap hero__grid">
     <div class="hero__copy">
       <p class="eyebrow">{t.today.eyebrow}</p>
