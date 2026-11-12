@@ -19,7 +19,10 @@ async function ready(page: import('@playwright/test').Page) {
 test.describe('öffentlicher Build (öffentlich)', () => {
   test.use({ baseURL: ORIGIN.public });
 
-  test('liefert besuchte Seiten offline und eine neutrale Offline-Seite für unbekannte', async ({ page, context }) => {
+  test('liefert besuchte Seiten offline und eine neutrale Offline-Seite für unbekannte', async ({ page, context, browserName }) => {
+    // Testartefakt: Playwright-WebKit bricht Navigationen unter `setOffline` mit „internal error“ ab, bevor der Service Worker antworten kann;
+    // Offline-Verhalten ist damit in WebKit nicht prüfbar (Safari selbst: NOT RUN, siehe docs/06_QA.md).
+    test.skip(browserName === 'webkit', 'Playwright-WebKit: Navigation bei setOffline nicht möglich');
     await page.goto('/de/besuch/');
     await ready(page);
     await page.goto('/de/gruppe/');

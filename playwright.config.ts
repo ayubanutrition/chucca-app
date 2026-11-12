@@ -1,5 +1,8 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import { ORIGIN, PORT } from './tests/e2e/ports';
+
+/** Zusatzbrowser nur auf Anforderung (`npm run test:e2e:cross` bzw. `CROSS_BROWSER=1`), damit `npm run check` bei Chromium bleibt. */
+const cross = process.env.CROSS_BROWSER === '1';
 
 /** Browsertests laufen gegen die gebauten Stände: Vorschau (dist) und öffentlich (dist-public). */
 export default defineConfig({
@@ -7,7 +10,21 @@ export default defineConfig({
   // Eigener Lauf mit zwei Build-Ständen: playwright.update.config.ts (npm run test:sw-update).
   testIgnore: 'sw-update.spec.ts',
   fullyParallel: true,
+  // Firefox hängt auf 4 Kernen gelegentlich (ca. 1 % der Tests, je Lauf andere, Ursache im Seitenaufbau/Fixture nicht bei der Seite: einzeln und im Schleifentest 280 Ladevorgänge ohne Ausreißer).
+  // Im Zusatzlauf deshalb weniger Worker und zwei Wiederholungen; Playwright weist Wiederholungen als „flaky“ aus. Chromium (`npm run check`) bleibt ohne Wiederholung.
+  workers: cross ? 2 : undefined,
+  retries: cross ? 2 : 0,
+  timeout: cross ? 45_000 : 30_000,
   forbidOnly: Boolean(process.env.CI),
+  projects: [
+    { name: 'chromium', use: { ...devices["Desktop Chrome"] } },
+    ...(cross
+      ? [
+          { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        ]
+      : []),
+  ],
   reporter: [['list']],
   use: { baseURL: ORIGIN.preview, locale: 'de-DE', timezoneId: 'Europe/London', serviceWorkers: 'block' },
   webServer: [

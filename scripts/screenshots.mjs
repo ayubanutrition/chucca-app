@@ -1,7 +1,9 @@
-/** QA-Hilfe: Screenshots laufender Seiten. Aufruf: node scripts/screenshots.mjs <basis-url> <zielordner> "name|pfad|breite[|full]" … */
-import { chromium } from '@playwright/test';
+/** QA-Hilfe: Screenshots laufender Seiten. Aufruf: [BROWSER=firefox|webkit] node scripts/screenshots.mjs <basis-url> <zielordner> "name|pfad|breite[|full]" … */
+import * as pw from '@playwright/test';
 const [,, base, out, ...specs] = process.argv; // spec: name|path|width[|full]
-const browser = await chromium.launch();
+const engine = process.env.BROWSER ?? 'chromium'; // chromium | firefox | webkit
+if (!['chromium', 'firefox', 'webkit'].includes(engine)) throw new Error(`BROWSER=${engine} unbekannt`);
+const browser = await pw[engine].launch();
 for (const spec of specs) {
   const [name, path, width, full] = spec.split('|');
   const page = await browser.newPage({ viewport: { width: +width, height: +width < 700 ? 844 : 900 }, deviceScaleFactor: 1, serviceWorkers: 'block' });

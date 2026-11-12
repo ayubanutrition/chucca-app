@@ -263,7 +263,9 @@ test('Alle Seiten: Fokus ist nie auf <body> gefangen, Shift+Tab vom ersten Eleme
     await page.goto(path);
     await page.keyboard.press('Tab');
     await page.keyboard.press('Shift+Tab');
-    await page.keyboard.press('Tab');
+    // Chromium/WebKit geben den Fokus an die Browseroberfläche ab (body), Firefox lässt ihn auf dem ersten Element.
+    // In beiden Fällen ist der Fokus nicht auf der Seite gefangen; danach führt Tab zurück auf (bzw. bleibt Shift+Tab bei) „Zum Inhalt“.
+    if (!(await page.locator('.skip').evaluate((el) => el === document.activeElement))) await page.keyboard.press('Tab');
     await expect(page.locator('.skip')).toBeFocused();
   }
 });

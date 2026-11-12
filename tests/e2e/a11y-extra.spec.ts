@@ -129,16 +129,26 @@ async function tabThroughObscured(page: Page, shot?: string, limit = 140): Promi
   const problems: string[] = [];
   for (let i = 0; i < limit; i++) {
     await page.keyboard.press('Tab');
-    const state = await page.evaluate(() => {
-      const el = document.activeElement as HTMLElement | null;
-      if (!el || el === document.body) return null;
-      const box = el.getBoundingClientRect();
-      const x = Math.min(Math.max(box.left + box.width / 2, 0), innerWidth - 1);
-      const y = Math.min(Math.max(box.top + box.height / 2, 0), innerHeight - 1);
-      const covering = document.elementFromPoint(x, y)?.closest('.tabbar, .toast, .ribbon');
-      const name = (el.getAttribute('aria-label') || el.textContent || el.tagName).trim().replace(/\s+/g, ' ').slice(0, 30);
-      return { name, covered: Boolean(covering) && !el.closest('.tabbar'), tabbar: Math.round(document.querySelector('.tabbar')?.getBoundingClientRect().top ?? 0), top: Math.round(box.top), bottom: Math.round(box.bottom) };
-    });
+    // WebKit und Firefox scrollen zum Fokus animiert bzw. verzögert: gilt ein Element erst als verdeckt, wenn es auch nach kurzer Wartezeit noch verdeckt ist (Endlage statt Zwischenstand).
+    const state = await page.evaluate(
+      () =>
+        new Promise<null | { name: string; covered: boolean; tabbar: number; top: number; bottom: number }>((resolve) => {
+          let rounds = 0;
+          const measure = () => {
+            const el = document.activeElement as HTMLElement | null;
+            if (!el || el === document.body) return resolve(null);
+            const box = el.getBoundingClientRect();
+            const x = Math.min(Math.max(box.left + box.width / 2, 0), innerWidth - 1);
+            const y = Math.min(Math.max(box.top + box.height / 2, 0), innerHeight - 1);
+            const covering = document.elementFromPoint(x, y)?.closest('.tabbar, .toast, .ribbon');
+            const name = (el.getAttribute('aria-label') || el.textContent || el.tagName).trim().replace(/\s+/g, ' ').slice(0, 30);
+            const covered = Boolean(covering) && !el.closest('.tabbar');
+            if (covered && ++rounds <= 25) return void setTimeout(measure, 60);
+            resolve({ name, covered, tabbar: Math.round(document.querySelector('.tabbar')?.getBoundingClientRect().top ?? 0), top: Math.round(box.top), bottom: Math.round(box.bottom) });
+          };
+          measure();
+        }),
+    );
     if (!state) break;
     if (state.covered) {
       if (shot && problems.length === 0) await page.screenshot({ path: shot });

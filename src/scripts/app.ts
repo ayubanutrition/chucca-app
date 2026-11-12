@@ -31,6 +31,16 @@ document.querySelector<HTMLAnchorElement>('.skip')?.addEventListener('click', (e
   document.getElementById('inhalt')?.focus();
 });
 
+// Fokus nicht hinter der festen Leiste (WCAG 2.4.11): `scroll-padding-bottom` genügt Chromium und Safari. Firefox gilt ein nur teilweise sichtbares Ziel
+// als sichtbar und scrollt es nicht frei; liegt dessen Mitte unter der Leiste, wird per Tastatur nachgeführt (ohne Zutun der Maus, ohne Sprung bei freiem Ziel).
+const tabbar = document.querySelector<HTMLElement>('.tabbar');
+addEventListener('focusin', (event) => {
+  const target = event.target;
+  if (!tabbar || !(target instanceof HTMLElement) || getComputedStyle(tabbar).position !== 'fixed' || tabbar.contains(target) || !target.matches(':focus-visible')) return;
+  const box = target.getBoundingClientRect();
+  if (box.top + box.height / 2 > tabbar.getBoundingClientRect().top) target.scrollIntoView({ block: 'nearest' });
+});
+
 const config = JSON.parse(document.getElementById('app-strings')?.textContent ?? '{}') as { updateReady: string; reload: string; sw: string; scope: string };
 
 if ('serviceWorker' in navigator && config.sw && import.meta.env.PROD) {
