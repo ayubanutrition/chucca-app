@@ -180,6 +180,7 @@ export const en: Dictionary = {
     },
     hours: {
       title: 'Opening hours',
+      exceptionsTitle: 'Different on these days',
       unconfirmed: 'Current hours have not been confirmed, so we do not show any here. Please check with CHUCCA before you visit.',
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       closed: 'closed',

@@ -5,6 +5,8 @@ import { MODE } from '../config/mode';
 import { dictionary, type Locale } from '../i18n';
 import { venueFor } from '../lib/content';
 import { href } from '../lib/paths';
+import { upcomingExceptions } from '../lib/hours';
+import { formatShortDate, madridDate, toInstantLenient } from '../lib/time';
 
 interface Props {
   locale: Locale;
@@ -17,6 +19,7 @@ const instagram = venue.channels.find((channel) => channel.type === 'instagram')
 const inquiryChannel = venue.channels.find((channel) => channel.acceptsInquiries);
 const addressText = `${venue.shortName} · ${venue.address.building}, ${venue.address.street}, ${venue.address.postalCode} ${venue.address.city}, ${venue.address.region}`;
 const hours = venue.hours;
+const exceptions = upcomingExceptions(hours, madridDate());
 const clientData = {
   locale,
   addressText,
@@ -119,6 +122,7 @@ const clientData = {
       <h2 class="h3" id="hours-title">{t.visit.hours.title}</h2>
       {
         hours.status === 'confirmed' && hours.regular ? (
+          <>
           <dl class="hours" data-hours data-valid-from={hours.validFrom ?? ''} data-valid-until={hours.validUntil ?? ''} data-unconfirmed={t.visit.hours.unconfirmed}>
             {[1, 2, 3, 4, 5, 6, 0].map((day) => {
               const range = hours.regular?.[day];
@@ -130,6 +134,20 @@ const clientData = {
               );
             })}
           </dl>
+          {exceptions.length > 0 && (
+            <div class="hours-exceptions" data-exceptions>
+              <h3 class="small">{t.visit.hours.exceptionsTitle}</h3>
+              <dl class="hours">
+                {exceptions.map(({ date, range }) => (
+                  <>
+                    <dt data-exception={date}>{formatShortDate(toInstantLenient(date, '12:00') ?? new Date(`${date}T12:00:00Z`), locale)}</dt>
+                    <dd data-exception={date}>{range ? `${range.open}–${range.close}` : t.visit.hours.closed}</dd>
+                  </>
+                ))}
+              </dl>
+            </div>
+          )}
+          </>
         ) : (
           <p>{t.visit.hours.unconfirmed}</p>
         )

@@ -53,6 +53,21 @@ describe('Adresse, Zeiten, Eingang', () => {
     const broken = reviewVenue(venue({ hours: { status: 'confirmed', source: 'Mail', observedAt: '2026-11-01', regular: null } }), TODAY)[1]!;
     expect(broken.status).toBe('error');
   });
+  it('prüft Ausnahmetage: vergangen, außerhalb des Zeitraums, gleiche Uhrzeit, unbestätigte Zeiten', () => {
+    const regular = Array.from({ length: 7 }, () => ({ open: '19:00', close: '00:00' }));
+    const base = { status: 'confirmed', source: 'Mail', observedAt: '2026-11-01', verifiedAt: '2026-11-01', regular, validFrom: '2026-11-01', validUntil: '2027-03-31' };
+    const clean = texts(reviewVenue(venue({ hours: { ...base, exceptions: { '2026-12-24': null, '2026-12-31': { open: '19:00', close: '03:00' } } } }), TODAY)[1]!);
+    expect(clean).toContain('2 Ausnahmetag(e) hinterlegt');
+    expect(clean).not.toContain('Vergangenheit');
+    expect(clean).not.toContain('außerhalb');
+    const odd = texts(reviewVenue(venue({ hours: { ...base, exceptions: { '2026-11-05': null, '2027-05-01': null, '2026-12-25': { open: '20:00', close: '20:00' } } } }), TODAY)[1]!);
+    expect(odd).toContain('1 Ausnahmetag(e) liegen in der Vergangenheit');
+    expect(odd).toContain('2026-11-05');
+    expect(odd).toContain('außerhalb des bestätigten Zeitraums (2026-11-01 bis 2027-03-31) werden nicht gezeigt: 2027-05-01');
+    expect(odd).toContain('selben Uhrzeit (2026-12-25)');
+    const unconfirmed = texts(reviewVenue(venue({ hours: { status: 'unknown', regular: null, exceptions: { '2026-12-24': null } } }), TODAY)[1]!);
+    expect(unconfirmed).toContain('öffentlich erscheinen sie nicht');
+  });
   it('zeigt einen Betreuungskanal für Gruppenanfragen als erfüllt', () => {
     const v = venue();
     v.channels[0]!.acceptsInquiries = true;

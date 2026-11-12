@@ -139,7 +139,16 @@ export function reviewVenue(venue: Venue, today: string): Section[] {
     hours.push(warn('Kein Gültigkeitszeitraum angegeben (Saison?). Die Zeiten gelten dann unbegrenzt.'));
   }
   const exceptions = Object.keys(h.exceptions ?? {});
-  if (exceptions.length > 0) hours.push(ok(`${exceptions.length} Ausnahmetag(e) hinterlegt.`));
+  if (exceptions.length > 0) {
+    hours.push(ok(`${exceptions.length} Ausnahmetag(e) hinterlegt.`));
+    const past = exceptions.filter((date) => date < today);
+    if (past.length > 0) hours.push(warn(`${past.length} Ausnahmetag(e) liegen in der Vergangenheit und werden nicht mehr gezeigt: ${past.join(', ')} – bei Gelegenheit entfernen.`));
+    const outside = exceptions.filter((date) => date >= today && ((h.validFrom && date < h.validFrom) || (h.validUntil && date > h.validUntil)));
+    if (outside.length > 0) hours.push(warn(`Ausnahmetag(e) außerhalb des bestätigten Zeitraums (${h.validFrom ?? 'offen'} bis ${h.validUntil ?? 'offen'}) werden nicht gezeigt: ${outside.join(', ')}`));
+    if (h.status !== 'confirmed') hours.push(warn('Ausnahmetage sind hinterlegt, aber die Zeiten sind nicht bestätigt – öffentlich erscheinen sie nicht.'));
+  }
+  const sameTime = [...(h.regular ?? []).map((range, i) => (range ? { where: WEEKDAYS[i] ?? String(i), range } : null)), ...Object.entries(h.exceptions ?? {}).map(([date, range]) => (range ? { where: date, range } : null))].filter((entry) => entry && entry.range.open === entry.range.close);
+  if (sameTime.length > 0) hours.push(warn(`Öffnung und Schließung zur selben Uhrzeit (${sameTime.map((entry) => entry?.where).join(', ')}): wird als 24 Stunden gerechnet. Stimmt das, oder fehlt eine Uhrzeit?`));
   if (h.source && /widerspr/i.test(h.source)) hours.push(warn(`Widersprüchliche Quellen: ${h.source.replace(/^Widerspruch:\s*/i, '')}`));
   if (h.status === 'confirmed') hours.push(...provenanceLines('Öffnungszeiten-Beleg', h).filter((l) => l.level !== 'ok'));
 

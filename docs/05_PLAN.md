@@ -35,8 +35,8 @@ Dieselbe Browser-Suite läuft zusätzlich in Playwright-Firefox und -WebKit (`np
 
 ## Bekannte Grenzen des Stands
 - Der Kalender-Erfolgstext kann nicht prüfen, ob das Gerät die Datei wirklich öffnet (In-App-Browser); der Text weist auf das Kopieren hin.
-- Ausnahmetage der Öffnungszeiten wirken auf den Status, werden in der Wochentabelle aber noch nicht einzeln aufgeführt.
-- Läuft ein bestätigter Zeitraum (`validUntil`) während einer Schicht aus, springt der Status um Mitternacht auf „unbestätigt“.
+- Ausnahmetage erscheinen auf „Besuch“ als eigene Liste unter der Wochentabelle (nur künftige, nur innerhalb des bestätigten Zeitraums). Mit den echten Daten bleibt das ungenutzt, bis der Betrieb Zeiten bestätigt hat; die Darstellung wurde mit temporären Testdaten im Browser geprüft, im Repo ist sie nur über Unit-Tests der Logik (`upcomingExceptions`) abgedeckt.
+- Eine am letzten gültigen Tag begonnene Schicht läuft über Mitternacht weiter (Status „offen“); erst danach gilt „unbestätigt“. Die Wochentabelle auf „Besuch“ wird dagegen schon um Mitternacht durch den Hinweis ersetzt.
 - Die Beispielkarte zeigt den Zustand „nicht verfügbar“ an einem Beispieldrink.
 
 ## Arbeitsprinzip

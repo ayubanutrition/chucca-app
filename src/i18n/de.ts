@@ -179,6 +179,7 @@ export const de = {
     },
     hours: {
       title: 'Öffnungszeiten',
+      exceptionsTitle: 'An diesen Tagen anders',
       unconfirmed: 'Die aktuellen Zeiten sind noch nicht bestätigt, deshalb zeigen wir hier keine. Frag vor dem Besuch kurz bei CHUCCA nach.',
       days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
       closed: 'geschlossen',

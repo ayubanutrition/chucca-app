@@ -180,6 +180,7 @@ export const es: Dictionary = {
     },
     hours: {
       title: 'Horario',
+      exceptionsTitle: 'Estos días es distinto',
       unconfirmed: 'El horario actual aún no está confirmado, por eso no lo mostramos. Consulta con CHUCCA antes de venir.',
       days: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
       closed: 'cerrado',

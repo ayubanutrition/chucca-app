@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { isVisible, upcoming } from '../../src/lib/events';
-import { openStatus, type HoursData } from '../../src/lib/hours';
+import { openStatus, upcomingExceptions, type HoursData } from '../../src/lib/hours';
 import { emptyFilter, filterMenu, formatPrice, normalize } from '../../src/lib/menu';
 import { civilDusk, skyPhase, sunset } from '../../src/lib/sun';
 import { fixtureMenu } from '../../src/lib/content';
@@ -45,6 +45,29 @@ describe('Öffnungsstatus', () => {
   it('gilt außerhalb des bestätigten Zeitraums als unbestätigt', () => {
     expect(openStatus({ ...evening, validUntil: '2029-10-31' }, new Date('2030-01-15T19:30:00Z'))).toEqual({ state: 'unconfirmed' });
     expect(openStatus({ ...evening, validFrom: '2030-04-01' }, new Date('2030-01-15T19:30:00Z'))).toEqual({ state: 'unconfirmed' });
+  });
+});
+
+describe('Ausnahmetage der Öffnungszeiten', () => {
+  const hours: HoursData = {
+    ...evening,
+    validFrom: '2030-01-01',
+    validUntil: '2030-06-30',
+    exceptions: { '2030-12-24': null, '2030-02-14': { open: '18:00', close: '23:00' }, '2030-01-17': null, '2029-12-31': null, '2030-03-01': null },
+  };
+  it('liefert bestätigte Ausnahmen ab heute chronologisch, ohne vergangene und ohne Tage außerhalb des Zeitraums', () => {
+    expect(upcomingExceptions(hours, '2030-01-17')).toEqual([
+      { date: '2030-01-17', range: null },
+      { date: '2030-02-14', range: { open: '18:00', close: '23:00' } },
+      { date: '2030-03-01', range: null },
+    ]);
+    expect(upcomingExceptions(hours, '2030-01-18').map((e) => e.date)).toEqual(['2030-02-14', '2030-03-01']);
+  });
+  it('liefert nichts ohne bestätigte Zeiten oder ohne Ausnahmen', () => {
+    expect(upcomingExceptions({ status: 'unconfirmed', exceptions: hours.exceptions }, '2030-01-01')).toEqual([]);
+    expect(upcomingExceptions({ status: 'confirmed', regular: null, exceptions: hours.exceptions }, '2030-01-01')).toEqual([]);
+    expect(upcomingExceptions({ ...evening, exceptions: null }, '2030-01-01')).toEqual([]);
+    expect(upcomingExceptions({ ...evening, exceptions: undefined }, '2030-01-01')).toEqual([]);
   });
 });
 

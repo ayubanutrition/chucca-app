@@ -140,6 +140,15 @@ describe('Öffnungszeiten über Mitternacht und Zeitumstellung', () => {
     // 10.06. 21:00 Madrid: geschlossen, nächste Öffnung läge außerhalb der Gültigkeit
     expect(openStatus(h, new Date('2026-06-10T19:30:00Z'))).toEqual({ state: 'closed', opensAt: null });
   });
+  it('Schicht vom letzten gültigen Tag läuft über Mitternacht weiter, danach nicht mehr', () => {
+    const h: HoursData = { ...late, validUntil: '2026-06-10' };
+    // 11.06. 01:00 Madrid: Schicht vom 10.06. (letzter gültiger Tag) läuft noch
+    expect(openStatus(h, new Date('2026-06-10T23:00:00Z')).state).toBe('open');
+    // 11.06. 12:00 Madrid: Schicht beendet, Zeitraum vorbei -> unbestätigt
+    expect(openStatus(h, new Date('2026-06-11T10:00:00Z'))).toEqual({ state: 'unconfirmed' });
+    // 12.06. 01:00 Madrid: Schicht vom 11.06. liegt außerhalb
+    expect(openStatus(h, new Date('2026-06-11T23:00:00Z'))).toEqual({ state: 'unconfirmed' });
+  });
   it('komplett geschlossene Woche ergibt opensAt null; falsche Länge ist unbestätigt', () => {
     expect(openStatus(nightly(null), new Date('2026-06-10T10:00:00Z'))).toEqual({ state: 'closed', opensAt: null });
     expect(openStatus({ status: 'confirmed', regular: [null, null] }, new Date())).toEqual({ state: 'unconfirmed' });

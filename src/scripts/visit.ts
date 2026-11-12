@@ -57,6 +57,20 @@ if (root) {
       for (const cell of hours.querySelectorAll<HTMLElement>(`[data-day="${madridWeekday()}"]`)) cell.dataset.today = 'true';
     }
   }
+  // Ausnahmetage: vergangene verschwinden auch ohne neuen Build; ein heutiger Eintrag wird hervorgehoben.
+  const exceptions = root.querySelector<HTMLElement>('[data-exceptions]');
+  if (exceptions) {
+    const day = madridDate();
+    let visible = 0;
+    for (const cell of exceptions.querySelectorAll<HTMLElement>('[data-exception]')) {
+      const date = cell.dataset.exception ?? '';
+      cell.hidden = date < day;
+      if (date === day) cell.dataset.today = 'true';
+      if (!cell.hidden) visible++;
+    }
+    // Ist die ganze Wochentabelle nicht mehr bestätigt (Zeitraum vorbei), entfallen auch die Ausnahmen.
+    exceptions.hidden = visible === 0 || !root.querySelector('[data-hours]');
+  }
 
   // Gruppennachricht: wird nur vorbereitet. Gesendet wird sie von der Person selbst.
   const form = one<HTMLFormElement>(root, '[data-inquiry]');
