@@ -10,5 +10,6 @@ export default defineConfig({
   webServer: [
     { command: 'node scripts/serve.mjs dist 4331', url: 'http://127.0.0.1:4331/de/', reuseExistingServer: !process.env.CI },
     { command: 'node scripts/serve.mjs dist-public 4332', url: 'http://127.0.0.1:4332/de/', reuseExistingServer: !process.env.CI },
+    { command: 'node scripts/serve.mjs dist-sub 4333 /preview/app/', url: 'http://127.0.0.1:4333/preview/app/de/', reuseExistingServer: !process.env.CI },
   ],
 });

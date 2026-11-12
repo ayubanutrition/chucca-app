@@ -33,8 +33,8 @@ const clientData = {
     <p class="lede">{t.group.intro}</p>
   </header>
 
-  <div class="plan">
-    <form class="plan__form" novalidate>
+  <form class="plan" novalidate>
+    <div class="plan__fields">
       <div class="incoming" data-incoming hidden>
         <strong data-incoming-text></strong>
         <span class="small">{t.group.incomingHint}</span>
@@ -51,18 +51,7 @@ const clientData = {
       </div>
       <p class="small" id="plan-zone">{t.group.zone}</p>
       <p class="notice">{t.group.note}</p>
-      <div class="actions">
-        <button class="btn btn--primary" type="submit"><Icon name="share" />{t.group.share}</button>
-        <button class="btn" type="button" data-calendar><Icon name="calendar" />{t.group.calendar}</button>
-        <button class="btn" type="button" data-copy><Icon name="copy" />{t.group.copy}</button>
-      </div>
-      <p class="status" id="plan-status" data-status role="status"></p>
-      <div class="field" data-manual hidden>
-        <p class="small">{t.common.manualCopyHint}</p>
-        <label for="plan-text">{t.common.manualCopyLabel}</label>
-        <textarea class="input" id="plan-text" readonly rows="6"></textarea>
-      </div>
-    </form>
+    </div>
 
     <aside class="ticket" data-ticket data-empty="true" aria-live="polite">
       <div class="band" aria-hidden="true"></div>
@@ -78,7 +67,21 @@ const clientData = {
         </p>
       </div>
     </aside>
-  </div>
+
+    <div class="plan__actions">
+      <div class="actions">
+        <button class="btn btn--primary" type="submit"><Icon name="share" />{t.group.share}</button>
+        <button class="btn" type="button" data-calendar><Icon name="calendar" />{t.group.calendar}</button>
+        <button class="btn" type="button" data-copy><Icon name="copy" />{t.group.copy}</button>
+      </div>
+      <p class="status" id="plan-status" data-status role="status"></p>
+      <div class="field" data-manual hidden>
+        <p class="small">{t.common.manualCopyHint}</p>
+        <label for="plan-text">{t.common.manualCopyLabel}</label>
+        <textarea class="input" id="plan-text" readonly rows="6"></textarea>
+      </div>
+    </div>
+  </form>
 
   <section class="facts" aria-label={t.nav.group}>
     <div class="fact">

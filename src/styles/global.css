@@ -737,7 +737,7 @@ textarea.input {
   }
 }
 @media (max-width: 30rem) {
-  .plan__form .actions .btn {
+  .plan__actions .actions .btn {
     flex: 1 1 100%;
   }
 }
@@ -1495,7 +1495,8 @@ details.fold p {
   gap: var(--space-6);
   padding-bottom: var(--space-8);
 }
-.plan__form {
+.plan__fields,
+.plan__actions {
   display: grid;
   gap: var(--space-5);
   align-content: start;
@@ -1507,6 +1508,26 @@ details.fold p {
   border-radius: var(--radius-l);
   overflow: hidden;
   --text-dim: var(--paper-mute);
+}
+.ticket {
+  --ticket-pad: clamp(1.4rem, 1rem + 2.5vw, 2.6rem);
+}
+/* Kerben an der Perforation */
+.ticket__meta::before,
+.ticket__meta::after {
+  content: '';
+  position: absolute;
+  top: -0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--bg);
+}
+.ticket__meta::before {
+  left: calc(-1 * var(--ticket-pad) - 0.75rem);
+}
+.ticket__meta::after {
+  right: calc(-1 * var(--ticket-pad) - 0.75rem);
 }
 .ticket__body {
   display: grid;
@@ -1544,6 +1565,7 @@ details.fold p {
   display: none;
 }
 .ticket__meta {
+  position: relative;
   display: grid;
   gap: 0.15rem;
   padding-top: var(--space-4);
@@ -1584,8 +1606,21 @@ details.fold p {
 @media (min-width: 60rem) {
   .plan {
     grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-    gap: var(--space-8);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-8);
     align-items: start;
+  }
+  .plan__fields {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .plan__actions {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .ticket {
+    grid-column: 2;
+    grid-row: 1 / span 2;
   }
   .facts {
     grid-template-columns: repeat(3, 1fr);
