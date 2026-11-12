@@ -66,7 +66,8 @@ Manifest mit Basis-Pfad, Icons (192/512/maskable/apple-touch). Service Worker au
 Je Seite Titel, Beschreibung, Open Graph; im öffentlichen Modus mit Site-URL zusätzlich Canonical, wechselseitige hreflang inkl. `x-default`, `sitemap.xml`, JSON-LD `BarOrPub` (nur Name, Adresse, Instagram – keine Zeiten, Preise oder Bewertungen).
 
 ## Hosting
-Reiner statischer Output; jeder Static-Host genügt. Die bestehende private Vorschau (`chucca-x-experience…chatgpt.site`) ist aus diesem Arbeitsbereich nicht erreichbar und wurde nicht verändert. Der Host muss `404.html` als Fehlerseite ausliefern und sollte `sw.js` und HTML mit `Cache-Control: no-cache`, `/_astro/*` langfristig cachen.
+Reiner statischer Output; jeder Static-Host genügt. Die bestehende private Vorschau (`chucca-x-experience…chatgpt.site`) ist aus diesem Arbeitsbereich nicht erreichbar und wurde nicht verändert. Der Host muss `404.html` als Fehlerseite ausliefern, HTTPS erzwingen und die Header aus der beim Build erzeugten `_headers` senden: `/_astro/*` ein Jahr `immutable`; HTML, `sw.js`, Manifest, `robots.txt`, `sitemap.xml` `no-cache`; dazu `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy` und eine strikte CSP mit Hashes der Inline-Skripte/-Styles (kein `unsafe-eval`, kein `unsafe-inline` für Skripte). Im Vorschau-Modus und ohne Site-URL kommt `X-Robots-Tag: noindex, nofollow` hinzu.
+`_headers` (Format Netlify/Cloudflare Pages) entsteht in `integrations/chucca-build.ts` aus `src/lib/headers.ts`, weil der Inhalt vom Modus abhängt und die Hashes aus den erzeugten Seiten stammen. `scripts/serve.mjs` liest dieselbe Datei, damit Browsertests die Header eines Hosts sehen. Abbildung auf Vercel und nginx, Begründung der CSP-Direktiven und Grenzen: `docs/11_HOSTING.md`.
 
 ## Performance-Budget
 Initialer mobiler Transfer ≤ 1 MB, initiales JS ≤ 100 kB gzip. Messwerte: `docs/06_QA.md`.

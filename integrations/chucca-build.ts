@@ -2,6 +2,7 @@
  * Build-Nacharbeit: Service Worker, robots.txt und Sitemap passend zum Betriebsmodus.
  * Private Vorschau: kein HTML im Cache, alles noindex. Öffentlich: Offline-Kopie der
  * öffentlichen Seiten (network-first) und Sitemap mit hreflang aus der Routentabelle.
+ * Dazu `_headers` (Cache, Sicherheits-Header, CSP mit Inline-Hashes), siehe src/lib/headers.ts.
  */
 import type { AstroIntegration } from 'astro';
 import { readdir, readFile, unlink, writeFile } from 'node:fs/promises';
@@ -9,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { join, relative } from 'node:path';
 import { LOCALES, PAGES, pagePath } from '../src/i18n';
 import { buildServiceWorker } from '../src/lib/sw-template';
+import { buildHeadersFile, collectInlineHashes } from '../src/lib/headers';
 
 async function walk(dir: string, root = dir): Promise<string[]> {
   const out: string[] = [];
@@ -74,7 +76,15 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
           // Private Vorschau oder öffentlicher Build ohne Site-URL: nicht indexieren lassen.
           await writeFile(join(root, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
         }
-        logger.info(`mode=${options.mode} · sw.js mit ${precache.length} Assets · ${orphans.length} unreferenzierte Bilder entfernt · robots/sitemap geschrieben`);
+
+        // Auslieferungs-Header (Netlify/Cloudflare-Format): hostneutral, hängt von Modus und Site-URL ab.
+        // Die CSP-Hashes stammen aus den erzeugten Seiten, nicht aus dem Quelltext.
+        const htmlTexts = await Promise.all((await walk(root)).filter((file) => file.endsWith('.html')).map((file) => readFile(join(root, file), 'utf8')));
+        await writeFile(
+          join(root, '_headers'),
+          buildHeadersFile({ files: await walk(root), hashes: collectInlineHashes(htmlTexts), noindex: options.mode !== 'public' || !site }),
+        );
+        logger.info(`mode=${options.mode} · sw.js mit ${precache.length} Assets · ${orphans.length} unreferenzierte Bilder entfernt · robots/sitemap/_headers geschrieben`);
       },
     },
   };
