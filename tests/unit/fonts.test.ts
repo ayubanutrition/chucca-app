@@ -87,6 +87,25 @@ function codepoints(file: string): Set<number> {
   return result;
 }
 
+/** Quellen für sichtbaren Text; muss mit CORPUS_DIRS in scripts/make-fonts.py übereinstimmen. */
+const CORPUS_DIRS = ['i18n', 'content', 'components', 'layouts', 'pages', 'scripts', 'styles'];
+const CORPUS_EXT = /\.(ts|astro|json|css)$/;
+/** Zeichen, die bewusst aus der Systemschrift kommen: Pfeile (→ ↗ ↓ …). */
+const SYSTEM_ONLY = (cp: number): boolean => cp >= 0x2190 && cp < 0x2200;
+
+function corpus(): Set<string> {
+  const found = new Set<string>();
+  const walk = (dir: string): void => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      if (statSync(path).isDirectory()) walk(path);
+      else if (CORPUS_EXT.test(name)) for (const c of readFileSync(path, 'utf8')) found.add(c);
+    }
+  };
+  for (const d of CORPUS_DIRS) walk(join(process.cwd(), 'src', d));
+  return found;
+}
+
 const FILES = ['fraunces-soft-normal.woff2', 'fraunces-soft-italic.woff2', 'instrument-sans-wght.woff2'] as const;
 
 /** Pflichtzeichen: Deutsch, Englisch, Spanisch, Katalanisch, Satz- und Währungszeichen der Seiten. */
@@ -103,24 +122,22 @@ describe('Schriften: Zeichenabdeckung', () => {
     });
   }
 
-  it('jedes nicht-ASCII-Zeichen der Texte (src/i18n) ist in Instrument Sans vorhanden, außer Pfeilen (Systemschrift)', () => {
-    const set = codepoints(join(DIR, 'instrument-sans-wght.woff2'));
-    const dir = join(process.cwd(), 'src/i18n');
-    const text = readdirSync(dir)
-      .filter((f) => f.endsWith('.ts'))
-      .map((f) => readFileSync(join(dir, f), 'utf8'))
-      .join('\n');
-    const arrows = new Set([0x2190, 0x2191, 0x2192, 0x2193, 0x2197]);
-    const missing = [...new Set(text)].filter((c) => {
+  it('jedes Zeichen der Quelltexte steht in allen drei Schriften (außer Systemschrift-Zeichen)', () => {
+    const sets = FILES.map((f) => ({ f, set: codepoints(join(DIR, f)) }));
+    const missing: string[] = [];
+    for (const c of corpus()) {
       const cp = c.codePointAt(0)!;
-      return cp > 0x7e && cp < 0x3000 && !arrows.has(cp) && !set.has(cp);
-    });
+      if (cp <= 0x7e || SYSTEM_ONLY(cp)) continue;
+      for (const { f, set } of sets) if (!set.has(cp)) missing.push(`${c} (U+${cp.toString(16).toUpperCase().padStart(4, '0')}) fehlt in ${f}`);
+    }
+    // Fehlschlag heißt: `python3 scripts/make-fonts.py` ausführen (nimmt das Zeichen automatisch auf). Fehlt es in der
+    // Quellschrift, bewusst Systemschrift in Kauf nehmen und SYSTEM_ONLY erweitern.
     expect(missing).toEqual([]);
   });
 
-  it('Gesamtgewicht der drei Dateien bleibt unter 110 kB', () => {
+  it('Gesamtgewicht der drei Dateien bleibt unter 100 kB (Richtwert für den Erstbesuch)', () => {
     const total = FILES.reduce((sum, f) => sum + statSync(join(DIR, f)).size, 0);
-    expect(total).toBeLessThan(110_000);
+    expect(total).toBeLessThan(100_000);
   });
 
   it('Lizenztexte (OFL) liegen im Build-Ordner', () => {

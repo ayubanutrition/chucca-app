@@ -22,7 +22,7 @@ Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je
 | `dist/`, `dist-public/` | Erzeugter Output (nicht versioniert) |
 
 ## Schriften
-Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-fonts.py` aus den Fontsource-Paketen, SIL OFL; Lizenzen in `public/fonts/`). Eingebunden über `src/styles/fonts.css` (Vite hasht die Dateien nach `_astro/`, Unterpfad-fest); der Service Worker legt alle `_astro/*.woff2` vorab ab. Familiennamen und Tokens bleiben unverändert; metrikangepasste Notschriften stehen in den Tokens hinter den Webschriften. Zeichenabdeckung: `tests/unit/fonts.test.ts`. Begründung und Zahlen: D16.
+Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-fonts.py` aus den Fontsource-Paketen, SIL OFL; Lizenzen in `public/fonts/`). Eingebunden über `src/styles/fonts.css` (Vite hasht die Dateien nach `_astro/`, Unterpfad-fest); der Service Worker legt alle `_astro/*.woff2` vorab ab. Familiennamen und Tokens bleiben unverändert; metrikangepasste Notschriften stehen in den Tokens hinter den Webschriften. Zeichenbestand: fester Sockel plus alle Zeichen aus `src/i18n`, `content`, `components`, `layouts`, `pages`, `scripts`, `styles` (vom Skript automatisch abgeleitet; neue Texte → `python3 scripts/make-fonts.py` erneut ausführen). Zeichenabdeckung und Gewichtsgrenze (< 100 kB): `tests/unit/fonts.test.ts`, das bei jedem Zeichen im Textbestand ohne Glyphe (außer Pfeilen aus der Systemschrift) fehlschlägt. Gesamtgewicht der drei Dateien ca. 82,8 kB. Begründung und Zahlen: D16.
 
 ## Betriebsmodi
 `CHUCCA_MODE` steuert, was der Build enthält (`src/config/mode.ts`, `src/lib/content/index.ts`):
