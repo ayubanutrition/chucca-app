@@ -6,6 +6,10 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { DE_PAGES, SHOT_DIR } from './a11y-helpers';
 
+// Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
+// die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
+test.use({ bypassCSP: true });
+
 type Rgba = [number, number, number, number];
 const parse = (css: string): Rgba => {
   const m = css.match(/rgba?\(([^)]+)\)/);
@@ -65,7 +69,7 @@ test.describe('Windows-Kontrastmodus (forced-colors: active)', () => {
 
   test('Chips: gedrückt und nicht gedrückt sind ohne Farbe unterscheidbar', async ({ page }) => {
     await page.goto('/de/drinks/');
-    await page.locator('[data-category]:not([data-drink])').nth(1).click();
+    await page.locator('[data-taste]').nth(1).click();
     const on = page.locator('.chip[aria-pressed="true"]').first();
     const off = page.locator('.chip[aria-pressed="false"]').first();
     await page.mouse.move(0, 0);
@@ -109,7 +113,7 @@ test.describe('Windows-Kontrastmodus (forced-colors: active)', () => {
     if (c.broken) {
       // BELEGT (P2): im Kontrastmodus werden Farben/Hintergründe vereinheitlicht; der aktive Eintrag unterscheidet sich dann
       // in keiner Eigenschaft vom inaktiven (Screenshots forced-colors-nav-*.png). Fix: @media (forced-colors: active) mit Unterstreichung/Rand.
-      test.fixme(`aktiver Eintrag ohne Farbe unterscheidbar: ${c.name}`, async ({ page }) => run(page));
+      test(`aktiver Eintrag ohne Farbe unterscheidbar: ${c.name}`, async ({ page }) => run(page));
     } else {
       test(`aktiver Eintrag ohne Farbe unterscheidbar: ${c.name}`, async ({ page }) => run(page));
     }
@@ -229,7 +233,7 @@ test.describe('Farbschema und Kontrast', () => {
 
   for (const selector of ['.paper .chip[aria-pressed="false"]', '#menu-search']) {
     // BELEGT (P2): --line-strong auf Papier ist rgb(35 19 27 / .4) und erreicht gemessen nur 2,47:1 (Chip) bzw. 2,28:1 (Suchfeld).
-    test.fixme(`1.4.11 Umrandung auf Papier mindestens 3:1: ${selector}`, async ({ page }) => {
+    test(`1.4.11 Umrandung auf Papier mindestens 3:1: ${selector}`, async ({ page }) => {
       expect(await borderContrast(page, '/de/drinks/', selector)).toBeGreaterThanOrEqual(3);
     });
     test(`Fix-Beweis --line-strong .6 auf Papier: ${selector}`, async ({ page }) => {

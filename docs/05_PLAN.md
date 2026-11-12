@@ -34,7 +34,6 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 - Der Kalender-Erfolgstext kann nicht prüfen, ob das Gerät die Datei wirklich öffnet (In-App-Browser); der Text weist auf das Kopieren hin.
 - Ausnahmetage der Öffnungszeiten wirken auf den Status, werden in der Wochentabelle aber noch nicht einzeln aufgeführt.
 - Läuft ein bestätigter Zeitraum (`validUntil`) während einer Schicht aus, springt der Status um Mitternacht auf „unbestätigt“.
-- Drinks-Seite: Geschmackskompass und Kategorien sind zwei Filterreihen; eine Zusammenlegung wurde im Design-Review vorgeschlagen und zurückgestellt.
 - Die Beispielkarte zeigt den Zustand „nicht verfügbar“ an einem Beispieldrink.
 
 ## Arbeitsprinzip

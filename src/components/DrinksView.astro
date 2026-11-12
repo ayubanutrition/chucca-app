@@ -35,6 +35,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
 
 <div data-menu>
   <div class="wrap">
+    <noscript><p class="notice" data-nojs>{t.common.noscript}</p></noscript>
     <header class={hasMenu ? 'pagehead pagehead--compact' : 'pagehead'}>
       <div class="stack" style="--stack: var(--space-4)">
         <p class="eyebrow">{t.drinks.eyebrow}</p>
@@ -85,7 +86,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
                   {t.drinks.filter.search}
                 </label>
                 <Icon name="search" />
-                <input class="input" id="menu-search" type="search" data-menu-search placeholder={t.drinks.filter.searchPlaceholder} autocomplete="off" enterkeyhint="search" />
+                <input class="input" id="menu-search" type="search" maxlength="60" data-menu-search placeholder={t.drinks.filter.searchPlaceholder} autocomplete="off" enterkeyhint="search" />
               </div>
               <div class="chips" role="group" aria-label={t.drinks.taste.group}>
                 {TASTES.map((taste) => (

@@ -25,11 +25,13 @@ for (const [width, device] of [
         expect(landmarks(snapshot, 'main'), 'main').toHaveLength(1);
         expect(landmarks(snapshot, 'contentinfo'), 'contentinfo').toHaveLength(1);
         const navs = landmarks(snapshot, 'navigation');
-        // Sichtbar sind genau zwei Navigationen (Seiten + Sprache); die jeweils andere Seitennavigation ist ausgeblendet.
-        expect(navs, snapshot).toHaveLength(2);
+        // Sichtbar sind Seiten- und Sprachnavigation; die jeweils andere Seitennavigation ist ausgeblendet.
+        // Die Karte hat zusätzlich die benannte Sprungnavigation zu den Kategorien.
+        const expected = /\/(drinks|bebidas)\/$/.test(path) ? 3 : 2;
+        expect(navs, snapshot).toHaveLength(expected);
         const names = navs.map((line) => line.match(/"([^"]+)"/)?.[1]);
         expect(names.every(Boolean), `Navigation ohne Namen: ${navs.join(' | ')}`).toBe(true);
-        expect(new Set(names).size, `gleich benannte Navigationen: ${names.join(', ')}`).toBe(2);
+        expect(new Set(names).size, `gleich benannte Navigationen: ${names.join(', ')}`).toBe(expected);
         // Vorschau-Band und Toast sind keine zusätzlichen Landmarken (status ist Live-Region, keine Landmarke).
         expect(landmarks(snapshot, 'complementary').length).toBeLessThanOrEqual(1); // Treffplan-Ticket (aside)
       });
@@ -82,7 +84,7 @@ for (const [width, device] of [
           byName.set(link.name, (byName.get(link.name) ?? new Set()).add(link.href.split('#')[0] ?? ''));
           if (link.blank) {
             expect(link.rel, `target=_blank ohne noopener → ${link.href}`).toContain('noopener');
-            expect(link.name, `neuer Tab nicht angekündigt → ${link.href}`).toMatch(/extern|external|externo|fuera de la app|outside the app|new tab|neuen tab/i);
+            expect(link.name, `neuer Tab nicht angekündigt → ${link.href}`).toMatch(/extern|external|externo|fuera de la app|fuera de esta página|outside the app|new tab|neuen tab/i);
           }
         }
         const clashes = [...byName.entries()].filter(([, hrefs]) => hrefs.size > 1).map(([name, hrefs]) => `${name} → ${[...hrefs].join(' | ')}`);

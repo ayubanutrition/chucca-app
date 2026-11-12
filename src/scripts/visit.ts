@@ -23,11 +23,14 @@ if (root) {
   const status = one<HTMLElement>(root, '[data-place-status]');
   const manual = one<HTMLElement>(root, '[data-place-manual]');
 
+  let sharing = false;
   one<HTMLButtonElement>(root, '[data-share-place]').addEventListener('click', async () => {
+    if (sharing) return;
     const payload = { title: data.shareTitle, text: data.shareText, url: data.maps };
     manual.hidden = true;
     status.textContent = '';
-    const outcome = await shareOrCopy(payload);
+    sharing = true;
+    const outcome = await shareOrCopy(payload).finally(() => (sharing = false));
     if (outcome === 'shared') status.textContent = data.shared;
     else if (outcome === 'copied') status.textContent = data.shareCopied;
     else if (outcome === 'manual') showManualCopy(manual, plainText(payload));

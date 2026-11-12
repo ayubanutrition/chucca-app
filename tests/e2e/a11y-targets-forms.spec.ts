@@ -2,6 +2,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { DE_PAGES, SHOT_DIR } from './a11y-helpers';
 
+// Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
+// die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
+test.use({ bypassCSP: true });
+
 const hscroll = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 test.describe('2.5.8 Zielgröße (Minimum)', () => {

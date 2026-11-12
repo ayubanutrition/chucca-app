@@ -81,13 +81,14 @@
 }
 
 .paper {
+  /* Umrandungen auf dem Papier erreichen 3:1 (WCAG 1.4.11). */
   background: var(--paper);
   color: var(--paper-ink);
   color-scheme: light;
   --text: var(--paper-ink);
   --text-dim: var(--paper-mute);
   --line: rgb(35 19 27 / 0.16);
-  --line-strong: rgb(35 19 27 / 0.4);
+  --line-strong: rgb(35 19 27 / 0.62);
   --accent: var(--orange-ink);
   --focus: var(--paper-ink);
   --cream-mute: var(--paper-mute);
@@ -295,6 +296,7 @@
   color: var(--paper-mute);
 }
 .drink__off {
+  max-width: 38rem;
   grid-column: 1 / -1;
   font-size: var(--step--1);
   font-weight: 650;

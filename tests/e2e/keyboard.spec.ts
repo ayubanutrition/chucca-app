@@ -190,27 +190,29 @@ test.describe('Chips und Suche (Drinks)', () => {
     await expect(taste).toHaveAttribute('aria-pressed', 'false');
     await expect(taste).toBeFocused();
 
-    const category = page.locator('[data-category]:not([data-drink])').nth(1);
+    const category = page.locator('[data-taste]').nth(1);
     await category.focus();
     await page.keyboard.press('Enter');
     await expect(category).toHaveAttribute('aria-pressed', 'true');
     await expect(category).toBeFocused();
-    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveCount(1); // „Alle“ wird abgewählt
+    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveCount(1); // genau eine Richtung gewählt
     const visible = await page.locator('[data-drink]:not([hidden])').count();
     const count = Number((await page.locator('[data-menu-count]').textContent())?.match(/\d+/)?.[0] ?? -1);
     expect(count).toBe(visible);
     await page.keyboard.press('Space');
-    await expect(category).toHaveAttribute('aria-pressed', 'true'); // Kategorie bleibt gewählt (kein Umschalten auf „keine“)
+    await expect(category).toHaveAttribute('aria-pressed', 'false'); // erneutes Drücken hebt die Auswahl auf
   });
 
   test('Enter im Suchfeld lädt die Seite nicht neu und verliert den Fokus nicht', async ({ page }) => {
     await page.goto('/de/drinks/');
     const search = page.locator('#menu-search');
     await search.fill('Spritz');
-    const urlBefore = page.url();
+    // Marker im Seitenobjekt: bleibt er erhalten, wurde nicht neu geladen oder navigiert.
+    await page.evaluate(() => ((window as unknown as { __marker: number }).__marker = 42));
     await search.press('Enter');
     await expect(search).toBeFocused();
-    expect(page.url()).toBe(urlBefore);
+    expect(await page.evaluate(() => (window as unknown as { __marker?: number }).__marker)).toBe(42);
+    expect(new URL(page.url()).pathname).toBe('/de/drinks/');
   });
 });
 

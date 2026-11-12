@@ -82,6 +82,8 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: 5rem;
+  /* Die feste Leiste unten darf einem per Tastatur fokussierten Element nicht die Sicht nehmen (WCAG 2.4.11). */
+  scroll-padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom) + 1rem);
   background: var(--bg);
 }
 body {
@@ -323,9 +325,10 @@ button {
 }
 .masthead__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
   min-height: 4.25rem;
 }
 .wordmark {
@@ -441,7 +444,7 @@ button {
 .tabbar ul {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr;
+  grid-auto-columns: minmax(0, 1fr);
 }
 .tabbar a {
   display: flex;
@@ -733,7 +736,7 @@ textarea.input {
 }
 @media (min-width: 34rem) {
   .fields.fields--trio {
-    grid-template-columns: 6.5rem 1fr 1fr;
+    grid-template-columns: 6.5rem minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 @media (max-width: 30rem) {
@@ -882,7 +885,7 @@ textarea.input {
 .path {
   position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 0.35rem var(--space-4);
   align-items: baseline;
   padding-block: var(--space-5);
@@ -956,11 +959,12 @@ textarea.input {
 
 .events__list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 .event {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-5);
   align-items: center;
   padding: var(--space-5);
@@ -1001,7 +1005,7 @@ textarea.input {
 }
 @media (min-width: 48rem) {
   .events__list {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 
@@ -1087,6 +1091,7 @@ textarea.input {
 /* ---------- Besuch ---------- */
 .visit__grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-7);
   padding-bottom: var(--space-8);
 }
@@ -1353,6 +1358,7 @@ details.fold p {
 }
 .shot {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   align-content: start;
 }
@@ -1600,5 +1606,75 @@ body.bare {
     bottom: 0.45rem;
     padding: 0.25em 0.55em;
     font-size: 0.6rem;
+  }
+}
+
+/* ---------- Robustheit bei Textvergrößerung und im Kontrastmodus ---------- */
+.langs {
+  margin-inline-start: auto;
+}
+.tabbar a span {
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+@media (min-width: 60rem) {
+  html {
+    scroll-padding-bottom: 0;
+  }
+}
+@media (max-height: 26rem) {
+  html {
+    scroll-padding-bottom: 0;
+  }
+}
+@media (max-width: 18.5rem) {
+  .langs a {
+    min-width: 2.2rem;
+    padding-inline: 0.3rem;
+  }
+}
+/* Windows-Kontrastmodus: Farben werden vereinheitlicht, der aktive Eintrag braucht ein zweites Merkmal. */
+@media (forced-colors: active) {
+  .tabbar a[aria-current='page'],
+  .topnav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.25em;
+  }
+  .langs a[aria-current='true'] {
+    border: 2px solid CanvasText;
+    text-decoration: underline;
+  }
+}
+
+/* Bei starker Textvergrößerung dürfen lange Wörter in Überschriften umbrechen, statt die Seite zu verbreitern. */
+.display,
+.path__q,
+.h3,
+.ticket__date,
+.address__street {
+  overflow-wrap: anywhere;
+}
+.closing {
+  overflow-x: clip;
+}
+.shot,
+.shot a,
+.art {
+  min-width: 0;
+}
+.event > :last-child {
+  flex: 1 1 9rem;
+  min-width: 0;
+}
+.input {
+  min-width: 0;
+}
+@media (max-width: 47.99rem) {
+  .gallery .shot--full {
+    grid-column: 1 / -1;
+  }
+  .gallery .shot--full .art {
+    aspect-ratio: 16 / 10;
   }
 }

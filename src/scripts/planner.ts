@@ -113,13 +113,17 @@ if (root) {
 
   form.addEventListener('input', change);
 
+  // Ein zweiter Klick, solange das Teilen-Menü offen ist, würde InvalidStateError auslösen und fälschlich „kopiert“ melden.
+  let sharing = false;
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
+    if (sharing) return;
     const result = check();
     if (!result) return;
     const { text, url } = invitation(result.instant);
     manual.hidden = true;
-    const outcome = await shareOrCopy({ title: s.inviteTitle ?? '', text, url });
+    sharing = true;
+    const outcome = await shareOrCopy({ title: s.inviteTitle ?? '', text, url }).finally(() => (sharing = false));
     if (outcome === 'shared') status.textContent = s.shared ?? '';
     else if (outcome === 'copied') status.textContent = s.copied ?? '';
     else if (outcome === 'manual') showManualCopy(manual, `${text}\n${url}`);

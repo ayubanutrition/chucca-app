@@ -37,6 +37,7 @@ export const de = {
     conceptLong: 'Konzeptmotiv – keine Aufnahme aus dem Lokal',
     preview: 'Private Vorschau',
     previewNote: 'Beispieldaten und Konzeptmotive sind gekennzeichnet.',
+    noscript: 'Für Filter, Teilen und Kalender braucht diese Seite JavaScript. Ohne JavaScript bleiben die Inhalte lesbar.',
     offline: 'Du bist offline. Karten, Instagram und Teilen brauchen eine Verbindung.',
     unconfirmed: 'Noch unbestätigt',
     copy: 'Text kopieren',

@@ -5,6 +5,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { ALL_PAGES, DE_PAGES, SHOT_DIR } from './a11y-helpers';
 
+// Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
+// die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
+test.use({ bypassCSP: true });
+
 const hscroll = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 test.describe('JavaScript deaktiviert', () => {
@@ -66,7 +70,6 @@ test.describe('JavaScript deaktiviert', () => {
     test(`Bedienelemente ohne Funktion sind erklärt oder ausgeblendet: ${path}`, async ({ page }) => {
       // BELEGT (P3): Es gibt kein <noscript> und keinen Hinweis. Ohne JavaScript bleiben „Einladung teilen“, „Im Kalender speichern“,
       // die Filter-Chips und das Suchfeld sichtbar und tot (Formular ohne action sendet nur eine leere GET-Anfrage).
-      test.fixme(true, 'BELEGT P3: tote Bedienelemente ohne JavaScript, kein <noscript>-Hinweis');
       await page.goto(path);
       const actionable = await page.locator('form button:visible, [data-taste]:visible, [data-category]:visible:not([data-drink]), [data-copy-address]:visible').count();
       const hint = await page.locator('noscript, [data-nojs]').count();
@@ -294,7 +297,7 @@ test.describe('Zurück/Vor und bfcache', () => {
   test('Drinks: Filter, Chip und Suchtext bleiben nach Seitenwechsel und Zurück konsistent', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/de/drinks/');
-    await page.locator('[data-category]:not([data-drink])').nth(1).click();
+    await page.locator('[data-taste]').nth(1).click();
     await page.locator('#menu-search').fill('a');
     const snapshot = async () => ({
       search: await page.locator('#menu-search').inputValue(),
@@ -388,7 +391,6 @@ test.describe('Sehr schmale und sehr breite Fenster', () => {
     test(`Besuch (Anfrageformular) bei ${width} px: kein Querscrollen (iPad quer)`, async ({ page }) => {
       // BELEGT (P2): `.fields--trio` nutzt `6.5rem 1fr 1fr`; 1fr = minmax(auto, 1fr), das Datumsfeld (min-content) drückt die Spalten
       // über den Rand: scrollWidth +42 px bei 960, +23 bei 1000, +12 bei 1024 px (alle drei Sprachen).
-      test.fixme(true, 'BELEGT P2: Anfrageformular erzeugt Querscrollen zwischen ~960 und ~1100 px');
       await page.setViewportSize({ width, height: 800 });
       await page.goto('/de/besuch/');
       expect(await hscroll(page)).toBeLessThanOrEqual(0);

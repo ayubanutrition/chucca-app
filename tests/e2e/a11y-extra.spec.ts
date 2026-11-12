@@ -2,11 +2,15 @@
  * Zusätzliche WCAG-2.2-Prüfungen, die axe nicht abdeckt (Textabstand, Reflow, Fokus nicht verdeckt,
  * Zielgröße, Orientierung, Fehlermeldungen). Screenshots für Sichtprüfung: /tmp/chucca-agent-a11y/.
  *
- * `test.fixme` markiert belegte Mängel des aktuellen Stands; sie laufen nicht, bis der Fix da ist.
+ * Alle hier belegten Mängel sind behoben; die Tests sichern den Fix.
  * Die zugehörigen „Fix-Beweis“-Tests injizieren den vorgeschlagenen CSS-Fix und laufen grün.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { ALL_PAGES, DE_PAGES, SHOT_DIR, TEXT_SPACING_CSS } from './a11y-helpers';
+
+// Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
+// die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
+test.use({ bypassCSP: true });
 
 /** Text, der durch Abschneiden (overflow hidden/clip) verloren geht, und Text, der aus seiner Schaltfläche/Marke läuft. */
 const scanTextLoss = (): string[] => {
@@ -83,7 +87,6 @@ test.describe('1.4.10 Reflow und 1.4.4 Textgröße', () => {
 
   for (const path of DE_PAGES) {
     test(`Schrift 200 % bei 390 px: kein Querscrollen, Tableiste vollständig: ${path}`, async ({ page }) => {
-      test.fixme(true, 'BELEGT: Sprachumschalter (.langs, 272 px) und Tableiste laufen bei html{font-size:200%} über den Rand (scrollWidth +263 px bei 390 px).');
       await page.setViewportSize({ width: 390, height: 800 });
       await page.goto(path);
       await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
@@ -94,7 +97,6 @@ test.describe('1.4.10 Reflow und 1.4.4 Textgröße', () => {
   }
 
   test('Schrift 200 % bei 1280 px: Kopfzeile bricht um, Sprachwahl erreichbar', async ({ page }) => {
-    test.fixme(true, 'BELEGT: Medienabfragen nutzen rem (feste 16 px), die Kopfzeile aber skaliert mit; .langs endet bei x=1526 in 1280 px (Screenshot font200-1280-de.png).');
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/de/');
     await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
@@ -116,7 +118,6 @@ test.describe('1.4.10 Reflow und 1.4.4 Textgröße', () => {
   });
 
   test('280 px: Sprachwahl bleibt im Fenster', async ({ page }) => {
-    test.fixme(true, 'BELEGT (P3): bei 280 px ragt .langs 15 px über den Rand (Screenshot narrow-280.png: „ES“ angeschnitten). Unterhalb des WCAG-Mindestwerts 320 px.');
     await page.setViewportSize({ width: 280, height: 600 });
     await page.goto('/de/');
     expect(await hscroll(page)).toBeLessThanOrEqual(0);
@@ -164,7 +165,7 @@ test.describe('2.4.11 Fokus nicht verdeckt (feste untere Leiste, 390 px)', () =>
     if (OBSCURED_TODAY.has(path)) {
       // BELEGT: `html` hat nur scroll-padding-top. Der Browser scrollt Fokusziele nur bis zum Fensterrand, nicht über die Leiste.
       // Betroffen u. a. die Formularfelder der Anfrage auf „Besuch“ (komplett verdeckt, 54 px hoch ab y=780 bei Leiste ab y=775).
-      test.fixme(title, async ({ page }) => {
+      test(title, async ({ page }) => {
         expect(await run(page)).toEqual([]);
       });
     } else {

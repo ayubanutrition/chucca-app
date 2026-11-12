@@ -38,6 +38,7 @@ export const es: Dictionary = {
     conceptLong: 'Imagen conceptual: no es una fotografía del local',
     preview: 'Vista previa privada',
     previewNote: 'Los datos de ejemplo y las imágenes conceptuales están señalados.',
+    noscript: 'Los filtros, compartir y el calendario necesitan JavaScript. Sin él, el contenido sigue siendo legible.',
     offline: 'Estás sin conexión. Los mapas, Instagram y compartir necesitan conexión.',
     unconfirmed: 'Aún sin confirmar',
     copy: 'Copiar texto',
