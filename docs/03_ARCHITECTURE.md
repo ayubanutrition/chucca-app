@@ -76,4 +76,4 @@ Reiner statischer Output; jeder Static-Host genügt. Die bestehende private Vors
 Initialer mobiler Transfer ≤ 1 MB, initiales JS ≤ 100 kB gzip. Messwerte: `docs/06_QA.md`.
 
 ## Native Phase (nicht begonnen)
-Empfehlung: erst nach bestätigtem Content und gemessenem Bedarf. Nutzen gegenüber der PWA wären Store-Präsenz und Push; beides ist für das Kernprodukt nicht nötig. Weg der Wahl wäre ein Wrapper (Capacitor) um diesen Build mit geteilter Logik aus `src/lib/`; dafür offen: Apple-/Google-Konten des Betreibers, Signierung, Store-Texte in drei Sprachen, Geräteabnahme, Datenschutzangaben. PWA, Wrapper und native App bleiben getrennte Lieferstände.
+Empfehlung: erst nach bestätigtem Content und gemessenem Bedarf. Nutzen gegenüber der PWA wären Store-Präsenz und Push; beides ist für das Kernprodukt nicht nötig. Weg der Wahl wäre ein Wrapper (Capacitor) um diesen Build mit geteilter Logik aus `src/lib/`; dafür offen: Apple-/Google-Konten des Betreibers, Signierung, Store-Texte in drei Sprachen, Geräteabnahme, Datenschutzangaben. PWA, Wrapper und native App bleiben getrennte Lieferstände. Kriterien, Annahmen und Auslöser: `docs/12_NATIVE_PHASE.md`.

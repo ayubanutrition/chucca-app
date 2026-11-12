@@ -153,6 +153,23 @@ Hinweis: Die Website sammelt selbst keine Gästedaten und setzt keine Tracking-D
 
 ---
 
+## QR-Code für den Aufsteller (später)
+
+Sobald feststeht, unter welcher Adresse die Website erreichbar ist, kann ein QR-Code für Tische oder Aufsteller erzeugt werden. Er führt direkt auf die Getränkekarte in der gewünschten Sprache (Deutsch, Englisch oder Spanisch). Dafür gilt:
+
+- **Erst nach der Entscheidung über Hosting und Adresse.** Ein vorher gedruckter Code würde ins Leere führen.
+- **Die Karte muss bestätigt sein.** Solange der Betrieb die Karte nicht bestätigt hat, zeigt die öffentliche Seite „Die bestätigte Karte folgt“ und wird von Suchmaschinen ausgeschlossen (`noindex`). Ein Code sollte erst gedruckt werden, wenn dort die echte Karte steht.
+- **Kurz-URL optional.** Wer eine lesbare Kurzadresse möchte, richtet sie beim gewählten Anbieter ein und lässt sie auf die Karte weiterleiten. Sie darf keine Tracking-Parameter (`utm_…`) enthalten; die Website arbeitet ohne Tracking.
+- **Vor dem Druck mit einem Handy scannen**, in jeder Sprachfassung und bei der gedruckten Größe.
+
+Technik (für die Betreuung):
+
+```sh
+node scripts/qr-link.mjs https://<Host>/<Unterpfad-falls-vorhanden> de [https://kurz.example/d] [--out aufsteller-de.svg]
+```
+
+Das Skript gibt den Deep-Link aus (z. B. `…/de/drinks/`, `…/en/drinks/`, `…/es/bebidas/`), prüft die URLs (https, keine UTM-Parameter, keine Zugangsdaten) und schreibt ein druckbares SVG ohne externe Verweise. Mit Kurz-URL kodiert der Code diese, sonst den Deep-Link. Nicht geprüft: Scanbarkeit nach dem Druck, Kontrast auf dem gewählten Material.
+
 ## Wie läuft es danach?
 
 1. **Prüfen.** Wir tragen Ihre Angaben ein und lassen automatisch prüfen, ob alles vollständig und widerspruchsfrei ist. Offene Punkte schicken wir Ihnen als kurze Liste.

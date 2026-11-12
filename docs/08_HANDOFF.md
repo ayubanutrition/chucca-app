@@ -3,7 +3,14 @@
 Stand 11.11.2026.
 
 ## Was fertig ist
-V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 110 Unit- und 477 Browser-Tests.
+V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 116 Unit- und 477 Browser-Tests.
+
+## Browserübergreifend (12.11.2026)
+`npm run test:e2e:cross` führt die Browser-Suite in Playwright-Firefox und -WebKit aus (Linux, headless): je 476 bestanden, je 1 übersprungen, 0 fehlgeschlagen, 6 Tests erst nach Wiederholung grün. Behoben: Tastaturfokus unter der festen Tableiste in Firefox (`src/scripts/app.ts`). Nicht geprüft: Offline in WebKit (Werkzeugfehler), `prefers-contrast` in Firefox (nicht emulierbar). Ohne Browser-Installation (`npx playwright install --with-deps firefox webkit`) läuft der Befehl nicht; `npm run check` bleibt bei Chromium. Playwright-WebKit ist nicht iOS-Safari, Gerätetests (Aufgabe 14) bleiben offen. Details: `docs/06_QA.md`.
+
+## Vorbereitet, aber noch nicht nutzbar
+- QR-Aufsteller: `node scripts/qr-link.mjs <Basis-URL> <de|en|es> [Kurz-URL]` (Aufgabe 20). Erst nach der Hostentscheidung sinnvoll; Anleitung in `docs/10_BETREIBER.md`. Neue devDependency `qrcode-generator` (MIT), nicht im Produktbuild.
+- Entscheidungsvorlage PWA vs. native: `docs/12_NATIVE_PHASE.md` (Aufgabe 21).
 
 ## Wo es läuft
 Nur lokal. Kein Deployment, keine öffentliche URL, kein PR.

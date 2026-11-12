@@ -27,8 +27,11 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 | 17 | Muttersprachliche Durchsicht EN/ES | Person | Freigabe der Texte |
 | 18 | Betreuter Anfrageweg (Formular-Backend oder bestätigter Kanal) | 12 | Erfolg erst nach echter Zustellung; Fehler- und Timeout-Zustände getestet |
 | 19 | Schriften subsetten (vorher ca. 167 kB) | DONE | Erstbesuch 102,5 → 84,4 kB (Labor, zweite Stufe: Zeichenbestand aus den Quelltexten); `scripts/make-fonts.py`, `tests/unit/fonts.test.ts`; `docs/06_QA.md`, D16 |
-| 20 | QR-Aufsteller: Deep-Link auf `/…/drinks/` mit lesbarer Kurz-URL | 13 | gedruckter Code führt direkt zur Karte |
-| 21 | Native Phase bewerten | 12–14 | Entscheidungsvorlage nach `docs/03_ARCHITECTURE.md` |
+| 20 | QR-Aufsteller: Deep-Link auf `/…/drinks/` mit lesbarer Kurz-URL | 13 | Werkzeug fertig (`scripts/qr-link.mjs`, `tests/unit/qr-link.test.ts`, 6 Tests; Anleitung `docs/10_BETREIBER.md`). Offen: Host (13), Kurz-URL, Druck und Scan-Test mit echtem Gerät; Drinks bleibt im öffentlichen Modus `noindex`, bis die Karte bestätigt ist |
+| 21 | Native Phase bewerten | 12–14 | Vorlage liegt vor: `docs/12_NATIVE_PHASE.md` (Kriterien, Annahmen, Auslöser). Entscheidung offen, braucht Ergebnisse aus 12–14 |
+
+## Cross-Browser-Stand (12.11.2026)
+Dieselbe Browser-Suite läuft zusätzlich in Playwright-Firefox und -WebKit (`npm run test:e2e:cross`, nicht Teil von `npm run check`; CI-Job `cross-browser` eingerichtet, nicht ausgeführt). Ergebnis: Firefox 476 bestanden, 1 übersprungen; WebKit 476 bestanden, 1 übersprungen; 6 Tests nur nach Wiederholung grün (Last). Ein echter Fehler in Firefox (Tastaturfokus unter der Tableiste) ist behoben. Offen: Offline-Verhalten in WebKit ungeprüft (Werkzeuggrenze). Playwright-WebKit ist nicht iOS-Safari und ersetzt Aufgabe 14 nicht. Details: `docs/06_QA.md`, „Browserübergreifend“.
 
 ## Bekannte Grenzen des Stands
 - Der Kalender-Erfolgstext kann nicht prüfen, ob das Gerät die Datei wirklich öffnet (In-App-Browser); der Text weist auf das Kopieren hin.

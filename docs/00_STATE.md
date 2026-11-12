@@ -11,7 +11,7 @@ Stand: 11.11.2026, nach Umsetzung von V4.
 | V4 | umgesetzt: Heute, Drinks, Besuch, Gruppe, Galerie, Event-Zustände, DE/EN/ES, Mobile und Desktop | `npm run check` grün, `docs/06_QA.md` |
 | Deployment | keines | – |
 | PR | keiner (nicht beauftragt) | – |
-| Native App | kein Projekt | – |
+| Native App | kein Projekt; Entscheidungsvorlage ohne Beschluss | `docs/12_NATIVE_PHASE.md` |
 
 ## Baseline V3 (aus dem Startpaket, im Repo nicht enthalten)
 Am 11.11.2026 im entpackten Startpaket erneut ausgeführt: `npm run check` PASS, `npm test` PASS (Planner: Zeitzone/DST, UID, Validierung), `python3 -m unittest` 6/6 PASS, `media_library.py audit` 4 gesamt / 0 veröffentlichbar. Der lokale V3-Import `78761be…` und der Checkpoint `bc78bab…` waren in dieser Umgebung nicht als Git-Historie vorhanden, nur als Dateien des Pakets.

@@ -57,3 +57,4 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 | `docs/08_HANDOFF.md` | Übergabe, nächste Schritte |
 | `docs/09_RESEARCH.md` | Recherche, Übernahmen, Validierung |
 | `docs/11_HOSTING.md` | Header, CSP, Abbildung auf Hosts |
+| `docs/12_NATIVE_PHASE.md` | Entscheidungsvorlage PWA vs. native |
