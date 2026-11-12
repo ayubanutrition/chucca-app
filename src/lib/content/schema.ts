@@ -10,6 +10,11 @@ const text = z.string().trim().min(1);
 export const localized = z.object({ de: text, en: text, es: text }).strict();
 export type Localized = z.infer<typeof localized>;
 
+/** Nur Web-Links: verhindert `javascript:`/`data:` in Inhaltsdateien (Tiefenverteidigung zur CSP). */
+const httpsUrl = z.url().refine((value) => value.startsWith('https://'), 'https:// erwartet');
+/** Kanal-Link: https, mailto oder tel. */
+const channelHref = text.refine((value) => /^(https:\/\/|mailto:|tel:)/i.test(value), 'https://, mailto: oder tel: erwartet');
+
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const clock = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/);
 
@@ -47,13 +52,13 @@ export const venueSchema = z
       .strict(),
     /** Näherungskoordinaten, nur für die Sonnenstandsrechnung (keine Navigation). */
     approxGeo: z.object({ lat: z.number().min(-90).max(90), lon: z.number().min(-180).max(180) }).strict(),
-    maps: z.object({ google: z.url(), apple: z.url() }).strict(),
+    maps: z.object({ google: httpsUrl, apple: httpsUrl }).strict(),
     channels: z.array(
       z
         .object({
           type: z.enum(['instagram', 'email', 'phone', 'whatsapp']),
           label: text,
-          href: text,
+          href: channelHref,
           /** Wird dieser Kanal für Gruppenanfragen betreut? Nur nach Betreiberbestätigung. */
           acceptsInquiries: z.boolean(),
           ...provenance,

@@ -142,6 +142,10 @@ describe('Datenverträge', () => {
     const drink = fixtureMenu.items[0]!;
     expect(() => menuSchema.parse({ ...fixtureMenu, items: [{ ...drink, name: { de: 'x', en: 'x' } }] })).toThrow();
     expect(() => venueSchema.parse({ ...venueInternal, rating: 4.9 })).toThrow();
+    // Nur Web-, Mail- und Telefonlinks; kein Skript-Schema in Inhaltsdateien.
+    expect(() => venueSchema.parse({ ...venueInternal, maps: { ...venueInternal.maps, google: 'javascript:alert(1)' } })).toThrow();
+    const [first, ...others] = venueInternal.channels;
+    expect(() => venueSchema.parse({ ...venueInternal, channels: [{ ...first, href: 'javascript:alert(1)' }, ...others] })).toThrow();
   });
   it('akzeptiert „confirmed“ nur mit Quelle und Datum', () => {
     expect(unbackedConfirmations(venueInternal)).toEqual([]);

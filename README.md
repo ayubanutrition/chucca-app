@@ -19,8 +19,8 @@ npm run serve        # dist/ ausliefern: http://127.0.0.1:4321/
 npm run typecheck    # astro check (TypeScript strictest)
 npm run lint         # ESLint
 npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker
-npm run build:test   # beide Builds: dist/ (Vorschau) und dist-public/ (öffentlich, Test-URL)
-npm run test:e2e     # Playwright gegen beide Builds, inkl. axe
+npm run build:test   # drei Builds: dist/ (Vorschau), dist-public/ (öffentlich, Test-URL), dist-sub/ (Unterpfad)
+npm run test:e2e     # Playwright gegen alle drei Builds, inkl. axe
 npm run test:sw-update # Update-Pfad des Service Workers mit zwei Build-Ständen (Playwright)
 npm run check        # alles in dieser Reihenfolge
 ```
