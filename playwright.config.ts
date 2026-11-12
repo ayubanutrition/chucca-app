@@ -1,4 +1,5 @@
 import { defineConfig } from '@playwright/test';
+import { ORIGIN, PORT } from './tests/e2e/ports';
 
 /** Browsertests laufen gegen die gebauten Stände: Vorschau (dist) und öffentlich (dist-public). */
 export default defineConfig({
@@ -6,10 +7,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: [['list']],
-  use: { baseURL: 'http://127.0.0.1:4331', locale: 'de-DE', timezoneId: 'Europe/London', serviceWorkers: 'block' },
+  use: { baseURL: ORIGIN.preview, locale: 'de-DE', timezoneId: 'Europe/London', serviceWorkers: 'block' },
   webServer: [
-    { command: 'node scripts/serve.mjs dist 4331', url: 'http://127.0.0.1:4331/de/', reuseExistingServer: !process.env.CI },
-    { command: 'node scripts/serve.mjs dist-public 4332', url: 'http://127.0.0.1:4332/de/', reuseExistingServer: !process.env.CI },
-    { command: 'node scripts/serve.mjs dist-sub 4333 /preview/app/', url: 'http://127.0.0.1:4333/preview/app/de/', reuseExistingServer: !process.env.CI },
+    { command: `node scripts/serve.mjs dist ${PORT.preview}`, url: `${ORIGIN.preview}/de/`, reuseExistingServer: !process.env.CI },
+    { command: `node scripts/serve.mjs dist-public ${PORT.public}`, url: `${ORIGIN.public}/de/`, reuseExistingServer: !process.env.CI },
+    { command: `node scripts/serve.mjs dist-sub ${PORT.sub} /preview/app/`, url: `${ORIGIN.sub}/preview/app/de/`, reuseExistingServer: !process.env.CI },
   ],
 });

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test, type Page } from '@playwright/test';
+import { ORIGIN } from './ports';
 
 /** Simuliert Geräte ohne Teilen-Menü bzw. mit kontrolliertem Verhalten. */
 async function stubSharing(page: Page, mode: 'none' | 'share-ok' | 'share-abort' | 'clipboard-ok' | 'clipboard-fail') {
@@ -261,7 +262,7 @@ test.describe('Galerie', () => {
   });
 
   test('ohne JavaScript führt das Vorschaubild zum großen Bild', async ({ browser }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false, baseURL: 'http://127.0.0.1:4331' });
+    const context = await browser.newContext({ javaScriptEnabled: false, baseURL: ORIGIN.preview });
     const page = await context.newPage();
     await page.goto('/en/gallery/');
     await expect(page.locator('[data-shot]').first()).toHaveAttribute('href', /\/_astro\/.+\.webp$/);

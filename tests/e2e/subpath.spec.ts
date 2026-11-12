@@ -1,8 +1,9 @@
 /** Hosting im Unterpfad (/preview/app/): Links, Assets, Manifest, Sprachwahl, 404, Service Worker. */
 import { expect, test } from '@playwright/test';
+import { ORIGIN } from './ports';
 
 const BASE = '/preview/app';
-test.use({ baseURL: 'http://127.0.0.1:4333', serviceWorkers: 'allow' });
+test.use({ baseURL: ORIGIN.sub, serviceWorkers: 'allow' });
 
 test('alle Seiten laden mit Assets, ohne Fehler und ohne Verweise außerhalb des Unterpfads', async ({ page }) => {
   const failed: string[] = [];
@@ -23,9 +24,9 @@ test('Navigation, Sprachwechsel, Sprachwahl, Hash-Weiterleitung und 404 bleiben 
   await page.goto(`${BASE}/de/`);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.locator('.topnav').getByRole('link', { name: 'Drinks' }).click();
-  await expect(page).toHaveURL(`http://127.0.0.1:4333${BASE}/de/drinks/`);
+  await expect(page).toHaveURL(`${ORIGIN.sub}${BASE}/de/drinks/`);
   await page.locator('.langs').getByRole('link', { name: /ES/ }).click();
-  await expect(page).toHaveURL(`http://127.0.0.1:4333${BASE}/es/bebidas/`);
+  await expect(page).toHaveURL(`${ORIGIN.sub}${BASE}/es/bebidas/`);
   await page.evaluate(() => localStorage.clear());
   await page.goto(`${BASE}/`);
   await expect(page.getByRole('link', { name: /English/ })).toHaveAttribute('href', `${BASE}/en/`);
@@ -36,7 +37,7 @@ test('Navigation, Sprachwechsel, Sprachwahl, Hash-Weiterleitung und 404 bleiben 
   expect(response?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: 'This page does not exist.' })).toBeVisible();
   await page.getByRole('link', { name: 'Go to home' }).click();
-  await expect(page).toHaveURL(`http://127.0.0.1:4333${BASE}/en/`);
+  await expect(page).toHaveURL(`${ORIGIN.sub}${BASE}/en/`);
 });
 
 test('Manifest, Service Worker und Sitemap tragen den Unterpfad', async ({ page, request }) => {
@@ -47,6 +48,6 @@ test('Manifest, Service Worker und Sitemap tragen den Unterpfad', async ({ page,
   expect(sitemap).toContain('<loc>https://chucca.example/preview/app/de/besuch/</loc>');
   await page.goto(`${BASE}/de/`);
   const scope = await page.evaluate(async () => (await navigator.serviceWorker.ready).scope);
-  expect(scope).toBe(`http://127.0.0.1:4333${BASE}/`);
+  expect(scope).toBe(`${ORIGIN.sub}${BASE}/`);
   expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe('https://chucca.example/preview/app/de/');
 });

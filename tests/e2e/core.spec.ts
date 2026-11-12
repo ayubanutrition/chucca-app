@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { ORIGIN } from './ports';
 
 const PAGES = {
   de: ['/de/', '/de/drinks/', '/de/besuch/', '/de/gruppe/', '/de/galerie/'],
@@ -63,7 +64,7 @@ test.describe('Kernstrecke', () => {
 
   test('Einstieg ist eine Sprachwahl ohne Zwangsumleitung; die Wahl wird gemerkt', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/:4331\/$/);
+    expect(page.url()).toBe(`${ORIGIN.preview}/`);
     await expect(page.getByRole('link', { name: /Deutsch/ })).toHaveAttribute('data-suggested', 'true');
     await page.getByRole('link', { name: /Español/ }).click();
     await expect(page).toHaveURL(/\/es\/$/);
@@ -124,7 +125,7 @@ test.describe('Sprachen', () => {
 
 test.describe('Getränkekarte', () => {
   test('ist ohne JavaScript vollständig lesbar', async ({ browser }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false, baseURL: 'http://127.0.0.1:4331' });
+    const context = await browser.newContext({ javaScriptEnabled: false, baseURL: ORIGIN.preview });
     const page = await context.newPage();
     await page.goto('/de/drinks/');
     await expect(page.locator('[data-drink]')).toHaveCount(16);
@@ -265,7 +266,7 @@ test.describe('Zugänglichkeit und Layout', () => {
     const foreign: string[] = [];
     const errors: string[] = [];
     page.on('request', (request) => {
-      if (!request.url().startsWith('http://127.0.0.1:4331') && !request.url().startsWith('data:') && !request.url().startsWith('blob:')) foreign.push(request.url());
+      if (!request.url().startsWith(ORIGIN.preview) && !request.url().startsWith('data:') && !request.url().startsWith('blob:')) foreign.push(request.url());
     });
     page.on('console', (message) => message.type() === 'error' && errors.push(message.text()));
     page.on('pageerror', (error) => !/Transition was aborted/.test(error.message) && errors.push(error.message));

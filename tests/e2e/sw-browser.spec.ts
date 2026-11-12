@@ -3,6 +3,7 @@
  * Prüft Registrierung, Offline-Navigation, Offline-Seite und dass die Vorschau kein HTML speichert.
  */
 import { expect, test } from '@playwright/test';
+import { ORIGIN } from './ports';
 
 test.use({ serviceWorkers: 'allow' });
 
@@ -15,8 +16,8 @@ async function ready(page: import('@playwright/test').Page) {
   await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
 }
 
-test.describe('öffentlicher Build (:4332)', () => {
-  test.use({ baseURL: 'http://127.0.0.1:4332' });
+test.describe('öffentlicher Build (öffentlich)', () => {
+  test.use({ baseURL: ORIGIN.public });
 
   test('liefert besuchte Seiten offline und eine neutrale Offline-Seite für unbekannte', async ({ page, context }) => {
     await page.goto('/de/besuch/');
@@ -34,7 +35,7 @@ test.describe('öffentlicher Build (:4332)', () => {
   });
 });
 
-test.describe('Vorschau (:4331)', () => {
+test.describe('Vorschau (Vorschau-Build)', () => {
   test('speichert niemals HTML', async ({ page, context }) => {
     await page.goto('/de/');
     await ready(page);

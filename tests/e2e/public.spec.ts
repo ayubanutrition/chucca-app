@@ -1,8 +1,9 @@
 /** Öffentlicher Build: nur bestätigte Inhalte, sauberes SEO, keine Vorschau-Daten. */
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
+import { ORIGIN } from './ports';
 
-test.use({ baseURL: 'http://127.0.0.1:4332' });
+test.use({ baseURL: ORIGIN.public });
 
 const dist = (file: string) => readFile(new URL(`../../dist-public/${file}`, import.meta.url), 'utf8');
 
