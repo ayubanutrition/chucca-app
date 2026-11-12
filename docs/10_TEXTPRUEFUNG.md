@@ -92,4 +92,4 @@ Angepasster Test: `tests/e2e/core.spec.ts` (Größenangabe `0,3 l` wird zu `30 c
 11. **EN „Today“ statt „Tonight“**: bewusst für Konsistenz mit DE/ES. Wer das abendliche Gefühl bevorzugt, kann zurückändern.
 12. **Alternativtexte** nicht mit echtem Screenreader (VoiceOver/TalkBack) gehört; ob Länge und Detailgrad angenehm sind, sollte jemand prüfen.
 13. **Britisches Englisch** („fancy“, „agree a time“, „flavour“): von mir gewählt, nicht von Muttersprachlern gegengelesen.
-14. **Ausnahmetage auf „Besuch“** (`visit.hours.exceptionsTitle`): DE „An diesen Tagen anders“, EN „Different on these days“, ES „Estos días es distinto“ sind nach dem Lektorat entstanden und von keinem Muttersprachler gelesen.
+14. **Ausnahmetage auf „Besuch“** (`visit.hours.exceptionsTitle`): DE „An diesen Tagen anders“, EN „Different on these days“, ES „Días con horario distinto“ (vorher grammatisch falsch; ebenso Platzhalter „p. ej. cumpleaños, mejor fuera“ geändert) sind nach dem Lektorat entstanden und von keinem Muttersprachler gelesen.
