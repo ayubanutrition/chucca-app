@@ -1,0 +1,122 @@
+/* Startseite „Heute“: größerer Hero-Bogen, engere Abschnitte, großflächiges Band und X.
+   Ergänzt global.css; Selektoren sind zur Sicherheit gegenüber der Ladereihenfolge spezifischer gewählt. */
+
+/* ---------- Hero ---------- */
+.hero.hero--wide .hero__grid {
+  padding-block: clamp(1rem, 0.5rem + 3vw, 3rem) var(--space-7);
+}
+/* Mobil: Bogen läuft rechts bis zum Rand, bleibt unter den Aktionen */
+.hero.hero--wide .hero__art {
+  aspect-ratio: 4 / 3.4;
+  max-height: 24rem;
+  width: calc(100% + var(--gutter));
+  margin-right: calc(-1 * var(--gutter));
+  border-bottom-right-radius: 0;
+}
+@media (min-width: 60rem) {
+  .hero.hero--wide {
+    min-height: min(46rem, calc(100vh - 7rem));
+    display: flex;
+  }
+  .hero.hero--wide .hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 40rem;
+    width: 100%;
+    padding-block: var(--space-7);
+    align-items: center;
+  }
+  .hero.hero--wide .hero__copy {
+    max-width: 38rem;
+    position: relative;
+    z-index: 1;
+  }
+  /* Bogen: ab der Mitte bis zum rechten Fensterrand, oben fast bis zur Kopfzeile, sitzt auf der Jetzt-Leiste auf */
+  .hero.hero--wide .hero__art {
+    position: absolute;
+    top: var(--space-4);
+    bottom: 0;
+    right: 0;
+    left: auto;
+    width: min(50vw, 56rem);
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    aspect-ratio: auto;
+    border-radius: 999px 0 0 0;
+    z-index: 0;
+  }
+  .hero.hero--wide .hero__art .art__tag {
+    left: auto;
+    right: var(--gutter);
+    bottom: 1rem;
+  }
+  .hero.hero--wide .hero__art img {
+    object-position: 40% 60%;
+  }
+}
+@media (min-width: 60rem) and (max-width: 75rem) {
+  .hero.hero--wide .hero__copy {
+    max-width: 30rem;
+  }
+}
+
+/* ---------- Abschnittsabstände straffen ---------- */
+.section--home {
+  padding-block: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+}
+.section--tight.section--home {
+  padding-block: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+.now__cell {
+  padding-block: var(--space-4);
+}
+@media (min-width: 60rem) {
+  .now__cell {
+    padding-block: var(--space-5);
+  }
+}
+
+/* ---------- Bildvorschau: Text am Fußpunkt der Bögen ausgerichtet ---------- */
+.peek {
+  align-items: end;
+}
+.peek > .stack {
+  align-self: end;
+}
+.peek__note {
+  max-width: 20rem;
+}
+
+/* ---------- Abschluss mit großem Band und X ---------- */
+.band.band--xl {
+  height: clamp(36px, 5vw, 60px);
+  background-size: auto 100%;
+}
+.closing {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.closing .band--xl {
+  position: relative;
+  z-index: 1;
+}
+.closing__x {
+  position: absolute;
+  z-index: -1;
+  right: clamp(-12rem, -11vw, -4rem);
+  top: 50%;
+  width: clamp(14rem, 34vw, 30rem);
+  aspect-ratio: 1;
+  translate: 0 -40%;
+  opacity: 0.55;
+  background:
+    linear-gradient(45deg, transparent 44%, rgb(242 122 165 / 0.38) 44% 56%, transparent 56%),
+    linear-gradient(-45deg, transparent 44%, rgb(255 143 69 / 0.42) 44% 56%, transparent 56%);
+}
+.closing__grid {
+  padding-block: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+}
+.closing .display {
+  font-size: var(--step-4);
+}

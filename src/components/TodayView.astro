@@ -8,6 +8,7 @@ import { eventsFor, venueFor } from '../lib/content';
 import { galleryItem, galleryItems } from '../lib/gallery';
 import { href } from '../lib/paths';
 import { intlLocale } from '../lib/time';
+import '../styles/today.css';
 
 interface Props {
   locale: Locale;
@@ -31,7 +32,7 @@ const paths = [
 const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: t.today.now };
 ---
 
-<section class="hero">
+<section class="hero hero--wide">
   <div class="wrap hero__grid">
     <div class="hero__copy">
       <p class="eyebrow">{t.today.eyebrow}</p>
@@ -79,7 +80,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
   <script type="application/json" data-strings set:html={safeJson(clientData)} />
 </section>
 
-<section class="section paths" aria-labelledby="paths-title">
+<section class="section section--home paths" aria-labelledby="paths-title">
   <div class="wrap stack" style="--stack: var(--space-6)">
     <h2 class="eyebrow" id="paths-title">{t.today.paths.title}</h2>
     <div class="paths__list">
@@ -103,7 +104,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
 
 {
   events.length > 0 && (
-    <section class="section--tight events" aria-labelledby="events-title" data-events>
+    <section class="section--tight section--home events" aria-labelledby="events-title" data-events>
       <div class="wrap stack" style="--stack: var(--space-6)">
         <div class="stack">
           <p class="eyebrow">{t.today.events.eyebrow}</p>
@@ -140,7 +141,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
 
 {
   peek.length === 3 && (
-    <section class="section" aria-labelledby="peek-title">
+    <section class="section section--home" aria-labelledby="peek-title">
       <div class="wrap peek">
         <div class="stack" style="--stack: var(--space-5)">
           <p class="eyebrow">{t.today.gallery.eyebrow}</p>
@@ -151,6 +152,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
             {t.today.gallery.cta}
             <Icon name="arrow" />
           </a>
+          {peek.some((item) => item.media.kind === 'concept') && <p class="small peek__note">{t.common.conceptLong}</p>}
         </div>
         <div class="stack" style="--stack: var(--space-3)">
           <div class="peek__row">
@@ -158,7 +160,6 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
               <Art item={item} locale={locale} arch sizes="(min-width: 60rem) 22vw, 33vw" />
             ))}
           </div>
-          {peek.some((item) => item.media.kind === 'concept') && <p class="small">{t.common.conceptLong}</p>}
         </div>
       </div>
     </section>
@@ -166,7 +167,8 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
 }
 
 <section class="closing" aria-labelledby="closing-title">
-  <div class="band" aria-hidden="true"></div>
+  <div class="band band--xl" aria-hidden="true"></div>
+  <span class="closing__x" aria-hidden="true"></span>
   <div class="wrap closing__grid">
     <div class="stack">
       <h2 class="display h2" id="closing-title">{t.today.closing.title}</h2>
