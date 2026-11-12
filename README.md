@@ -38,7 +38,7 @@ Beim ersten Mal lokal: `npx playwright install chromium`.
 Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt „Pflege“. Texte der Oberfläche: `src/i18n/`.
 
 ## Hilfsskripte
-`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung).
+`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
 
 ## Dokumente (je Thema ein führender Ort)
 | Datei | Führend für |

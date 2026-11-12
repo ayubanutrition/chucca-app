@@ -21,6 +21,9 @@ Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je
 | `tests/unit`, `tests/e2e` | Vitest und Playwright |
 | `dist/`, `dist-public/` | Erzeugter Output (nicht versioniert) |
 
+## Schriften
+Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-fonts.py` aus den Fontsource-Paketen, SIL OFL; Lizenzen in `public/fonts/`). Eingebunden über `src/styles/fonts.css` (Vite hasht die Dateien nach `_astro/`, Unterpfad-fest); der Service Worker legt alle `_astro/*.woff2` vorab ab. Familiennamen und Tokens bleiben unverändert; metrikangepasste Notschriften stehen in den Tokens hinter den Webschriften. Zeichenabdeckung: `tests/unit/fonts.test.ts`. Begründung und Zahlen: D16.
+
 ## Betriebsmodi
 `CHUCCA_MODE` steuert, was der Build enthält (`src/config/mode.ts`, `src/lib/content/index.ts`):
 

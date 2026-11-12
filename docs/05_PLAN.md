@@ -26,7 +26,7 @@ Status: TODO / DOING / DONE / BLOCKED. DONE mit Evidenz.
 | 16 | Unterpfad auf dem echten Host wiederholen | 13 | `subpath.spec.ts`-Fälle gegen die Live-URL (lokal DONE) |
 | 17 | Muttersprachliche Durchsicht EN/ES | Person | Freigabe der Texte |
 | 18 | Betreuter Anfrageweg (Formular-Backend oder bestätigter Kanal) | 12 | Erfolg erst nach echter Zustellung; Fehler- und Timeout-Zustände getestet |
-| 19 | Schriften subsetten (heute ca. 167 kB) | – | Erstbesuch unter 120 kB, Zeichen für DE/EN/ES/Katalanisch vollständig |
+| 19 | Schriften subsetten (vorher ca. 167 kB) | DONE | Erstbesuch 102,5 kB (Labor); `scripts/make-fonts.py`, `tests/unit/fonts.test.ts`; `docs/06_QA.md`, D16 |
 | 20 | QR-Aufsteller: Deep-Link auf `/…/drinks/` mit lesbarer Kurz-URL | 13 | gedruckter Code führt direkt zur Karte |
 | 21 | Native Phase bewerten | 12–14 | Entscheidungsvorlage nach `docs/03_ARCHITECTURE.md` |
 
