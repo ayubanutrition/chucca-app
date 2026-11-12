@@ -2,6 +2,7 @@ node_modules/
 dist/
 dist-public/
 dist-sub/
+dist-hours/
 dist-update/
 .astro/
 test-results/

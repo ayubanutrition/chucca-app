@@ -22,7 +22,7 @@ async function walk(dir: string, root = dir): Promise<string[]> {
   return out;
 }
 
-export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string }): AstroIntegration {
+export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string; testHours?: boolean }): AstroIntegration {
   let base = '/';
   let site: string | undefined;
   return {
@@ -31,6 +31,11 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
       'astro:config:done': ({ config }) => {
         base = config.base.endsWith('/') ? config.base : `${config.base}/`;
         site = config.site;
+        // Test-Fixture darf nur nach dist-hours bauen, niemals in einen regulären Ausgabeordner.
+        const outName = fileURLToPath(config.outDir).replace(/[\\/]+$/, '').split(/[\\/]/).pop();
+        if (options.testHours && (options.mode !== 'preview' || outName !== 'dist-hours')) {
+          throw new Error(`CHUCCA_TEST_HOURS=1 baut ausschließlich den Vorschau-Testbuild nach dist-hours (Ziel: ${outName}, Modus: ${options.mode}).`);
+        }
       },
       'astro:build:done': async ({ dir, logger }) => {
         const root = fileURLToPath(dir);

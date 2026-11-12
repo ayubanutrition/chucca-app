@@ -13,7 +13,8 @@ import { upcoming } from '../events';
 import { selectMedia, toPublicMedia, type MediaPublic } from '../media';
 import { eventsSchema, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 import type { HoursData } from '../hours';
-import type { Mode } from '../../config/mode';
+import { TEST_HOURS, type Mode } from '../../config/mode';
+import { fixtureHours, HOURS_FIXTURE_NOTICE } from '../../content/fixtures/hours';
 
 export const venueInternal: Venue = venueSchema.parse(venueRaw);
 const unbacked = unbackedConfirmations(venueInternal);
@@ -38,10 +39,15 @@ export interface VenuePublic {
   maps: { google: string; apple: string };
   channels: { type: Venue['channels'][number]['type']; label: string; href: string; acceptsInquiries: boolean }[];
   hours: HoursData;
+  /** Nur im Testbuild gesetzt: Kennzeichnung der Test-Fixture für die Seite. */
+  testFixtureNotice?: string;
   entrance: { note: Localized; confirmed: boolean } | null;
 }
 
-export function venueFor(mode: Mode, venue: Venue = venueInternal): VenuePublic {
+/** Im Testbuild (`CHUCCA_TEST_HOURS`) tragen die Standardinhalte die gekennzeichnete Zeiten-Fixture; sonst unverändert. */
+const activeVenue: Venue = TEST_HOURS ? { ...venueInternal, hours: fixtureHours } : venueInternal;
+
+export function venueFor(mode: Mode, venue: Venue = activeVenue): VenuePublic {
   if (venue.address.status !== 'confirmed') throw new Error('Ohne bestätigte Besucheradresse ist kein Build möglich.');
   const { building, street, postalCode, city, area, region, countryCode } = venue.address;
   const entranceVisible = venue.entrance.status === 'confirmed' || (mode === 'preview' && venue.entrance.status === 'source-claim');
@@ -61,6 +67,7 @@ export function venueFor(mode: Mode, venue: Venue = venueInternal): VenuePublic 
     hours: hoursConfirmed
       ? { status: 'confirmed', validFrom: venue.hours.validFrom, validUntil: venue.hours.validUntil, regular: venue.hours.regular, exceptions: venue.hours.exceptions }
       : { status: 'unconfirmed' },
+    ...(TEST_HOURS && venue.hours === fixtureHours ? { testFixtureNotice: HOURS_FIXTURE_NOTICE } : {}),
     entrance: entranceVisible ? { note: venue.entrance.note, confirmed: venue.entrance.status === 'confirmed' } : null,
   };
 }

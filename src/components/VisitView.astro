@@ -120,6 +120,7 @@ const clientData = {
   <div class="rows">
     <section class="row" aria-labelledby="hours-title">
       <h2 class="h3" id="hours-title">{t.visit.hours.title}</h2>
+      {venue.testFixtureNotice && <p class="notice" data-test-fixture>{venue.testFixtureNotice}</p>}
       {
         hours.status === 'confirmed' && hours.regular ? (
           <>

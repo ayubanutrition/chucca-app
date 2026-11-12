@@ -39,6 +39,8 @@ Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-font
 
 `CHUCCA_BASE` setzt einen Unterpfad; alle Links laufen über `src/lib/paths.ts`.
 
+**Testschalter `CHUCCA_TEST_HOURS=1`** (`npm run build:hours` → `dist-hours/`): ersetzt nur im Vorschau-Modus die unbestätigten Öffnungszeiten durch die gekennzeichnete Fixture `src/content/fixtures/hours.ts` (erfundene Zeiten in 2099), damit Öffnungsstatus und Ausnahmetage im Browser testbar sind. Kein Produktmodus: Der Schalter wird mit `CHUCCA_MODE=public` abgelehnt, und die Build-Integration bricht ab, wenn das Ausgabeziel nicht `dist-hours` ist. `dist`, `dist-public` und `dist-sub` enthalten die Fixture nie (Leak-Tests in `tests/e2e/hours-fixture.spec.ts`). Der Testserver läuft auf `PORT_BASE + 5`.
+
 ## Sprache und Routen
 Lokalisierte Segmente aus einer Tabelle (`SLUGS`): `/de/besuch/`, `/en/visit/`, `/es/visita/` usw. Sprachschalter, Canonical, hreflang, Sitemap und Tests lesen dieselbe Tabelle. Astros eingebautes i18n-Routing wird nicht genutzt, weil es gleiche Pfade je Sprache voraussetzt (`docs/09_RESEARCH.md`, F4/F11).
 Der Sprachwechsel führt zur gleichen Seite und nimmt Query und Hash mit (Filter, Entwurf). `/` ist eine Sprachwahl; weitergeleitet wird nur bei gemerkter Wahl oder alten V3-Hashes (`#heute`, `#drinks`, `#besuch`).

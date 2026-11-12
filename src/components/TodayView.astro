@@ -66,6 +66,7 @@ const clientData = { locale, geo: venue.approxGeo, hours: venue.hours, strings: 
     <div class="now__cell">
       <p class="now__label">{t.today.now.hours}</p>
       <p data-now-hours>{t.today.now.hoursUnconfirmed}</p>
+      {venue.testFixtureNotice && <p class="small" data-test-fixture>{venue.testFixtureNotice}</p>}
       {
         instagram && (
           <a class="link" href={instagram.href} target="_blank" rel="noopener">

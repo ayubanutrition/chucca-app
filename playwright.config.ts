@@ -31,5 +31,7 @@ export default defineConfig({
     { command: `node scripts/serve.mjs dist ${PORT.preview}`, url: `${ORIGIN.preview}/de/`, reuseExistingServer: !process.env.CI },
     { command: `node scripts/serve.mjs dist-public ${PORT.public}`, url: `${ORIGIN.public}/de/`, reuseExistingServer: !process.env.CI },
     { command: `node scripts/serve.mjs dist-sub ${PORT.sub} /preview/app/`, url: `${ORIGIN.sub}/preview/app/de/`, reuseExistingServer: !process.env.CI },
+    // Test-Fixture mit erfundenen Öffnungszeiten (nur dieser Stand, nur tests/e2e/hours-fixture.spec.ts).
+    { command: `node scripts/serve.mjs dist-hours ${PORT.hours}`, url: `${ORIGIN.hours}/de/`, reuseExistingServer: !process.env.CI },
   ],
 });
