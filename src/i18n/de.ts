@@ -123,8 +123,8 @@ export const de = {
     filter: {
       search: 'Drinks oder Zutaten suchen',
       searchPlaceholder: 'z. B. Minze, Mojito, Tonic',
-      category: 'Kategorie',
-      allCategories: 'Alle',
+      jump: 'Springe zu',
+      categoryClear: 'Kategorie {name} entfernen',
       reset: 'Filter zurücksetzen',
       countOne: '1 Drink',
       countMany: '{count} Drinks',

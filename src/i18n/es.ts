@@ -124,8 +124,8 @@ export const es: Dictionary = {
     filter: {
       search: 'Buscar bebidas o ingredientes',
       searchPlaceholder: 'p. ej. menta, mojito, tónica',
-      category: 'Categoría',
-      allCategories: 'Todas',
+      jump: 'Ir a',
+      categoryClear: 'Quitar la categoría {name}',
       reset: 'Quitar filtros',
       countOne: '1 bebida',
       countMany: '{count} bebidas',

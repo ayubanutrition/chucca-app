@@ -124,8 +124,8 @@ export const en: Dictionary = {
     filter: {
       search: 'Search drinks or ingredients',
       searchPlaceholder: 'e.g. mint, mojito, tonic',
-      category: 'Category',
-      allCategories: 'All',
+      jump: 'Jump to',
+      categoryClear: 'Remove category {name}',
       reset: 'Reset filters',
       countOne: '1 drink',
       countMany: '{count} drinks',

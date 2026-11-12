@@ -8,6 +8,7 @@ import { TASTES } from '../lib/content/schema';
 import { formatPrice, searchText } from '../lib/menu';
 import { href } from '../lib/paths';
 import { formatLongDate } from '../lib/time';
+import '../styles/drinks.css';
 
 interface Props {
   locale: Locale;
@@ -27,12 +28,14 @@ const clientData = {
   title: t.drinks.taste.title,
   countOne: t.drinks.filter.countOne,
   countMany: t.drinks.filter.countMany,
+  categoryClear: t.drinks.filter.categoryClear,
 };
+const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.countOne : fill(t.drinks.filter.countMany, { count }));
 ---
 
 <div data-menu>
   <div class="wrap">
-    <header class="pagehead">
+    <header class={hasMenu ? 'pagehead pagehead--compact' : 'pagehead'}>
       <div class="stack" style="--stack: var(--space-4)">
         <p class="eyebrow">{t.drinks.eyebrow}</p>
         <h1 class="display h1--page">{t.drinks.titleA} <em>{t.drinks.titleB}</em></h1>
@@ -40,24 +43,26 @@ const clientData = {
       <p class="lede">{t.drinks.intro}</p>
     </header>
 
-    <section class="taste" aria-labelledby="taste-title">
-      <div class="stack" style="--stack: var(--space-4)">
-        <h2 class="h3" id="taste-title">{t.drinks.taste.title}</h2>
-        <div class="chips" role="group" aria-label={t.drinks.taste.group}>
-          {
-            TASTES.map((taste) => (
-              <button class="chip" type="button" data-taste={taste} aria-pressed="false">
-                {t.drinks.taste.names[taste]}
-              </button>
-            ))
-          }
-        </div>
-      </div>
-      <div class="taste__panel" aria-live="polite">
-        <p class="h3" data-taste-headline hidden></p>
-        <p data-taste-text>{hasMenu ? t.drinks.taste.hint : t.drinks.taste.hintNoMenu}</p>
-      </div>
-    </section>
+    {
+      !hasMenu && (
+        <section class="taste" aria-labelledby="taste-title">
+          <div class="stack" style="--stack: var(--space-4)">
+            <h2 class="h3" id="taste-title">{t.drinks.taste.title}</h2>
+            <div class="chips" role="group" aria-label={t.drinks.taste.group}>
+              {TASTES.map((taste) => (
+                <button class="chip" type="button" data-taste={taste} aria-pressed="false">
+                  {t.drinks.taste.names[taste]}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p class="taste__panel" aria-live="polite">
+            <strong class="taste__headline" data-taste-headline hidden />
+            <span data-taste-text>{t.drinks.taste.hintNoMenu}</span>
+          </p>
+        </section>
+      )
+    }
   </div>
 
   <section class="paper" aria-labelledby="menu-title">
@@ -82,22 +87,34 @@ const clientData = {
                 <Icon name="search" />
                 <input class="input" id="menu-search" type="search" data-menu-search placeholder={t.drinks.filter.searchPlaceholder} autocomplete="off" enterkeyhint="search" />
               </div>
-              <div class="menu__row">
-                <div class="chips" role="group" aria-label={t.drinks.filter.category}>
-                  <button class="chip" type="button" data-category="" aria-pressed="true">
-                    {t.drinks.filter.allCategories}
+              <div class="chips" role="group" aria-label={t.drinks.taste.group}>
+                {TASTES.map((taste) => (
+                  <button class="chip" type="button" data-taste={taste} aria-pressed="false">
+                    {t.drinks.taste.names[taste]}
                   </button>
-                  {categories.map((category) => (
-                    <button class="chip" type="button" data-category={category.id} aria-pressed="false">
-                      {category.name[locale]}
-                    </button>
-                  ))}
-                </div>
+                ))}
+              </div>
+              <div class="menu__status">
+                <button class="chip chip--tag" type="button" data-category-clear hidden></button>
                 <p class="menu__count" data-menu-count role="status">
-                  {menu.items.length === 1 ? t.drinks.filter.countOne : fill(t.drinks.filter.countMany, { count: menu.items.length })}
+                  {countLabel(menu.items.length)}
                 </p>
               </div>
             </div>
+
+            <p class="menu__taste" aria-live="polite">
+              <strong class="menu__taste-headline" data-taste-headline hidden />
+              <span data-taste-text>{t.drinks.taste.hint}</span>
+            </p>
+
+            <nav class="menu__jump" aria-label={t.drinks.filter.jump}>
+              <span class="menu__jump-label" aria-hidden="true">{t.drinks.filter.jump}</span>
+              {categories.map((category) => (
+                <a class="menu__jump-link" href={`#cat-${category.id}`} data-jump={category.id}>
+                  {category.name[locale]}
+                </a>
+              ))}
+            </nav>
 
             <div class="menu__list">
               {categories.map((category) => (
@@ -106,6 +123,9 @@ const clientData = {
                     <h3 class="menu__cat-title" id={`cat-${category.id}`}>
                       {category.name[locale]}
                     </h3>
+                    <p class="menu__cat-count" data-cat-count>
+                      {countLabel(category.items.length)}
+                    </p>
                     {category.note && <p class="menu__cat-note">{category.note[locale]}</p>}
                   </div>
                   <ul class="menu__items" role="list">
