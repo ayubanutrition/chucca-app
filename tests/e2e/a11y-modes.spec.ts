@@ -61,6 +61,8 @@ test.describe('Windows-Kontrastmodus (forced-colors: active)', () => {
       await page.locator(selector).first().focus();
       await page.keyboard.press('Shift+Tab');
       await page.keyboard.press('Tab');
+      // Firefox bleibt bei Shift+Tab auf dem ersten Element (Chromium/WebKit verlassen die Seite); dann ist der Tab-Schritt vorbei – zurück per Tastatur.
+      if (!(await page.locator(selector).first().evaluate((el) => el === document.activeElement))) await page.keyboard.press('Shift+Tab');
       const s = await style(page, selector);
       expect(s.outlineStyle, `${selector}: Fokuskontur`).not.toBe('none');
       expect(parseFloat(s.outlineWidth), `${selector}: Breite`).toBeGreaterThanOrEqual(2);
@@ -197,7 +199,8 @@ test.describe('Farbschema und Kontrast', () => {
     await page.emulateMedia({ contrast: 'more' });
     for (const path of DE_PAGES) {
       await page.goto(path);
-      expect(await page.evaluate(() => matchMedia('(prefers-contrast: more)').matches)).toBe(true);
+      // Playwright-Firefox setzt `prefers-contrast` nicht per Emulation: dann gäbe es nichts zu prüfen (kein Fehler der Seite).
+      test.skip(!(await page.evaluate(() => matchMedia('(prefers-contrast: more)').matches)), 'prefers-contrast: more lässt sich in dieser Engine nicht emulieren');
       const results = await new AxeBuilder({ page: page as never }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
       expect(results.violations.map((v) => v.id), path).toEqual([]);
     }

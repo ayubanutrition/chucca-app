@@ -18,3 +18,17 @@ jobs:
       - run: npm run build:test
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+  cross-browser:
+    # Firefox und WebKit (Playwright-Engine, nicht iOS-Safari). Eigener Job, damit `check` schnell bleibt; bei Bedarf als „required“ markieren.
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build:test
+      - run: npx playwright install --with-deps firefox webkit
+      - run: npm run test:e2e:cross
