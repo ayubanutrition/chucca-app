@@ -1,0 +1,44 @@
+/*
+ * Selbst gehostete, verschlankte Schriften (SIL OFL 1.1, Lizenztexte unter public/fonts/).
+ * Erzeugt mit scripts/make-fonts.py aus @fontsource-variable (Latin-Teilmenge, SOFT fest 100, wght begrenzt).
+ * Familiennamen bleiben 'Fraunces Variable' und 'Instrument Sans Variable' (Tokens in global.css).
+ */
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-weight: 340 700;
+  font-display: swap;
+  src: url('../assets/fonts/fraunces-soft-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: italic;
+  font-weight: 340 700;
+  font-display: swap;
+  src: url('../assets/fonts/fraunces-soft-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Sans Variable';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/instrument-sans-wght.woff2') format('woff2');
+}
+
+/* Metrikangepasste Notschriften gegen Layoutsprünge beim Tausch (Werte aus scripts/make-fonts.py). */
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Times New Roman'), local('Times'), local('Liberation Serif');
+  size-adjust: 116.22%;
+  ascent-override: 84.15%;
+  descent-override: 21.94%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Instrument Sans Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 103.99%;
+  ascent-override: 93.28%;
+  descent-override: 24.04%;
+  line-gap-override: 0%;
+}

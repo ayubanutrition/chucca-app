@@ -39,7 +39,7 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 `npm run content:check` prüft alle Inhalte gegen die Schemata und fasst auf Deutsch zusammen, was bestätigt ist und was den öffentlichen Build noch blockiert (Exit-Code 1 nur bei Schema-Verstößen). Eine ausgefüllte Kartentabelle (`docs/templates/menu-vorlage.csv`) wandelt `npm run menu:import -- datei.csv [--out pfad.json]` um; ohne `--out` wird nichts überschrieben (Unterlage für den Betrieb: `docs/10_BETREIBER.md`).
 
 ## Hilfsskripte
-`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung).
+`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
 
 ## Dokumente (je Thema ein führender Ort)
 | Datei | Führend für |

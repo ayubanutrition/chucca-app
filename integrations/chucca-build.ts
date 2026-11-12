@@ -47,8 +47,8 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
           (file) =>
             file !== 'sw.js' &&
             file !== 'og.png' &&
-            // Bilder der Galerie werden nicht vorab geladen; Schriften nur in den genutzten lateinischen Teilmengen.
-            (/^_astro\/.*\.(css|js)$/.test(file) || /^_astro\/.*-latin-.*\.woff2$/.test(file) || /^[^/]+\.(svg|png|webmanifest)$/.test(file)),
+            // Bilder der Galerie werden nicht vorab geladen; die eigenen, verschlankten Schriften (src/assets/fonts) gehören dazu.
+            (/^_astro\/.*\.(css|js)$/.test(file) || /^_astro\/.*\.woff2$/.test(file) || /^[^/]+\.(svg|png|webmanifest)$/.test(file)),
         );
         await writeFile(join(root, 'sw.js'), buildServiceWorker({ ...options, base, assets: precache }));
 

@@ -33,8 +33,8 @@
   --focus: var(--cream);
 
   /* Typografie: zwei Familien */
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-text: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces Variable', 'Fraunces Fallback', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-text: 'Instrument Sans Variable', 'Instrument Sans Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --step--1: clamp(0.84rem, 0.81rem + 0.12vw, 0.92rem);
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
   --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.45rem);
