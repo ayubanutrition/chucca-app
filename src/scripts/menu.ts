@@ -1,4 +1,4 @@
-/** Getränkekarte: Geschmack, Kategorie und Suche. Die Karte ist ohne JavaScript vollständig lesbar. */
+/** Getränkekarte: Geschmack und Suche (eine Filterzeile); Kategorie nur noch über Link-Parameter `k` und Sprunglinks. Die Karte ist ohne JavaScript vollständig lesbar. */
 import { fill } from '../i18n';
 import { TASTES, type Taste } from '../lib/tastes';
 import { emptyFilter, matchesEntry, type MenuFilter } from '../lib/menu';
@@ -13,6 +13,7 @@ interface Data {
   title: string;
   countOne: string;
   countMany: string;
+  categoryClear: string;
 }
 
 const TASTE_KEY = 'chucca-taste';
@@ -35,20 +36,22 @@ if (root) {
   const empty = root.querySelector<HTMLElement>('[data-menu-empty]');
   const list = root.querySelector<HTMLElement>('.menu__list');
   const items = [...root.querySelectorAll<HTMLElement>('[data-drink]')];
-  const categoryButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-category]:not([data-drink])')].filter((el) => el.tagName === 'BUTTON');
+  const sections = [...root.querySelectorAll<HTMLElement>('[data-menu-category]')];
+  const jumpLinks = [...root.querySelectorAll<HTMLElement>('[data-jump]')];
+  const categoryClear = root.querySelector<HTMLButtonElement>('[data-category-clear]');
   const tasteButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-taste]')];
   const headline = root.querySelector<HTMLElement>('[data-taste-headline]');
   const text = root.querySelector<HTMLElement>('[data-taste-text]');
-  const knownCategories = new Set(categoryButtons.map((button) => button.dataset.category ?? ''));
+  const knownCategories = new Set(sections.map((section) => section.dataset.menuCategory ?? ''));
   const wanted = params.get('k');
   filter.category = wanted && knownCategories.has(wanted) ? wanted : null;
+  const countText = (n: number): string => (n === 1 ? data.countOne : fill(data.countMany, { count: n }));
   if (search) search.value = filter.query;
 
   const apply = (): void => {
     filter.alcoholFree = taste === 'free';
     filter.taste = taste && taste !== 'free' ? taste : null;
     for (const button of tasteButtons) button.setAttribute('aria-pressed', String(button.dataset.taste === taste));
-    for (const button of categoryButtons) button.setAttribute('aria-pressed', String((button.dataset.category || null) === filter.category));
     if (headline) {
       headline.textContent = taste ? data.headlines[taste] : '';
       headline.hidden = !taste;
@@ -69,10 +72,23 @@ if (root) {
       item.hidden = !show;
       if (show) visible++;
     }
-    for (const section of root.querySelectorAll<HTMLElement>('[data-menu-category]')) {
-      section.hidden = section.querySelectorAll('[data-drink]:not([hidden])').length === 0;
+    for (const section of sections) {
+      const shown = section.querySelectorAll('[data-drink]:not([hidden])').length;
+      section.hidden = shown === 0;
+      const sectionCount = section.querySelector<HTMLElement>('[data-cat-count]');
+      if (sectionCount) sectionCount.textContent = countText(shown);
+      // Sprunglinks nur für sichtbare Abschnitte
+      const link = jumpLinks.find((el) => el.dataset.jump === section.dataset.menuCategory);
+      if (link) link.hidden = shown === 0;
     }
-    if (count) count.textContent = visible === 1 ? data.countOne : fill(data.countMany, { count: visible });
+    if (categoryClear) {
+      const active = filter.category ? sections.find((section) => section.dataset.menuCategory === filter.category) : null;
+      const name = active?.querySelector('.menu__cat-title')?.textContent?.trim() ?? '';
+      categoryClear.hidden = !filter.category;
+      categoryClear.textContent = name;
+      categoryClear.setAttribute('aria-label', fill(data.categoryClear, { name }));
+    }
+    if (count) count.textContent = countText(visible);
     if (empty) empty.hidden = visible > 0 || items.length === 0;
     if (list) list.hidden = visible === 0 && items.length > 0;
 
@@ -97,12 +113,11 @@ if (root) {
       apply();
     });
   }
-  for (const button of categoryButtons) {
-    button.addEventListener('click', () => {
-      filter.category = button.dataset.category || null;
-      apply();
-    });
-  }
+  categoryClear?.addEventListener('click', () => {
+    filter.category = null;
+    apply();
+    search?.focus();
+  });
   search?.addEventListener('input', () => {
     filter.query = search.value;
     apply();

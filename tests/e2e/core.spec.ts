@@ -137,9 +137,19 @@ test.describe('Getränkekarte', () => {
     await page.goto('/de/drinks/');
     await expect(page.getByText('Beispielkarte', { exact: true })).toBeVisible();
     await expect(page.locator('[data-menu-count]')).toHaveText('16 Drinks');
-    await page.getByRole('button', { name: 'Klassiker' }).click();
+    // Eine Filterzeile: Alkoholfrei gibt es nur einmal als Schaltfläche; Kategorien sind Sprunglinks mit Anzahl.
+    await expect(page.getByRole('button', { name: 'Alkoholfrei', exact: true })).toHaveCount(1);
+    await expect(page.getByRole('navigation', { name: 'Springe zu' }).getByRole('link')).toHaveText(['Klassiker', 'Spritz & Longdrinks', 'Alkoholfrei']);
+    await expect(page.locator('[data-menu-category="classics"] [data-cat-count]')).toHaveText('6 Drinks');
+    await page.goto('/de/drinks/?k=classics');
     await expect(page.locator('[data-drink]:visible')).toHaveCount(6);
     await expect(page.getByRole('heading', { name: 'Alkoholfrei', exact: true })).toBeHidden();
+    await expect(page.locator('[data-jump="free"]')).toBeHidden();
+    await page.getByRole('button', { name: 'Kategorie Klassiker entfernen' }).click();
+    await expect(page.locator('[data-drink]:visible')).toHaveCount(16);
+    await expect(page).toHaveURL(/\/de\/drinks\/$/);
+    await page.getByRole('button', { name: 'Fruchtig' }).click();
+    await expect(page.locator('[data-menu-category]:visible [data-cat-count]').first()).not.toHaveText('6 Drinks');
     await page.getByRole('searchbox').fill('gibtsnicht');
     await expect(page.getByRole('heading', { name: 'Nichts gefunden.' })).toBeVisible();
     await expect(page.locator('[data-menu-count]')).toHaveText('0 Drinks');
@@ -169,7 +179,7 @@ test.describe('Getränkekarte', () => {
     await expect(page).toHaveURL(/\?k=classics$/);
     await page.evaluate(() => localStorage.setItem('chucca-taste', '<img onerror=alert(1)>'));
     await page.goto('/de/drinks/?k=unbekannt');
-    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveCount(1); // nur „Alle“
+    await expect(page.locator('.chip[aria-pressed="true"]')).toHaveCount(0); // weder Geschmack noch Kategorie
     await expect(page.locator('[data-drink]:visible')).toHaveCount(16);
   });
 
