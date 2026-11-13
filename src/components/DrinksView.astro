@@ -5,9 +5,8 @@ import { MODE } from '../config/mode';
 import { dictionary, fill, type Locale } from '../i18n';
 import { menuFor } from '../lib/content';
 import { TASTES } from '../lib/content/schema';
-import { formatPrice, searchText } from '../lib/menu';
+import { formatPrice, menuUpdatedText, searchText } from '../lib/menu';
 import { href } from '../lib/paths';
-import { formatLongDate } from '../lib/time';
 import '../styles/drinks.css';
 
 interface Props {
@@ -18,7 +17,7 @@ const t = dictionary(locale);
 const { menu, state } = menuFor(MODE);
 const hasMenu = state !== 'pending' && menu.items.length > 0;
 const categories = menu.categories.map((category) => ({ ...category, items: menu.items.filter((item) => item.category === category.id) })).filter((category) => category.items.length > 0);
-const updated = state === 'published' && menu.updatedAt ? formatLongDate(new Date(`${menu.updatedAt}T12:00:00Z`), locale) : null;
+const updatedText = menuUpdatedText(menu.updatedAt, state === 'published', t.drinks.updated, locale);
 const clientData = {
   hasMenu,
   tastes: TASTES,
@@ -72,7 +71,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
       <div class="paper__head">
         <h2 class="display h2" id="menu-title">{t.drinks.paperTitle}</h2>
         {state === 'fixture' && <span class="badge badge--pink">{t.drinks.fixture.label}</span>}
-        {updated && <p class="small">{fill(t.drinks.updated, { date: updated })}</p>}
+        {updatedText && <p class="small" data-menu-updated>{updatedText}</p>}
       </div>
 
       {state === 'fixture' && <p class="notice">{t.drinks.fixture.note}</p>}

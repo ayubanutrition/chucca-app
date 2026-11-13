@@ -1,7 +1,7 @@
 /** Filter- und Formatlogik der Getränkekarte (ohne DOM). */
 import type { Drink } from './content/schema';
 import type { Taste } from './tastes';
-import { intlLocale } from './time';
+import { formatLongDate, intlLocale } from './time';
 
 export interface MenuFilter {
   query: string;
@@ -62,3 +62,15 @@ export function formatPrice(amountCents: number, locale: string): string {
 
 export const isFilterActive = (filter: MenuFilter): boolean =>
   Boolean(filter.query.trim() || filter.category || filter.alcoholFree || filter.taste);
+
+/**
+ * „Stand der Karte“: lokalisierter Satz aus `updatedAt` (JJJJ-MM-TT) und der Textvorlage
+ * mit `{date}`. Ohne Datum oder ohne bestätigte Karte (`published` falsch) gibt es keinen
+ * Satz, nie ein erfundenes Datum. Mittag UTC, damit die Zeitzone den Kalendertag nicht verschiebt.
+ */
+export function menuUpdatedText(updatedAt: string | null, published: boolean, template: string, locale: string): string | null {
+  if (!published || !updatedAt) return null;
+  const instant = new Date(`${updatedAt}T12:00:00Z`);
+  if (Number.isNaN(instant.getTime())) return null;
+  return template.replace('{date}', formatLongDate(instant, locale));
+}
