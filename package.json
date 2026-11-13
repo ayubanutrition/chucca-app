@@ -16,13 +16,14 @@
     "test:e2e": "playwright test --trace off --project=chromium",
     "test:e2e:cross": "CROSS_BROWSER=1 playwright test --trace off --project=firefox --project=webkit",
     "test:sw-update": "node scripts/build-update.mjs && playwright test -c playwright.update.config.ts --trace off",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build:test && npm run test:e2e && npm run test:sw-update",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build:test && npm run test:dist && npm run test:e2e && npm run test:sw-update",
     "build:hours": "CHUCCA_TEST_HOURS=1 astro build --outDir dist-hours",
     "build:test": "astro build && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example astro build --outDir dist-public && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example CHUCCA_BASE=/preview/app/ astro build --outDir dist-sub && npm run build:hours",
     "serve": "node scripts/serve.mjs dist 4321",
     "media:audit": "vitest run tests/unit/content-media.test.ts",
     "content:check": "node scripts/run-ts.mjs scripts/content-check.ts",
-    "menu:import": "node scripts/run-ts.mjs scripts/menu-from-csv.ts"
+    "menu:import": "node scripts/run-ts.mjs scripts/menu-from-csv.ts",
+    "test:dist": "vitest run -c vitest.dist.config.ts"
   },
   "dependencies": {
     "astro": "^7.4.11",
@@ -38,6 +39,7 @@
     "@vitest/coverage-v8": "^5.1.0",
     "eslint": "^10.14.0",
     "eslint-plugin-astro": "^3.2.1",
+    "html-validate": "^11.21.1",
     "node-ical": "^0.27.6",
     "qrcode-generator": "^2.0.4",
     "sharp": "^0.35.5",

@@ -5,7 +5,7 @@ import { withBase } from '../lib/paths';
 export const GET: APIRoute = () => {
   const target = `${withBase('/')}#galerie`;
   return new Response(
-    `<!doctype html><html lang="de"><meta charset="utf-8"><meta name="robots" content="noindex"><title>CHUCCA</title><meta http-equiv="refresh" content="0;url=${target}"><a href="${target}">CHUCCA · Galerie / Gallery / Galería</a></html>`,
+    `<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>CHUCCA</title><meta http-equiv="refresh" content="0;url=${target}"></head><body><a href="${target}">CHUCCA · Galerie / Gallery / Galería</a></body></html>`,
     { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
   );
 };
