@@ -1,6 +1,6 @@
 /**
  * Eingeschränkte Umgebungen: (a) ohne JavaScript, (b) Speicher/Cookies gesperrt, (c) offline (erster Besuch und mit Service Worker),
- * (d) langsames Netz (Slow 3G), (e) Druck. Nur Chromium (CDP, Playwright-Optionen); Ergebnisse in docs/06_QA.md, Abschnitt „Eingeschränkte Umgebungen“.
+ * (d) langsames Netz (Slow 3G), (e) Druck. Läuft in allen drei Engines, mit zwei Ausnahmen (Offline mit Service Worker, PDF-Erzeugung nur Chromium); Ergebnisse in docs/06_QA.md, Abschnitt „Eingeschränkte Umgebungen“.
  */
 import { expect, test, type Page } from '@playwright/test';
 import { ALL_PAGES, PAGES, localeOf } from './a11y-helpers';
@@ -148,6 +148,8 @@ async function blockStorage(page: Page): Promise<string[]> {
     for (const name of ['localStorage', 'sessionStorage', 'indexedDB'] as const) Object.defineProperty(window, name, { configurable: true, get: deny });
     Object.defineProperty(document, 'cookie', { configurable: true, get: deny, set: deny });
     Object.defineProperty(navigator, 'cookieEnabled', { configurable: true, get: () => false });
+    // Zwischenablage verweigert (wie ohne Recht): Chromium headless tut das von selbst, Firefox und WebKit erlauben writeText auf Klick.
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, get: () => ({ writeText: () => Promise.reject(new DOMException('denied', 'NotAllowedError')) }) });
   });
   return problems;
 }
@@ -242,13 +244,16 @@ test.describe('(b) Speicher gesperrt, Cookies blockiert', () => {
 test.describe('(c) Offline', () => {
   test('erster Besuch ohne Service Worker: Browser meldet den Netzfehler, nichts hängt', async ({ page, context }) => {
     await context.setOffline(true);
-    await expect(page.goto(ORIGIN.public + '/de/')).rejects.toThrow(/ERR_INTERNET_DISCONNECTED|net::/);
+    await expect(page.goto(ORIGIN.public + '/de/')).rejects.toThrow(/ERR_INTERNET_DISCONNECTED|net::|NS_ERROR_OFFLINE|internal error/);
     await context.setOffline(false);
     await page.goto(ORIGIN.public + '/de/');
     await expect(page.locator('h1')).toBeVisible();
   });
 
-  test('nach Service-Worker-Installation: besuchte Seite offline, unbekannte und 404-Pfade zeigen die dreisprachige Offline-Seite', async ({ browser }) => {
+  test('nach Service-Worker-Installation: besuchte Seite offline, unbekannte und 404-Pfade zeigen die dreisprachige Offline-Seite', async ({ browser, browserName }) => {
+    // Playwright-Firefox lässt Netzanfragen des Service Workers trotz setOffline durch (Server liefert die echte 404-Seite), Playwright-WebKit
+    // bricht jede Navigation offline ab, auch die vom Service Worker beantwortete. Der Offline-Pfad ist dort nicht prüfbar (docs/06_QA.md).
+    test.skip(browserName !== 'chromium', 'setOffline erreicht den Service Worker nur in Chromium');
     const context = await browser.newContext({ serviceWorkers: 'allow', baseURL: ORIGIN.public, locale: 'es-ES' });
     const page = await context.newPage();
     await page.goto('/es/visita/');
@@ -270,11 +275,19 @@ test.describe('(c) Offline', () => {
 });
 
 test.describe('(d) Langsames Netz (Slow 3G)', () => {
-  test('Heute: Text sichtbar und stabil, bevor die Skripte fertig sind; keine Layoutverschiebung; Schrift mit font-display', async ({ page, context }) => {
+  test('Heute: Text sichtbar und stabil, bevor die Skripte fertig sind; keine Layoutverschiebung; Schrift mit font-display', async ({ page, context, browserName }) => {
     test.setTimeout(90_000);
-    const cdp = await context.newCDPSession(page);
-    await cdp.send('Network.enable');
-    await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 400, downloadThroughput: (500 * 1024) / 8, uploadThroughput: (400 * 1024) / 8 });
+    if (browserName === 'chromium') {
+      const cdp = await context.newCDPSession(page);
+      await cdp.send('Network.enable');
+      await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 400, downloadThroughput: (500 * 1024) / 8, uploadThroughput: (400 * 1024) / 8 });
+    } else {
+      // Firefox/WebKit kennen keine Netzdrosselung per Protokoll: Skripte und Schriften verzögert ausliefern (Latenz wie Slow 3G).
+      await page.route(/\.(js|woff2?)(\?.*)?$/, async (route) => {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await route.continue();
+      });
+    }
     await page.addInitScript(() => {
       const w = window as unknown as { __cls: number; __h1: number; __h1Style: string };
       w.__cls = 0;
@@ -336,9 +349,12 @@ test.describe('(e) Druck', () => {
   test.use({ viewport: { width: 794, height: 1123 } });
 
   for (const path of ['/de/', '/de/besuch/', '/de/gruppe/', '/en/visit/', '/es/visita/']) {
-    test(`${path}: Navigation, Tabbar, Toast ausgeblendet; dunkle Schrift auf Papier; Adresse sichtbar; keine Querüberläufe`, async ({ page }) => {
-      await page.emulateMedia({ media: 'print' });
+    test(`${path}: Navigation, Tabbar, Toast ausgeblendet; dunkle Schrift auf Papier; Adresse sichtbar; keine Querüberläufe`, async ({ page, browserName }) => {
       await page.goto(ORIGIN.preview + path);
+      // Nach dem Laden setzen: Playwright-Firefox übernimmt die Emulation sonst nicht für das neu geladene Dokument.
+      await page.emulateMedia({ media: 'print' });
+      // Der Medienwechsel löst CSS-Übergänge (Hintergrund der Schaltflächen) aus; ohne Abwarten misst WebKit Zwischenwerte (dunkel auf dunkel).
+      await page.evaluate(() => Promise.all(document.getAnimations().map((a) => (a.finish(), a.finished.catch(() => undefined)))));
       await page.evaluate(() => {
         const toast = document.querySelector<HTMLElement>('[data-toast]');
         if (toast) toast.dataset.open = 'true';
@@ -395,7 +411,8 @@ test.describe('(e) Druck', () => {
         expect(report.address).toContain('Carrer del Llaüt 23');
         expect(report.address).toContain('07610');
       }
-      // PDF entsteht ohne Fehler und hat mindestens eine Seite (Chromium-Druckpfad).
+      // PDF entsteht ohne Fehler und hat mindestens eine Seite (page.pdf gibt es nur in Chromium; Firefox/WebKit prüfen die Druck-Medienabfrage oben).
+      if (browserName !== 'chromium') return;
       const pdf = await page.pdf({ format: 'A4', printBackground: false });
       expect(pdf.length).toBeGreaterThan(2000);
       expect(pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length ?? 0).toBeGreaterThanOrEqual(1);
