@@ -46,7 +46,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
 
     {
       !hasMenu && (
-        <section class="taste" aria-labelledby="taste-title">
+        <section class="taste js-only" aria-labelledby="taste-title">
           <div class="stack" style="--stack: var(--space-4)">
             <h2 class="h3" id="taste-title">{t.drinks.taste.title}</h2>
             <div class="chips" role="group" aria-label={t.drinks.taste.group}>
@@ -80,7 +80,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
       {
         hasMenu ? (
           <>
-            <div class="menu__tools">
+            <div class="menu__tools js-only">
               <div class="menu__search">
                 <label class="visually-hidden" for="menu-search">
                   {t.drinks.filter.search}
@@ -103,7 +103,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
               </div>
             </div>
 
-            <p class="menu__taste" aria-live="polite">
+            <p class="menu__taste js-only" aria-live="polite">
               <strong class="menu__taste-headline" data-taste-headline hidden />
               <span data-taste-text>{t.drinks.taste.hint}</span>
             </p>

@@ -59,7 +59,7 @@ const clientData = {
           {t.visit.appleMaps}<Icon name="out" /><span class="visually-hidden">({t.common.external})</span>
         </a>
       </div>
-      <div class="actions">
+      <div class="actions js-only">
         <button class="link" type="button" data-share-place><Icon name="share" />{t.visit.share}</button>
         <button class="link" type="button" data-copy-address><Icon name="copy" />{t.visit.copyAddress}</button>
       </div>
@@ -182,7 +182,7 @@ const clientData = {
         <p class="prose">{t.visit.inquiry.lead}</p>
         <a class="link" href={href(locale, 'group')}>{t.visit.inquiry.plannerCta}<Icon name="arrow" /></a>
       </div>
-      <form class="panel" data-inquiry novalidate>
+      <form class="panel js-only" data-inquiry novalidate>
         <div class="fields fields--trio">
           <div class="field">
             <label for="inq-people">{t.visit.inquiry.people}</label>

@@ -68,7 +68,7 @@ test.describe('JavaScript deaktiviert', () => {
 
   for (const path of ['/de/gruppe/', '/de/drinks/', '/de/besuch/']) {
     test(`Bedienelemente ohne Funktion sind erklärt oder ausgeblendet: ${path}`, async ({ page }) => {
-      // BELEGT (P3): Es gibt kein <noscript> und keinen Hinweis. Ohne JavaScript bleiben „Einladung teilen“, „Im Kalender speichern“,
+      // Behoben (siehe degraded.spec.ts): <noscript>-Hinweis vorhanden, tote Bedienelemente per `.js-only` ausgeblendet. Früher blieben „Einladung teilen“, „Im Kalender speichern“,
       // die Filter-Chips und das Suchfeld sichtbar und tot (Formular ohne action sendet nur eine leere GET-Anfrage).
       await page.goto(path);
       const actionable = await page.locator('form button:visible, [data-taste]:visible, [data-category]:visible:not([data-drink]), [data-copy-address]:visible').count();
@@ -77,11 +77,11 @@ test.describe('JavaScript deaktiviert', () => {
     });
   }
 
-  test('Gruppenplaner ohne JavaScript: Absenden lädt neu, ohne Fehlerseite', async ({ page }) => {
+  test('Gruppenplaner ohne JavaScript: kein Formular, das ins Leere sendet; Seite bleibt mit Hinweis lesbar', async ({ page }) => {
     await page.goto('/de/gruppe/');
-    await page.getByRole('button', { name: /Einladung|teilen/i }).first().click();
+    await expect(page.locator('form.plan')).toBeHidden();
+    await expect(page.locator('[data-nojs]')).toBeVisible();
     await expect(page.locator('h1')).toBeVisible();
-    expect(page.url()).toContain('/de/gruppe/');
   });
 });
 

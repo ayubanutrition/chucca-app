@@ -1075,19 +1075,83 @@ textarea.input {
   }
 }
 
-@media print {
-  .tabbar,
-  .masthead,
-  .ribbon,
-  .menu__tools,
-  .taste,
-  .footer,
-  .toast {
+/* Ohne JavaScript tote Bedienelemente ausblenden (der <noscript>-Hinweis erklärt es); ältere Browser ohne Abfrage zeigen sie weiter. */
+@media (scripting: none) {
+  .js-only {
     display: none !important;
   }
+}
+
+/* Druck: helles Papier, dunkle Schrift (die Tokens sind für den dunklen Schirm gebaut), keine Navigation, kein Toast, keine Bedienelemente. */
+@media print {
+  :root {
+    --bg: #fff;
+    --surface: #fff;
+    --text: #23131b;
+    --text-dim: #3d2a33;
+    --accent: var(--orange-ink);
+    --line: rgb(35 19 27 / 0.3);
+    --line-strong: rgb(35 19 27 / 0.55);
+    --cream: #23131b;
+    --cream-dim: #3d2a33;
+    --cream-mute: #5c4650;
+    --orange: var(--orange-ink);
+    --pink: var(--pink-ink);
+    --amber: var(--orange-ink);
+    color-scheme: light;
+  }
+  html,
   body {
-    background: #fff;
+    background: #fff !important;
+    color: #23131b;
     padding: 0;
+  }
+  .tabbar,
+  .masthead,
+  .topnav,
+  .ribbon,
+  .menu__tools,
+  .menu__jump,
+  .taste,
+  .footer,
+  .toast,
+  .offline,
+  .skip,
+  .js-only,
+  button,
+  [data-update] {
+    display: none !important;
+  }
+  .btn,
+  .panel,
+  .ticket,
+  .paper,
+  .now,
+  .art__tag,
+  .event__date {
+    background: #fff !important;
+    color: #23131b !important;
+    border-color: #23131b;
+  }
+  .btn,
+  .now,
+  .art__tag,
+  .event__date {
+    border: 1px solid #23131b;
+  }
+  /* kein Abschneiden mitten in Adresse, Karte, Eintrag oder Zeile */
+  address,
+  .drink,
+  .row,
+  .fact,
+  figure,
+  .ticket {
+    break-inside: avoid;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
   }
 }
 
