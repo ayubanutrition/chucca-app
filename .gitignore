@@ -3,6 +3,7 @@ dist/
 dist-public/
 dist-sub/
 dist-hours/
+dist-inquiry/
 dist-update/
 .astro/
 test-results/

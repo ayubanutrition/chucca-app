@@ -3,6 +3,7 @@
  * Reine Funktionen ohne Dateizugriff: Das Skript liest die Dateien, diese Datei bewertet und formatiert.
  * Alle Ausgaben sind für Nicht-Entwickler auf Deutsch formuliert.
  */
+import { activeEndpoint, endpointProblems, inactiveEndpointNote } from '../inquiry-endpoint';
 import { exclusionReasons, isPreviewConcept, type ExclusionReason } from '../media';
 import { incompleteConfirmations, LOCALE_CODES, unbackedConfirmations, type FactStatus, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 
@@ -127,7 +128,18 @@ export function reviewVenue(venue: Venue, today: string): Section[] {
     contact.push(...provenanceLines(label, channel));
     if (channel.status === 'confirmed' && !channel.acceptsInquiries) contact.push(warn(`${label}: wird nicht für Gruppenanfragen betreut.`));
   }
-  if (!venue.channels.some((c) => c.status === 'confirmed' && c.acceptsInquiries)) {
+  const endpoint = venue.inquiryEndpoint;
+  if (endpoint) {
+    contact.push(...provenanceLines('Anfrage-Endpunkt (Sendeweg)', endpoint));
+    for (const problem of endpointProblems(endpoint)) contact.push(err(`Anfrage-Endpunkt: ${problem}`));
+    const note = inactiveEndpointNote(endpoint);
+    if (note) contact.push(warn(note));
+    if (activeEndpoint(endpoint)) {
+      contact.push(ok('Anfrage-Endpunkt ist bestätigt: Das Formular zeigt „Anfrage senden“, die CSP erlaubt genau diesen Host (connect-src, form-action).'));
+      if (!endpoint.privacyNote) contact.push(warn('Anfrage-Endpunkt ohne privacyNote: Die Seite zeigt statt des Datenschutzhinweises einen markierten Platzhalter. Rechtstext vom Betrieb einholen.'));
+    }
+  }
+  if (!venue.channels.some((c) => c.status === 'confirmed' && c.acceptsInquiries) && !activeEndpoint(endpoint)) {
     contact.push(warn('Kein bestätigter, betreuter Kanal für Gruppenanfragen – die Seite bietet nur eine vorbereitete Nachricht ohne Versand.'));
   }
 
@@ -315,7 +327,10 @@ export function buildReport(input: ReportInput): Report {
     if (input.venue.address.status !== 'confirmed') hardBlockers.push('Besucheradresse ist nicht „confirmed“ – ohne sie kein Build.');
     if (!(input.venue.hours.status === 'confirmed' && input.venue.hours.regular)) publicGaps.push('Öffnungszeiten: öffentlich nur „noch nicht bestätigt“.');
     if (input.venue.entrance.status !== 'confirmed') publicGaps.push('Eingang: nicht bestätigt, wird öffentlich nicht gezeigt.');
-    if (!input.venue.channels.some((c) => c.status === 'confirmed' && c.acceptsInquiries)) publicGaps.push('Gruppenanfragen: kein betreuter Kanal, nur vorbereitete Nachricht ohne Versand.');
+    const sendPath = activeEndpoint(input.venue.inquiryEndpoint);
+    if (!input.venue.channels.some((c) => c.status === 'confirmed' && c.acceptsInquiries) && !sendPath) publicGaps.push('Gruppenanfragen: kein betreuter Kanal, nur vorbereitete Nachricht ohne Versand.');
+    if (!sendPath) publicGaps.push('Sendeweg für Anfragen: AUS (kein bestätigter Endpunkt in venue.json, inquiryEndpoint fehlt oder ist unbestätigt).');
+    else if (!input.venue.inquiryEndpoint?.privacyNote) publicGaps.push('Sendeweg für Anfragen: AN, aber der Datenschutzhinweis des Betriebs (privacyNote) fehlt – öffentlich steht ein markierter Platzhalter.');
     const hiddenChannels = input.venue.channels.filter((c) => c.status !== 'confirmed').map((c) => c.type);
     if (hiddenChannels.length > 0) publicGaps.push(`Kontaktwege nicht bestätigt, daher nicht öffentlich: ${hiddenChannels.join(', ')}.`);
   }

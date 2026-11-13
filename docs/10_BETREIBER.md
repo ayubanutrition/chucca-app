@@ -8,9 +8,9 @@ Wir bauen eine kleine, dreisprachige Website (Deutsch, Englisch, Spanisch) für 
 
 Damit dort nichts Falsches steht, **veröffentlichen wir nur, was Sie uns bestätigt haben**. Bis dahin zeigt die Seite lieber „noch nicht bestätigt“ als eine Vermutung. Beispielinhalte gibt es nur in einer privaten Vorschau, die nicht öffentlich ist und klar gekennzeichnet bleibt.
 
-**Was passiert mit Ihren Angaben?** Sie werden ausschließlich für diese Website verwendet. Fotos erscheinen nur mit Ihrer ausdrücklichen Freigabe. Interne Notizen (z. B. woher ein Foto stammt, Nachweise) verlassen das Projekt nicht und sind auf der Website nicht sichtbar. Die Website sammelt keine Gästedaten, es gibt kein Konto und kein Tracking.
+**Was passiert mit Ihren Angaben?** Sie werden ausschließlich für diese Website verwendet. Fotos erscheinen nur mit Ihrer ausdrücklichen Freigabe. Interne Notizen (z. B. woher ein Foto stammt, Nachweise) verlassen das Projekt nicht und sind auf der Website nicht sichtbar. Die Website sammelt keine Gästedaten, es gibt kein Konto und kein Tracking. (Einzige mögliche Ausnahme: der optionale Sendeweg für Gruppenanfragen in Punkt 3. Er ist aus, solange Sie keinen Endpunkt bestätigt haben.)
 
-**Was ist keine Reservierung?** Die Seite hat einen „Treffplan“, mit dem Gäste Datum und Uhrzeit für eine Gruppe vorbereiten und eine Nachricht kopieren können. Das ist **keine Reservierung**: Es wird nichts an Sie gesendet und nichts verbindlich gebucht. Ob und wie Gruppenanfragen künftig bei Ihnen ankommen sollen, entscheiden Sie in Punkt 3.
+**Was ist keine Reservierung?** Die Seite hat einen „Treffplan“, mit dem Gäste Datum und Uhrzeit für eine Gruppe vorbereiten und eine Nachricht kopieren können. Das ist **keine Reservierung**: Heute wird nichts an Sie gesendet und nichts verbindlich gebucht. Ob und wie Gruppenanfragen künftig bei Ihnen ankommen sollen, entscheiden Sie in Punkt 3. Auch mit Sendeweg bleibt es eine Anfrage, keine Reservierung: Erst Ihre Antwort ist eine Zusage.
 
 **Wie gehen Sie vor?** Füllen Sie die Felder aus (am einfachsten direkt in diesem Dokument oder per E-Mail-Antwort). Was Sie nicht wissen, lassen Sie leer oder schreiben „weiß ich nicht“ – wir erfinden nichts. Sie müssen nicht alles auf einmal liefern; jeder Teil schaltet nur seinen eigenen Bereich der Website frei.
 
@@ -74,6 +74,24 @@ Aus den Quellen widersprechen sich die Angaben (täglich 19–24 Uhr bzw. 20–2
 - [ ] Wir bieten **keinen** Anfrageweg an; die Seite zeigt dann nur Lage und Zeiten.
 
 Wichtig: Wir schalten einen Kanal für Anfragen nur frei, wenn Sie hier ausdrücklich zusagen, ihn zu betreuen.
+
+### Optional: Anfrage direkt aus der Website senden („Sendeweg“)
+
+Technisch ist vorbereitet, dass das Gruppenformular auf „Besuch“ eine Anfrage **direkt an einen Dienst von Ihnen** schicken kann, statt nur eine Nachricht zum Kopieren vorzubereiten. Das ist **ausgeschaltet**, bis Sie einen Dienst benennen und ausdrücklich bestätigen. Wir erfinden und raten dafür keine Adresse. Wenn Sie den Sendeweg wollen, brauchen wir von Ihnen:
+
+- [ ] **Der Dienst.** Wer nimmt die Anfragen entgegen (eigenes Postfach-Formular, Formular-Dienstleister, Reservierungssystem, interne Software)? Name des Anbieters: ______________________________
+- [ ] **Die Adresse (URL) des Dienstes**, genau so, wie der Anbieter sie nennt: `https://__________________/____`. Bedingungen: nur `https`, ein Hostname (keine IP-Adresse, kein Port), **ohne** Zugangsschlüssel in der Adresse (kein `?key=…`); Schlüssel gehören nicht in eine öffentliche Webseite. Der Dienst muss Anfragen von außen ohne Anmeldung annehmen.
+- [ ] **Annahmeregeln des Dienstes** (das klärt der Anbieter, wir richten uns danach):
+  - Er nimmt eine `POST`-Anfrage mit JSON an: `{ "people": 8, "date": "2026-12-18", "time": "21:00", "note": "Geburtstag", "locale": "de" }` (`note` nur, wenn der Gast etwas schreibt; `date` und `time` gelten in Ortszeit Mallorca; `locale` ist die Sprache der Seite).
+  - Er erlaubt die Website per CORS: Antwort auf die Vorabfrage (`OPTIONS`) mit `Access-Control-Allow-Origin: <Adresse der Website>`, `Access-Control-Allow-Methods: POST` und `Access-Control-Allow-Headers: Content-Type`. Das Hosting-Ziel steht erst mit Aufgabe 13 fest; die Adresse der Website geben wir Ihnen dann zum Eintragen.
+  - Er antwortet **nur mit 2xx (z. B. 200 oder 204), wenn die Anfrage wirklich angenommen und bei Ihnen abgelegt ist.** Die Website meldet dem Gast erst nach einer 2xx-Antwort „übermittelt“. Bei fehlerhaften Angaben antwortet er mit 4xx, bei eigenen Störungen mit 5xx. Er leitet nicht um (kein 3xx).
+  - Er antwortet innerhalb weniger Sekunden. Die Website bricht nach 10 Sekunden ab und sagt dem Gast, dass unklar ist, ob die Anfrage angekommen ist.
+- [ ] **Wer liest die Anfragen und antwortet?** Zuständig (nur intern): ______________________ Antwort in der Regel innerhalb von: ______ Stunden / Tagen.
+- [ ] **Wie erfährt der Gast Ihre Antwort?** Das Formular hat bewusst **kein Feld für Name oder Kontakt** (wir erfinden keine Datenerhebung). Ohne Kontaktfeld kann die Anfrage nur gelesen, aber nicht beantwortet werden. Entweder Sie wünschen ein Kontaktfeld (E-Mail oder Telefon), dann braucht es zusätzlich den Datenschutztext unten, **oder** der Sendeweg dient nur als Wunschmeldung, und Gäste müssen für die Zusage selbst über einen Kanal aus Punkt 3 nachfragen. Bitte entscheiden Sie: ______________________
+- [ ] **Datenschutz** (rechtlich verbindlich, **liefert der Betrieb bzw. eine Juristin/ein Jurist, wir schreiben ihn nicht**): ein kurzer Hinweistext in Deutsch, Englisch und Spanisch, der am Formular steht. Er muss mindestens sagen: wer die Angaben erhält (Verantwortlicher), wozu sie verwendet werden, wie lange sie gespeichert werden, ob ein Dienstleister beteiligt ist (und wo er sitzt), und wo man Auskunft oder Löschung verlangt. Außerdem ein Eintrag im Datenschutzhinweis (Punkt 7). Bis der Text vorliegt, zeigt das Formular an dieser Stelle einen **sichtbar markierten Platzhalter** („[PLATZHALTER …]“), keinen erfundenen Text.
+- [ ] **Bestätigung.** Schriftlich (Mail genügt): „Der Dienst unter der genannten Adresse nimmt Gruppenanfragen von der Website an und wird von uns betreut.“ Datum und Absender tragen wir als Beleg ein.
+
+Was die Website sendet, ist auf das Nötige beschränkt: Personenzahl, Datum, Uhrzeit, die freiwillige Anmerkung und die Sprache der Seite. Keine Cookies, kein Referrer, keine Kennung des Geräts. Das Formular sagt dem Gast vor dem Senden, was gesendet wird. Fällt das Senden aus (Netz, Zeitüberschreitung, Fehler des Dienstes, Ablehnung), bleiben seine Eingaben stehen, und er kann den vorbereiteten Text kopieren und selbst schicken.
 
 ## 4. Getränkekarte
 
@@ -140,6 +158,7 @@ Impressum und Datenschutzhinweis sind rechtlich verbindliche Texte. **Diese Text
 - [ ] Fertiger Impressumstext liegt bei (DE, möglichst auch EN/ES).
 - [ ] Fertiger Datenschutzhinweis liegt bei (DE, möglichst auch EN/ES).
 - [ ] Wer ist für die Website datenschutzrechtlich verantwortlich? ______________________________
+- [ ] Nur falls Sie den Sendeweg für Anfragen wollen (Punkt 3): Hinweistext zur Verwendung der gesendeten Angaben (DE/EN/ES) und Eintrag im Datenschutzhinweis.
 
 Hinweis: Die Website sammelt selbst keine Gästedaten und setzt keine Tracking-Dienste ein. Ihr Hosting-Anbieter kann trotzdem technische Daten verarbeiten – das gehört in den Datenschutzhinweis.
 
@@ -186,6 +205,7 @@ Nur für die Person, die die Angaben einträgt. Alle Befehle im Projektordner; a
 
 1. **Karte einlesen:** `npm run menu:import -- karte.csv` zeigt das Ergebnis nur an (nichts wird überschrieben). Stimmt es: `npm run menu:import -- karte.csv --out src/content/published/menu.json`. Bei Fehlern nennt das Skript Zeile und Spalte der Tabelle und schreibt nichts.
 2. **Zeiten, Kanal, Termine, Fotos eintragen:** in `src/content/published/venue.json`, `events.json` und `src/content/media/catalogue.json` (Feldbeschreibung: `docs/04_CONTENT_MEDIA.md`, Abschnitt „Pflege“). Jede Angabe mit `status: "confirmed"` braucht `source` (Quelle, z. B. „Mail vom 12.11.“) und `observedAt` (Datum).
+   Optionaler Sendeweg (nur nach schriftlicher Bestätigung des Betriebs, Punkt 3): in `venue.json` den Block `inquiryEndpoint` ergänzen. Er fehlt im Repo absichtlich; solange er fehlt oder nicht bestätigt ist, bleibt der Sendeweg aus. Felder: `url` (https, nur Hostname und Pfad), `method: "POST"`, `acceptsInquiries: true`, `status: "confirmed"`, `source` (Beleg, z. B. „Mail vom …“), `verifiedAt` (Tag der Bestätigung), `privacyNote` (DE/EN/ES, Rechtstext des Betriebs; ohne ihn zeigt die Seite den markierten Platzhalter). Für einen Entwurf ohne Wirkung: `status: "proposal"` und `acceptsInquiries: false`. Aufbau und Regeln: `docs/04_CONTENT_MEDIA.md`, Abschnitt „Pflege“.
 3. **Prüfen:** `npm run content:check` nennt Datei, Feld und Grund jedes Fehlers und listet, was öffentlich noch fehlt. Dieselben Fehler stoppen auch den Build.
 4. **Bauen:** `npm run build` erzeugt die private Vorschau (`dist/`, mit gekennzeichneten Beispielen). Die öffentliche Fassung ohne Beispiele: `CHUCCA_SITE_URL=https://<Adresse> npm run build:public` → `dist-public/`. Ohne `CHUCCA_SITE_URL` bleibt sie bewusst `noindex`, ohne Sitemap und Canonical.
 

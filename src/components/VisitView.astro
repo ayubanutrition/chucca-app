@@ -29,7 +29,21 @@ const clientData = {
   shared: t.visit.shared,
   shareCopied: t.visit.shareCopied,
   addressCopied: t.visit.addressCopied,
-  inquiry: t.visit.inquiry,
+  inquiry: venue.inquiry ? { ...t.visit.inquiry, prepared: t.visit.send.prepared } : t.visit.inquiry,
+  // Nur mit bestätigtem Endpunkt (Aufgabe 18); ohne ihn bleibt die Seite wie vor dem Sendeweg.
+  ...(venue.inquiry
+    ? {
+        send: {
+          url: venue.inquiry.url,
+          sending: t.visit.send.sending,
+          sent: t.visit.send.sent,
+          rejected: t.visit.send.rejected,
+          server: t.visit.send.server,
+          timeout: t.visit.send.timeout,
+          offline: t.visit.send.offline,
+        },
+      }
+    : {}),
 };
 ---
 
@@ -178,11 +192,12 @@ const clientData = {
       <div class="stack" style="--stack: var(--space-4)">
         <p class="eyebrow">{t.nav.group}</p>
         <h2 class="display h2" id="inquiry-title">{t.visit.inquiry.title}</h2>
-        <p class="notice">{t.visit.inquiry.limited}</p>
-        <p class="prose">{t.visit.inquiry.lead}</p>
+        <p class="notice">{venue.inquiry ? t.visit.send.limited : t.visit.inquiry.limited}</p>
+        <p class="prose">{venue.inquiry ? t.visit.send.lead : t.visit.inquiry.lead}</p>
         <a class="link" href={href(locale, 'group')}>{t.visit.inquiry.plannerCta}<Icon name="arrow" /></a>
       </div>
-      <form class="panel js-only" data-inquiry novalidate>
+      <form class="panel js-only" data-inquiry data-inquiry-origin={venue.inquiry?.origin} novalidate>
+        {venue.inquiry?.testNotice && <p class="notice" data-test-fixture>{venue.inquiry.testNotice}</p>}
         <div class="fields fields--trio">
           <div class="field">
             <label for="inq-people">{t.visit.inquiry.people}</label>
@@ -221,6 +236,15 @@ const clientData = {
               )
             }
           </div>
+          {
+            venue.inquiry && (
+              <div class="stack" style="--stack: var(--space-3)" data-inquiry-sendbox>
+                <p class="small" data-inquiry-data>{t.visit.send.data}</p>
+                <p class="small" data-inquiry-privacy>{venue.inquiry.privacyNote?.[locale] ?? t.visit.send.privacyPlaceholder}</p>
+                <button class="btn btn--primary btn--block" type="button" data-inquiry-send>{t.visit.send.button}</button>
+              </div>
+            )
+          }
         </div>
       </form>
     </div>

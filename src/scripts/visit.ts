@@ -1,5 +1,9 @@
-/** Besuch: Treffpunkt teilen, Adresse kopieren und eine Gruppennachricht vorbereiten (ohne Versand). */
+/**
+ * Besuch: Treffpunkt teilen, Adresse kopieren und eine Gruppennachricht vorbereiten. Gesendet wird sie von der Person
+ * selbst, außer der Betrieb hat einen Endpunkt bestätigt: dann gibt es zusätzlich einen Senden-Knopf (Aufgabe 18).
+ */
 import { fill } from '../i18n';
+import { buildPayload, sendInquiry, type InquiryPayload } from '../lib/inquiry-send';
 import { validatePlan } from '../lib/planner';
 import { copyText, plainText, shareOrCopy } from '../lib/share';
 import { formatLongDate, madridDate, madridWeekday } from '../lib/time';
@@ -15,6 +19,8 @@ interface Data {
   shareCopied: string;
   addressCopied: string;
   inquiry: Record<string, string>;
+  /** Nur vorhanden, wenn der Betrieb einen Endpunkt für Anfragen bestätigt hat (Aufgabe 18). */
+  send?: { url: string } & Record<'sending' | 'sent' | 'rejected' | 'server' | 'timeout' | 'offline', string>;
 }
 
 const root = document.querySelector<HTMLElement>('[data-visit]');
@@ -72,7 +78,7 @@ if (root) {
     exceptions.hidden = visible === 0 || !root.querySelector('[data-hours]');
   }
 
-  // Gruppennachricht: wird nur vorbereitet. Gesendet wird sie von der Person selbst.
+  // Gruppennachricht: wird vorbereitet. Gesendet wird sie von der Person selbst oder, nur mit bestätigtem Endpunkt, über den Senden-Knopf.
   const form = one<HTMLFormElement>(root, '[data-inquiry]');
   const s = data.inquiry;
   const people = one<HTMLInputElement>(form, '[name="people"]');
@@ -83,6 +89,23 @@ if (root) {
   const output = one<HTMLElement>(form, '[data-inquiry-output]');
   const text = one<HTMLTextAreaElement>(output, 'textarea');
   date.min = madridDate();
+  const sendButton = form.querySelector<HTMLButtonElement>('[data-inquiry-send]');
+  const sendConfig = sendButton ? data.send : undefined;
+  /** Angaben der zuletzt vorbereiteten Nachricht; nur diese können gesendet werden. */
+  let pending: InquiryPayload | null = null;
+  /** Genau ein Versand zugleich, und nach einem Erfolg kein zweiter für dieselben Angaben. */
+  let busy = false;
+  let delivered = false;
+  const setSendLocked = (locked: boolean): void => {
+    if (!sendButton) return;
+    if (locked) sendButton.setAttribute('aria-disabled', 'true');
+    else sendButton.removeAttribute('aria-disabled');
+  };
+  const setFieldsLocked = (locked: boolean): void => {
+    for (const field of [people, date, time, note]) field.readOnly = locked;
+    if (locked) form.setAttribute('aria-busy', 'true');
+    else form.removeAttribute('aria-busy');
+  };
 
   const clear = (): void => {
     inquiryStatus.textContent = '';
@@ -102,12 +125,20 @@ if (root) {
     field.focus();
   };
   form.addEventListener('input', () => {
+    if (busy) return;
     clear();
     output.hidden = true;
+    pending = null;
+    delivered = false;
+    setSendLocked(false);
   });
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+    if (busy) return;
     clear();
+    pending = null;
+    delivered = false;
+    setSendLocked(false);
     const count = Number(people.value);
     if (!Number.isInteger(count) || count < 2 || count > 40) return fail(people, s.errorPeople ?? '');
     const result = validatePlan({ date: date.value, time: time.value });
@@ -119,13 +150,41 @@ if (root) {
     const extra = note.value.trim();
     if (extra) lines.push(fill(s.templateNote ?? '', { note: extra }));
     text.value = lines.join('\n');
+    pending = buildPayload({ people: count, date: date.value, time: time.value, note: extra, locale: data.locale });
     output.hidden = false;
     inquiryStatus.textContent = s.prepared ?? '';
     text.focus();
   });
+  if (sendButton && sendConfig) {
+    const messages = sendConfig;
+    sendButton.addEventListener('click', async () => {
+      // Busy-Flag vor dem ersten await: ein zweiter Klick (auch ein Doppelklick) löst keinen zweiten Versand aus.
+      if (busy || delivered || !pending) return;
+      busy = true;
+      setSendLocked(true);
+      setFieldsLocked(true);
+      delete inquiryStatus.dataset.kind;
+      inquiryStatus.textContent = messages.sending;
+      const outcome = await sendInquiry({ url: messages.url, payload: pending });
+      busy = false;
+      setFieldsLocked(false);
+      // Erfolg nur nach HTTP 2xx. Jeder andere Ausgang bewahrt die Eingabe und den Text zum Kopieren.
+      if (outcome === 'sent') {
+        delivered = true;
+        delete inquiryStatus.dataset.kind;
+        inquiryStatus.textContent = messages.sent;
+      } else {
+        setSendLocked(false);
+        inquiryStatus.dataset.kind = 'error';
+        inquiryStatus.textContent = messages[outcome];
+      }
+    });
+  }
   one<HTMLButtonElement>(form, '[data-inquiry-copy]').addEventListener('click', async () => {
-    if ((await copyText(text.value)) === 'copied') inquiryStatus.textContent = s.copied ?? '';
-    else {
+    // Nach erfolgreichem Versand bleibt die Erfolgsmeldung stehen („noch nicht gesendet“ wäre dann falsch).
+    if ((await copyText(text.value)) === 'copied') {
+      if (!delivered) inquiryStatus.textContent = s.copied ?? '';
+    } else {
       text.focus();
       text.select();
     }

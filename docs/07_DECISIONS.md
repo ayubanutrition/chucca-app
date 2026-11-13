@@ -22,7 +22,7 @@ Format: ID · Datum · Entscheidung · Grund · Konsequenz · Status.
 
 **D10 · Öffnungsstatus nur aus bestätigten Daten; stattdessen Sonnenuntergang.** Die „Jetzt“-Leiste zeigt, was sich verlässlich berechnen lässt (Ortszeit, Sonnenuntergang), und sagt offen, dass Öffnungszeiten fehlen. Status: umgesetzt.
 
-**D11 · Gruppenanfrage als vorbereitete Nachricht.** Kein Formularversand ohne betreuten Kanal; der Gast sendet selbst. Status: umgesetzt; Ausbau hängt am Betrieb.
+**D11 · Gruppenanfrage als vorbereitete Nachricht.** Kein Formularversand ohne betreuten Kanal; der Gast sendet selbst. Status: umgesetzt; Ausbau hängt am Betrieb. Ergänzung (13.11.2026): Ein Sendeweg ist technisch vorbereitet, aber AUS, solange der Betrieb keinen Endpunkt bestätigt hat (`inquiryEndpoint`, `docs/03_ARCHITECTURE.md`). Erfolg wird nur nach HTTP 2xx gemeldet und nie als Reservierung formuliert; der Treffpunkt-Plan bleibt keine Reservierung.
 
 **D12 · Handgeschriebener Service Worker und ICS-Generator.** Keine Abhängigkeit für je unter 100 Zeilen; ICS faltet nach Oktetten (die verbreitete Bibliothek `ics` faltet nach Zeichen). Status: umgesetzt.
 

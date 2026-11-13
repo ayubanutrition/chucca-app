@@ -21,7 +21,7 @@ const NOT_IN_REPO = new Set([
 ]);
 const TOP = /^(?:\.github|\.nvmrc|src|docs|tests|scripts|integrations|public)(?:\/|$)/;
 const FILE_EXT = /^\w[\w.-]*\.(?:md|ts|mjs|json|astro|yml|yaml|css|py|csv|js|webp|svg|png|jpg)$/;
-const SKIP_DIRS = new Set(['node_modules', '.git', '.astro', 'dist', 'dist-public', 'dist-sub', 'dist-hours', 'dist-update', 'test-results']);
+const SKIP_DIRS = new Set(['node_modules', '.git', '.astro', 'dist', 'dist-public', 'dist-sub', 'dist-hours', 'dist-inquiry', 'dist-update', 'test-results']);
 const ENV_VAR = /\b(?:CHUCCA_[A-Z0-9_]+|PORT_BASE|CROSS_BROWSER)\b/g;
 
 /** @param {string} root @returns {string[]} alle Dateien (Pfade relativ, mit /) */

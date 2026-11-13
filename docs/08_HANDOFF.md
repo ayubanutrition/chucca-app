@@ -11,6 +11,7 @@ V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenpl
 ## Vorbereitet, aber noch nicht nutzbar
 - QR-Aufsteller: `node scripts/qr-link.mjs <Basis-URL> <de|en|es> [Kurz-URL]` (Aufgabe 20). Erst nach der Hostentscheidung sinnvoll; Anleitung in `docs/10_BETREIBER.md`. Neue devDependency `qrcode-generator` (MIT), nicht im Produktbuild.
 - Entscheidungsvorlage PWA vs. native: `docs/12_NATIVE_PHASE.md` (Aufgabe 21).
+- Sendeweg für Gruppenanfragen (Aufgabe 18, technisch vorbereitet, AUS): optionales `inquiryEndpoint` in `venue.json` (im Repo absent), Senden-Knopf mit Zuständen sending/Erfolg nur nach 2xx/4xx/5xx/Timeout/offline in DE/EN/ES, CSP-Host nur bei Bestätigung. Einschalten erst, wenn der Betrieb Dienst, Adresse, CORS, Betreuung und Datenschutztext (`privacyNote`) geliefert und schriftlich bestätigt hat: `docs/10_BETREIBER.md`, Punkt 3; Eintrag und Regeln `docs/04_CONTENT_MEDIA.md`; Belege und Grenzen `docs/06_QA.md`. Test-Schalter `CHUCCA_TEST_INQUIRY` (nur `dist-inquiry`).
 
 ## Wo es läuft
 Nur lokal. Kein Deployment, keine öffentliche URL, kein PR.

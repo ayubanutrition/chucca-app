@@ -14,14 +14,16 @@ import { selectMedia, toPublicMedia, type MediaPublic } from '../media';
 import { parseOrThrow } from './report';
 import { eventsSchema, incompleteConfirmations, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 import type { HoursData } from '../hours';
-import { TEST_HOURS, type Mode } from '../../config/mode';
+import { TEST_HOURS, TEST_INQUIRY, type Mode } from '../../config/mode';
 import { fixtureHours, HOURS_FIXTURE_NOTICE } from '../../content/fixtures/hours';
+import { fixtureInquiryEndpoint, INQUIRY_FIXTURE_NOTICE } from '../../content/fixtures/inquiry';
+import { activeEndpoint } from '../inquiry-endpoint';
 
 export const venueInternal: Venue = parseOrThrow('src/content/published/venue.json', venueSchema, venueRaw);
 const unbacked = unbackedConfirmations(venueInternal);
 if (unbacked.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json steht „confirmed“ ohne Quelle oder Datum bei: ${unbacked.join(', ')}. Bitte „source“ und „observedAt“ (oder „verifiedAt“) eintragen oder den Status zurücksetzen.`);
 const incomplete = incompleteConfirmations(venueInternal);
-if (incomplete.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json steht „confirmed“, aber es fehlen Angaben: ${incomplete.join(', ')}.`);
+if (incomplete.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json sind Angaben unvollständig oder widersprüchlich: ${incomplete.join('; ')}.`);
 export const publishedMenu: Menu = parseOrThrow('src/content/published/menu.json', menuSchema, menuRaw);
 export const fixtureMenu: Menu = parseOrThrow('src/content/fixtures/menu.json', menuSchema, fixtureMenuRaw);
 export const publishedEvents: VenueEvent[] = parseOrThrow('src/content/published/events.json', eventsSchema, eventsRaw);
@@ -44,16 +46,24 @@ export interface VenuePublic {
   hours: HoursData;
   /** Nur im Testbuild gesetzt: Kennzeichnung der Test-Fixture für die Seite. */
   testFixtureNotice?: string;
+  /**
+   * Sendeweg für Gruppenanfragen: `null`, solange der Betrieb keinen Endpunkt bestätigt hat (Normalfall).
+   * Nur Adresse und Datenschutzhinweis; Quelle und Prüfdaten bleiben intern.
+   */
+  inquiry: { url: string; origin: string; privacyNote: Localized | null; testNotice?: string } | null;
   entrance: { note: Localized; confirmed: boolean } | null;
 }
 
 /** Im Testbuild (`CHUCCA_TEST_HOURS`) tragen die Standardinhalte die gekennzeichnete Zeiten-Fixture; sonst unverändert. */
-const activeVenue: Venue = TEST_HOURS ? { ...venueInternal, hours: fixtureHours } : venueInternal;
+const hoursVenue: Venue = TEST_HOURS ? { ...venueInternal, hours: fixtureHours } : venueInternal;
+/** Im Testbuild `dist-inquiry` (`CHUCCA_TEST_INQUIRY`) trägt die Venue einen gekennzeichneten Test-Endpunkt; sonst unverändert. */
+const activeVenue: Venue = TEST_INQUIRY ? { ...hoursVenue, inquiryEndpoint: fixtureInquiryEndpoint } : hoursVenue;
 
 export function venueFor(mode: Mode, venue: Venue = activeVenue): VenuePublic {
   if (venue.address.status !== 'confirmed') throw new Error('Ohne bestätigte Besucheradresse ist kein Build möglich.');
   const { building, street, postalCode, city, area, region, countryCode } = venue.address;
   const entranceVisible = venue.entrance.status === 'confirmed' || (mode === 'preview' && venue.entrance.status === 'source-claim');
+  const endpoint = activeEndpoint(venue.inquiryEndpoint);
   const hoursConfirmed = venue.hours.status === 'confirmed' && venue.hours.regular !== null;
   return {
     name: venue.name,
@@ -71,6 +81,9 @@ export function venueFor(mode: Mode, venue: Venue = activeVenue): VenuePublic {
       ? { status: 'confirmed', validFrom: venue.hours.validFrom, validUntil: venue.hours.validUntil, regular: venue.hours.regular, exceptions: venue.hours.exceptions }
       : { status: 'unconfirmed' },
     ...(TEST_HOURS && venue.hours === fixtureHours ? { testFixtureNotice: HOURS_FIXTURE_NOTICE } : {}),
+    inquiry: endpoint
+      ? { url: endpoint.url, origin: endpoint.origin, privacyNote: venue.inquiryEndpoint?.privacyNote ?? null, ...(TEST_INQUIRY && venue.inquiryEndpoint === fixtureInquiryEndpoint ? { testNotice: INQUIRY_FIXTURE_NOTICE } : {}) }
+      : null,
     entrance: entranceVisible ? { note: venue.entrance.note, confirmed: venue.entrance.status === 'confirmed' } : null,
   };
 }

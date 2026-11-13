@@ -3,6 +3,7 @@
  * Laden gegen diese Schemata geprüft; ein Verstoß bricht Build und Tests ab.
  */
 import { z } from 'zod';
+import { checkEndpointUrl, endpointProblems } from '../inquiry-endpoint';
 import { TASTES } from '../tastes';
 
 export const LOCALE_CODES = ['de', 'en', 'es'] as const;
@@ -65,6 +66,27 @@ export const venueSchema = z
         })
         .strict(),
     ),
+    /**
+     * OPTIONAL und standardmäßig ABWESENT: Endpunkt, an den das Gruppenformular eine Anfrage senden darf.
+     * Wirksam ist er nur nach ausdrücklicher Bestätigung durch den Betrieb (Regeln: `src/lib/inquiry-endpoint.ts`).
+     * Trage hier niemals eine erfundene oder ungeprüfte Adresse ein.
+     */
+    inquiryEndpoint: z
+      .object({
+        /** https, nur Hostname (Allowlist-fähig für die CSP), kein Port, keine Zugangsdaten, keine Query. */
+        url: text.superRefine((value, ctx) => {
+          const check = checkEndpointUrl(value);
+          if (!check.ok) ctx.addIssue({ code: 'custom', message: check.reason });
+        }),
+        method: z.literal('POST'),
+        /** Nimmt der Betrieb über diesen Endpunkt Gruppenanfragen an und betreut ihn? Nur nach Bestätigung true. */
+        acceptsInquiries: z.boolean(),
+        /** Datenschutzhinweis des Betriebs zur Verwendung der gesendeten Angaben (Rechtstext, vom Betrieb zu liefern). */
+        privacyNote: localized.optional(),
+        ...provenance,
+      })
+      .strict()
+      .optional(),
     hours: z
       .object({
         validFrom: isoDate.nullable().optional(),
@@ -86,13 +108,17 @@ export function unbackedConfirmations(venue: Venue): string[] {
     ['hours', venue.hours],
     ['entrance', venue.entrance],
     ...venue.channels.map((channel): [string, typeof channel] => [`channel:${channel.type}`, channel]),
+    ...(venue.inquiryEndpoint ? [['inquiryEndpoint', venue.inquiryEndpoint] as [string, typeof venue.inquiryEndpoint]] : []),
   ];
   return groups.filter(([, fact]) => fact.status === 'confirmed' && (!fact.source?.trim() || !(fact.verifiedAt ?? fact.observedAt))).map(([name]) => name);
 }
 
-/** „confirmed“ bei den Öffnungszeiten ohne eingetragene Wochentage wäre eine leere Zusage. */
+/**
+ * „confirmed“ bei den Öffnungszeiten ohne eingetragene Wochentage wäre eine leere Zusage; ein halb oder widersprüchlich
+ * bestätigter Anfrage-Endpunkt (Aufgabe 18) ebenso. Beides hält den Build an.
+ */
 export function incompleteConfirmations(venue: Venue): string[] {
-  return venue.hours.status === 'confirmed' && !venue.hours.regular ? ['hours: regular (die sieben Wochentage) fehlt'] : [];
+  return [...(venue.hours.status === 'confirmed' && !venue.hours.regular ? ['hours: regular (die sieben Wochentage) fehlt'] : []), ...endpointProblems(venue.inquiryEndpoint).map((problem) => `inquiryEndpoint: ${problem}`)];
 }
 
 export { TASTES, type Taste } from '../tastes';

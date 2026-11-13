@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 import { join, relative } from 'node:path';
 import { LOCALES, PAGES, pagePath } from '../src/i18n';
 import { buildServiceWorker } from '../src/lib/sw-template';
-import { buildHeadersFile, collectInlineHashes } from '../src/lib/headers';
+import { buildHeadersFile, collectInlineHashes, collectInquiryOrigins } from '../src/lib/headers';
+import { endpointOrigin } from '../src/lib/inquiry-endpoint';
 
 async function walk(dir: string, root = dir): Promise<string[]> {
   const out: string[] = [];
@@ -22,7 +23,7 @@ async function walk(dir: string, root = dir): Promise<string[]> {
   return out;
 }
 
-export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string; testHours?: boolean }): AstroIntegration {
+export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string; testHours?: boolean; testInquiry?: boolean }): AstroIntegration {
   let base = '/';
   let site: string | undefined;
   return {
@@ -35,6 +36,9 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
         const outName = fileURLToPath(config.outDir).replace(/[\\/]+$/, '').split(/[\\/]/).pop();
         if (options.testHours && (options.mode !== 'preview' || outName !== 'dist-hours')) {
           throw new Error(`CHUCCA_TEST_HOURS=1 baut ausschließlich den Vorschau-Testbuild nach dist-hours (Ziel: ${outName}, Modus: ${options.mode}).`);
+        }
+        if (options.testInquiry && (options.mode !== 'preview' || outName !== 'dist-inquiry')) {
+          throw new Error(`CHUCCA_TEST_INQUIRY=1 baut ausschließlich den Vorschau-Testbuild nach dist-inquiry (Ziel: ${outName}, Modus: ${options.mode}).`);
         }
       },
       'astro:build:done': async ({ dir, logger }) => {
@@ -85,11 +89,17 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
         // Auslieferungs-Header (Netlify/Cloudflare-Format): hostneutral, hängt von Modus und Site-URL ab.
         // Die CSP-Hashes stammen aus den erzeugten Seiten, nicht aus dem Quelltext.
         const htmlTexts = await Promise.all((await walk(root)).filter((file) => file.endsWith('.html')).map((file) => readFile(join(root, file), 'utf8')));
+        // Anfrage-Endpunkt (Aufgabe 18): Die CSP öffnet sich nur für die Herkunft, die die Seiten tatsächlich tragen (bestätigter Endpunkt).
+        const origins = collectInquiryOrigins(htmlTexts);
+        if (origins.length > 1) throw new Error(`Mehrere Anfrage-Endpunkte in den Seiten (${origins.join(', ')}); erlaubt ist genau einer.`);
+        const inquiryOrigin = origins[0] ?? null;
+        if (inquiryOrigin !== null && endpointOrigin(inquiryOrigin) !== inquiryOrigin) throw new Error(`Ungültige Herkunft des Anfrage-Endpunkts: ${inquiryOrigin}`);
+        if (inquiryOrigin?.endsWith('.invalid') && !options.testInquiry) throw new Error('Test-Endpunkt (.invalid) in einem regulären Build: abgebrochen.');
         await writeFile(
           join(root, '_headers'),
-          buildHeadersFile({ files: await walk(root), hashes: collectInlineHashes(htmlTexts), noindex: options.mode !== 'public' || !site }),
+          buildHeadersFile({ files: await walk(root), hashes: collectInlineHashes(htmlTexts), noindex: options.mode !== 'public' || !site, inquiryOrigin }),
         );
-        logger.info(`mode=${options.mode} · sw.js mit ${precache.length} Assets · ${orphans.length} unreferenzierte Bilder entfernt · robots/sitemap/_headers geschrieben`);
+        logger.info(`mode=${options.mode}${inquiryOrigin ? ` · Anfrage-Endpunkt ${inquiryOrigin} in CSP` : ''} · sw.js mit ${precache.length} Assets · ${orphans.length} unreferenzierte Bilder entfernt · robots/sitemap/_headers geschrieben`);
       },
     },
   };

@@ -211,6 +211,21 @@ export const de = {
       templateNote: 'Anmerkung: {note}',
       plannerCta: 'Nur eine Treffzeit für die Gruppe festlegen',
     },
+    /** Nur sichtbar, wenn der Betrieb einen Endpunkt für Anfragen bestätigt hat (Aufgabe 18); sonst unbenutzt. */
+    send: {
+      limited: 'Eine Online-Reservierung gibt es hier nicht. Du kannst eine Anfrage an CHUCCA senden; sie bestätigt keine Plätze. Erst die Antwort von CHUCCA ist eine Zusage.',
+      lead: 'Bereite die Nachricht vor. Danach kannst du die Anfrage hier senden oder den Text selbst an CHUCCA schicken.',
+      prepared: 'Vorbereitet – noch nicht gesendet. Du kannst die Anfrage jetzt senden oder den Text selbst an CHUCCA schicken.',
+      button: 'Anfrage an CHUCCA senden',
+      sending: 'Wird gesendet.',
+      sent: 'Deine Angaben wurden an CHUCCA übermittelt. Das ist keine Reservierung und noch keine Zusage – erst eine Antwort von CHUCCA zählt.',
+      rejected: 'CHUCCA hat die Anfrage nicht angenommen. Bitte prüfe deine Angaben oder schick den Text selbst an CHUCCA. Deine Eingaben sind noch da.',
+      server: 'Der Dienst von CHUCCA hat gerade einen Fehler. Es ist nichts bestätigt. Versuch es später noch einmal oder schick den Text selbst an CHUCCA. Deine Eingaben sind noch da.',
+      timeout: 'Keine Antwort innerhalb von 10 Sekunden. Es ist unklar, ob die Anfrage angekommen ist. Versuch es noch einmal oder schick den Text selbst an CHUCCA. Deine Eingaben sind noch da.',
+      offline: 'Keine Verbindung zum Dienst von CHUCCA. Es ist nichts bestätigt. Prüf dein Netz und versuch es noch einmal oder kopiere den Text und schick ihn selbst an CHUCCA. Deine Eingaben sind noch da.',
+      data: 'Gesendet werden nur Personenzahl, Datum, Uhrzeit und deine Anmerkung (falls ausgefüllt) sowie die Sprache dieser Seite. Kein Name, keine Kontaktdaten.',
+      privacyPlaceholder: '[PLATZHALTER, vom Betrieb bzw. aus dem Rechtstext zu liefern: wer die Angaben erhält, wozu sie verwendet und wie lange sie gespeichert werden.]',
+    },
     install: {
       title: 'CHUCCA auf dem Startbildschirm',
       body: 'In unterstützten Browsern kannst du diese Web-App zum Startbildschirm hinzufügen. Auf dem iPhone: in Safari öffnen, „Teilen“ antippen und „Zum Home-Bildschirm“ wählen. Es ist keine App aus dem App Store.',

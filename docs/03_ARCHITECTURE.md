@@ -19,7 +19,7 @@ Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je
 | `integrations/chucca-build.ts` | Schreibt nach dem Build `sw.js`, `robots.txt`, `sitemap.xml` |
 | `scripts/` | Werkzeuge: Konzeptmotive, Icons, Schriftteilmengen (`make-fonts.py`), Testserver (`serve.mjs`, `serve-update.mjs`), Update-Builds (`build-update.mjs`), Inhalts- und CSV-Werkzeuge (`content-check.ts`, `menu-from-csv.ts`, über `run-ts.mjs`), QR-Aufsteller, Doc-Check, Screenshots, Labormessung; Aufruf je Skript: `README.md` |
 | `tests/unit`, `tests/build-output`, `tests/e2e` | Vitest (`vitest.config.ts`), Vitest über die fertigen Ausgabeordner (`vitest.dist.config.ts`, `npm run test:dist`) und Playwright (`playwright.config.ts`, `playwright.update.config.ts`) |
-| `dist/`, `dist-public/`, `dist-sub/`, `dist-hours/` | Erzeugter Output von `npm run build:test` (nicht versioniert) |
+| `dist/`, `dist-public/`, `dist-sub/`, `dist-hours/`, `dist-inquiry/` | Erzeugter Output von `npm run build:test` (nicht versioniert) |
 | `.github/workflows/quality.yml` | CI: dieselben Schritte wie `npm run check`, dazu der Job `cross-browser` |
 
 ## Schriften
@@ -40,6 +40,10 @@ Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-font
 
 `CHUCCA_BASE` setzt einen Unterpfad; alle Links laufen über `src/lib/paths.ts`.
 
+**Optionaler Sendeweg für Gruppenanfragen (Aufgabe 18, technisch vorbereitet, AUS):** `venue.json` kann einen `inquiryEndpoint` tragen (Schema und Regeln: `src/lib/content/schema.ts`, `src/lib/inquiry-endpoint.ts`); im Repo ist er absent. `venueFor()` liefert `inquiry` nur bei bestätigtem Endpunkt (`activeEndpoint`: `confirmed` + `acceptsInquiries` + `source` + `verifiedAt` + gültige https-Adresse), sonst `null`. `VisitView.astro` rendert dann den Senden-Knopf, den Datenhinweis und `data-inquiry-origin` am Formular; ohne Endpunkt ist das HTML der Seite unverändert. `src/scripts/visit.ts` sendet über `src/lib/inquiry-send.ts` (reine Logik ohne DOM): ein `fetch` (POST, JSON, `credentials: omit`, `redirect: error`, `referrerPolicy: no-referrer`) mit `AbortController` und 10 s Zeitgrenze, Busy-Flag vor dem ersten `await` (Doppelklick = ein Versand), Eingabefelder während des Sendens schreibgeschützt. Ergebnis `sent` nur bei HTTP 2xx; 4xx `rejected`, sonstige Antworten `server`, Zeitgrenze `timeout`, Netzfehler oder `navigator.onLine === false` `offline`. Jeder Fehler bewahrt Eingabe und vorbereiteten Text (Rückfall „Text kopieren“). Texte: `visit.send` in `src/i18n/*.ts`. Die CSP wird aus dem Output abgeleitet: `integrations/chucca-build.ts` liest `data-inquiry-origin` aus den erzeugten Seiten und reicht die Herkunft an `buildHeadersFile` weiter (`src/lib/headers.ts`); nur dann steht der Host in `connect-src` und `form-action`, sonst bleiben `connect-src 'self'` und `form-action 'none'`.
+
+**Testschalter `CHUCCA_TEST_INQUIRY=1`** (`npm run build:inquiry` → `dist-inquiry/`): setzt nur im Vorschau-Modus den gekennzeichneten Test-Endpunkt `src/content/fixtures/inquiry.ts` (Host `inquiries.chucca-test.invalid`, löst nie auf; Marker `TESTFIXTURE-INQUIRY` im HTML), damit der Sendeweg im Browser gegen einen Mock getestet werden kann. Kein Produktmodus: `astro.config.ts` lehnt ihn mit `CHUCCA_MODE=public` und zusammen mit `CHUCCA_TEST_HOURS` ab, die Build-Integration bricht ab, wenn das Ausgabeziel nicht `dist-inquiry` ist oder ein `.invalid`-Endpunkt in einem anderen Build auftaucht. `dist`, `dist-public`, `dist-sub` und `dist-hours` enthalten weder Marker noch Host noch Hooks (`tests/e2e/inquiry-send.spec.ts`, `tests/build-output/inquiry-csp.test.ts`).
+
 **Testschalter `CHUCCA_TEST_HOURS=1`** (`npm run build:hours` → `dist-hours/`): ersetzt nur im Vorschau-Modus die unbestätigten Öffnungszeiten durch die gekennzeichnete Fixture `src/content/fixtures/hours.ts` (erfundene Zeiten in 2099), damit Öffnungsstatus und Ausnahmetage im Browser testbar sind. Kein Produktmodus: Der Schalter wird mit `CHUCCA_MODE=public` abgelehnt, und die Build-Integration bricht ab, wenn das Ausgabeziel nicht `dist-hours` ist. `dist`, `dist-public` und `dist-sub` enthalten die Fixture nie (Leak-Tests in `tests/e2e/hours-fixture.spec.ts`). Der Testserver läuft auf `PORT_BASE + 5`.
 
 ## Sprache und Routen
@@ -52,6 +56,7 @@ Der Sprachwechsel führt zur gleichen Seite und nimmt Query und Hash mit (Filter
 - **Event**: Datum/Start/Ende in Ortszeit Madrid, `status`, `hideAfter`.
 - **MediaInternal → MediaPublic**: öffentlich nur `id, kind, alt, caption, credit, focus, tags` (`PUBLIC_MEDIA_FIELDS`).
 - **Meetup (Draft)**: Datum, Uhrzeit, Kennung. Keine Namen, keine Kontakte.
+- **Inquiry-Endpunkt (optional)**: `inquiryEndpoint` in der Venue (Adresse, Methode, `acceptsInquiries`, Herkunftsangaben, `privacyNote`); öffentlich erreicht die Seite nur Adresse und Datenschutzhinweis (`VenuePublic.inquiry`).
 
 ## Zustand im Browser
 | Schlüssel | Ort | Inhalt |

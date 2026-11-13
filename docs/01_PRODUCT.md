@@ -26,7 +26,7 @@ Events haben bewusst keine eigene Seite: sie erscheinen auf „Heute“, sobald 
 | Bilder | Foto · Konzeptmotiv (gekennzeichnet) · leer · Ladefehler |
 | Teilen | geteilt · kopiert · abgebrochen (keine Meldung) · manuelles Kopieren |
 | Planer | leer · gültig · Fehler je Feld (Datum, Uhrzeit, Zeitumstellung, Vergangenheit) · Plan aus Link |
-| Gruppennachricht | nicht gesendet/vorbereitet · kopiert. „Gesendet“ existiert nicht, solange kein betreuter Kanal bestätigt ist |
+| Gruppennachricht | nicht gesendet/vorbereitet · kopiert. „Gesendet“ existiert nicht, solange kein betreuter Kanal bestätigt ist. Mit bestätigtem Endpunkt (optional, Aufgabe 18): sendet · übermittelt (nur nach 2xx, keine Reservierung) · abgelehnt · Fehler beim Dienst · Zeitüberschreitung · offline |
 | Verbindung | online · offline (Hinweis; im öffentlichen Modus zuletzt geladene Seite) |
 
 ## Grenzen
