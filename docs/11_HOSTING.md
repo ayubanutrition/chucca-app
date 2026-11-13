@@ -1,13 +1,13 @@
 # Hosting: Header und CSP auf dem Zielhost
 
-Das Hosting-Ziel ist nicht entschieden (Aufgabe 13). Der Build schreibt deshalb in jedes Ausgabeverzeichnis (`dist/`, `dist-public/`, `dist-sub/`) eine hostneutrale `_headers` (Format Netlify / Cloudflare Pages). Quelle: `src/lib/headers.ts`, aufgerufen aus `integrations/chucca-build.ts`. Entscheidung und Begründung: `docs/07_DECISIONS.md` D18; Prüfstand: `docs/06_QA.md`.
+Das Hosting-Ziel ist nicht entschieden (Aufgabe 13). Der Build schreibt deshalb in jedes Ausgabeverzeichnis (`dist/`, `dist-public/`, `dist-sub/`, auch das Testverzeichnis `dist-hours/`) eine hostneutrale `_headers` (Format Netlify / Cloudflare Pages). Quelle: `src/lib/headers.ts`, aufgerufen aus `integrations/chucca-build.ts`. Entscheidung und Begründung: `docs/07_DECISIONS.md` D18; Prüfstand: `docs/06_QA.md`.
 
 ## Was der Host leisten muss
 1. Statische Dateien ausliefern, `404.html` als Fehlerseite (Status 404).
-2. Die Header aus `_headers` senden. Netlify und Cloudflare Pages lesen die Datei selbst; auf anderen Hosts wird sie übersetzt (unten).
+2. Die Header aus `_headers` senden. Netlify und Cloudflare Pages lesen die Datei nach Herstellerangabe selbst (auf keinem echten Host ausprobiert); auf anderen Hosts wird sie übersetzt (unten).
 3. HTTPS erzwingen und `Strict-Transport-Security` setzen (nicht in `_headers`: nur über HTTPS sinnvoll, Wert gehört zur Domain-Entscheidung).
 4. `manifest.webmanifest` als `application/manifest+json`, `sw.js` als JavaScript ausliefern.
-5. Die Datei `_headers` selbst nicht ausliefern (Netlify/Cloudflare tun das nicht; nginx/Vercel brauchen sie gar nicht).
+5. Die Datei `_headers` selbst nicht ausliefern (Netlify/Cloudflare tun das nach Herstellerangabe nicht; nginx/Vercel brauchen sie gar nicht).
 
 ## Inhalt der Header
 | Pfad | Header |
@@ -17,7 +17,7 @@ Das Hosting-Ziel ist nicht entschieden (Aufgabe 13). Der Build schreibt deshalb 
 | `/_astro/*` | `Cache-Control: public, max-age=31536000, immutable` (Dateinamen tragen den Inhalts-Hash) |
 | `/`, `/de/*`, `/en/*`, `/es/*`, `sw.js`, `manifest.webmanifest`, `robots.txt`, `sitemap.xml`, `404.html`, Icons | `Cache-Control: no-cache` (immer revalidieren) |
 
-Die `Cache-Control`-Regeln überlappen absichtlich nicht: Netlify und Cloudflare führen gleichnamige Header mehrerer Treffer zusammen, ein breites `/*` mit `no-cache` würde `/_astro/*` verderben.
+Die `Cache-Control`-Regeln überlappen absichtlich nicht: Netlify und Cloudflare führen nach Herstellerangabe (nicht ausprobiert) gleichnamige Header mehrerer Treffer zusammen, ein breites `/*` mit `no-cache` würde `/_astro/*` verderben.
 
 ### CSP
 `default-src 'none'`; `script-src 'self'` plus SHA-256-Hashes der Inline-Skripte (Sprachwahl in `index.astro`, Weiterleitung in `404.astro`); `style-src 'self'` plus Hash des eingebetteten Stylesheets; `style-src-attr 'unsafe-inline'`; `img-src 'self' data:`; `font-src 'self'`; `connect-src 'self'`; `manifest-src 'self'`; `worker-src 'self'`; `base-uri 'none'`; `form-action 'none'`; `frame-ancestors 'none'`; `object-src 'none'`. Kein `unsafe-eval`, kein `unsafe-inline` für Skripte oder `<style>`-Blöcke.
@@ -28,7 +28,9 @@ Die `Cache-Control`-Regeln überlappen absichtlich nicht: Netlify und Cloudflare
 - Ein Unterpfad-Hosting (`CHUCCA_BASE`) ändert die Muster nicht: `_headers` liegt im Ausgabeordner und beschreibt Pfade relativ zu ihm. Netlify/Cloudflare brauchen für einen Unterpfad ohnehin eine eigene Site oder Regeln mit Präfix.
 
 ## Abbildung auf andere Hosts
-**Netlify / Cloudflare Pages:** `_headers` unverändert deployen. Grenzen bei Cloudflare Pages: höchstens 100 Regeln, 2000 Zeichen je Zeile (die CSP-Zeile hat derzeit rund 800).
+Die Vorlagen unten sind nicht gegen einen echten Vercel- oder nginx-Host geprüft; sie übersetzen den Inhalt der erzeugten `_headers`.
+
+**Netlify / Cloudflare Pages:** `_headers` unverändert deployen. Grenzen bei Cloudflare Pages: höchstens 100 Regeln, 2000 Zeichen je Zeile (Herstellerangabe, Stand nicht erneut abgefragt; die längste Zeile der erzeugten `_headers`, die CSP, hat derzeit 509 Zeichen).
 
 **Vercel** (`vercel.json`; `<CSP>` und `<PERMISSIONS>` aus der erzeugten `_headers` einsetzen). Der Lookahead hält `no-cache` von `/_astro/` fern:
 ```json

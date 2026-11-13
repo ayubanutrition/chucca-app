@@ -2,7 +2,7 @@
 
 Mobile Web-App/PWA mit vollständiger Desktop-Fassung für die Cocktailbar CHUCCA im Riu Center, Playa de Palma, Mallorca. Dreisprachig (DE/EN/ES), statisch vorgerendert, ohne Konto, ohne Tracking.
 
-Stand V4 (11.11.2026): vollständiger Neubau. Private Vorschau mit gekennzeichneten Beispieldaten und Konzeptmotiven; ein öffentlicher Build zeigt ausschließlich bestätigte Inhalte. Nicht deployt. Details: `docs/00_STATE.md`.
+Stand V4 (Neubau 11.11.2026, Dokumentation und Prüfungen bis 13.11.2026): vollständiger Neubau. Private Vorschau mit gekennzeichneten Beispieldaten und Konzeptmotiven; ein öffentlicher Build zeigt ausschließlich bestätigte Inhalte. Nicht deployt. Details: `docs/00_STATE.md`.
 
 ## Start
 Voraussetzung: Node ≥ 22.
@@ -16,16 +16,21 @@ npm run serve        # dist/ ausliefern: http://127.0.0.1:4321/
 
 ## Prüfen
 ```sh
+npm run docs:check   # Dokumente: tote Pfade, unbekannte npm-Skripte und Variablen, Abschnittsverweise
 npm run typecheck    # astro check (TypeScript strictest)
 npm run lint         # ESLint
-npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker
+npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker, Header, Schriften, CSV, QR, Doc-Check
 npm run build:test   # vier Builds: dist/ (Vorschau), dist-public/ (öffentlich, Test-URL), dist-sub/ (Unterpfad), dist-hours/ (nur Test: Zeiten-Fixture)
-npm run test:dist    # Build-Ausgabe: HTML-Validität, Links, Manifest, JSON-LD, CSP-Hashes, Bilder
-npm run test:e2e     # Playwright gegen alle drei Builds, inkl. axe
-npm run test:sw-update # Update-Pfad des Service Workers mit zwei Build-Ständen (Playwright)
-npm run check        # alles in dieser Reihenfolge
+npm run test:dist    # Build-Ausgabe: HTML-Validität, Links, Manifest, JSON-LD, CSP-Hashes, Bilder (braucht build:test)
+npm run test:e2e     # Playwright (Chromium) gegen alle vier Builds, inkl. axe (braucht build:test)
+npm run test:sw-update # Update-Pfad des Service Workers mit zwei Build-Ständen (Playwright; baut selbst)
+npm run check        # alles in dieser Reihenfolge; Exit 0 = grün (dauert einige Minuten)
 ```
-Beim ersten Mal lokal: `npx playwright install chromium`.
+Nicht Teil von `npm run check`: `npm run test:e2e:cross` (dieselbe Suite in Firefox und WebKit, ca. 10–20 Minuten; vorher `npm run build:test`).
+
+Einmalig vor dem ersten `npm run check` den Testbrowser installieren: `npx playwright install chromium` (auf einem frischen Linux zusätzlich Systembibliotheken: `npx playwright install --with-deps chromium`). Für `test:e2e:cross`: `npx playwright install --with-deps firefox webkit`. Liegen die Browser nicht im Standardpfad, `PLAYWRIGHT_BROWSERS_PATH` setzen.
+
+Die Browsertests starten ihre Testserver selbst auf `PORT_BASE` bis `PORT_BASE + 5` (Standard 4331–4336). Laufen mehrere Arbeitskopien oder Läufe gleichzeitig, jeweils einen anderen Wert setzen, z. B. `PORT_BASE=8700 npm run check`. Zwei Läufe mit demselben Wert stören sich.
 
 ## Betriebsmodi
 | Variable | Wirkung |
@@ -33,6 +38,8 @@ Beim ersten Mal lokal: `npx playwright install chromium`.
 | `CHUCCA_MODE=public` | nur bestätigte Inhalte, keine Beispieldaten, keine Konzeptmotive |
 | `CHUCCA_SITE_URL=https://…` | Canonical, hreflang, Sitemap, Link zum Plan in Einladungen; ohne sie bleibt auch der öffentliche Build `noindex` |
 | `CHUCCA_BASE=/pfad/` | Hosting im Unterpfad |
+| `CHUCCA_BUILD_ID=…` | feste Build-Kennung (Service-Worker-Update-Tests) |
+| `CHUCCA_TEST_HOURS=1` | nur Test: erfundene Öffnungszeiten, nur Vorschau und nur nach `dist-hours/` (`npm run build:hours`, `docs/03_ARCHITECTURE.md`) |
 
 Öffentlicher Build: `CHUCCA_SITE_URL=https://example.org npm run build:public` → `dist-public/`.
 
@@ -41,7 +48,7 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 `npm run content:check` prüft alle Inhalte gegen die Schemata und fasst auf Deutsch zusammen, was bestätigt ist und was den öffentlichen Build noch blockiert (Exit-Code 1 nur bei Schema-Verstößen). Eine ausgefüllte Kartentabelle (`docs/templates/menu-vorlage.csv`) wandelt `npm run menu:import -- datei.csv [--out pfad.json]` um; ohne `--out` wird nichts überschrieben (Unterlage für den Betrieb: `docs/10_BETREIBER.md`).
 
 ## Hilfsskripte
-`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
+`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `node scripts/qr-link.mjs` (QR-Aufsteller, `docs/10_BETREIBER.md`), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
 
 ## Dokumente (je Thema ein führender Ort)
 | Datei | Führend für |
@@ -59,3 +66,7 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 | `docs/09_RESEARCH.md` | Recherche, Übernahmen, Validierung |
 | `docs/11_HOSTING.md` | Header, CSP, Abbildung auf Hosts |
 | `docs/12_NATIVE_PHASE.md` | Entscheidungsvorlage PWA vs. native |
+| `docs/10_BETREIBER.md` | Unterlage für den Betrieb: was geliefert werden muss, QR aufstellen, Datenweg |
+| `docs/10_TEXTPRUEFUNG.md` | geänderte Texte DE/EN/ES und Prüfpunkte für Muttersprachler |
+| `docs/13_PR_ENTWURF.md` | Textentwurf für einen Pull Request (keiner geöffnet) |
+| `docs/evidence/`, `docs/templates/` | Screenshots des Stands; Kartentabelle für den Betrieb |

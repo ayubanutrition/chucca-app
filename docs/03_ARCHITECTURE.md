@@ -1,7 +1,7 @@
 # Architektur
 
 ## Stack (geprüft am 11.11.2026)
-Astro 7.4.11 (statisch vorgerendert) · TypeScript 6.0 (strictest) · Zod 4 · Vitest 5 · Playwright 1.63 + axe-core · ESLint 10. Keine UI-Bibliothek, kein Backend. Node ≥ 22 (`.nvmrc`). Eine Lockdatei: `package-lock.json`.
+Astro 7.4.11 (statisch vorgerendert) · TypeScript 6.0 (strictest) · Zod 4 · Vitest 5 · Playwright 1.63 + axe-core · ESLint 10. Keine UI-Bibliothek, kein Backend. Node ≥ 22 (`.nvmrc`: 22; Prüfstand: 22.23.4). Eine Lockdatei: `package-lock.json`.
 Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je Seite nur das benötigte.
 
 ## Struktur
@@ -17,9 +17,10 @@ Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je
 | `src/lib/` | Logik ohne DOM: Zeit, Planer, ICS, Teilen, Öffnungsstatus, Sonnenstand, Karte, Medien, Termine, Inhalte, Service-Worker-Vorlage |
 | `src/scripts/` | DOM-Skripte der Seiten |
 | `integrations/chucca-build.ts` | Schreibt nach dem Build `sw.js`, `robots.txt`, `sitemap.xml` |
-| `scripts/` | Konzeptmotive, Icons, Testserver, Screenshots, Labormessung |
-| `tests/unit`, `tests/e2e` | Vitest und Playwright |
-| `dist/`, `dist-public/` | Erzeugter Output (nicht versioniert) |
+| `scripts/` | Werkzeuge: Konzeptmotive, Icons, Schriftteilmengen (`make-fonts.py`), Testserver (`serve.mjs`, `serve-update.mjs`), Update-Builds (`build-update.mjs`), Inhalts- und CSV-Werkzeuge (`content-check.ts`, `menu-from-csv.ts`, über `run-ts.mjs`), QR-Aufsteller, Doc-Check, Screenshots, Labormessung; Aufruf je Skript: `README.md` |
+| `tests/unit`, `tests/build-output`, `tests/e2e` | Vitest (`vitest.config.ts`), Vitest über die fertigen Ausgabeordner (`vitest.dist.config.ts`, `npm run test:dist`) und Playwright (`playwright.config.ts`, `playwright.update.config.ts`) |
+| `dist/`, `dist-public/`, `dist-sub/`, `dist-hours/` | Erzeugter Output von `npm run build:test` (nicht versioniert) |
+| `.github/workflows/quality.yml` | CI: dieselben Schritte wie `npm run check`, dazu der Job `cross-browser` |
 
 ## Schriften
 Drei selbst gehostete WOFF2 (`src/assets/fonts/`, erzeugt von `scripts/make-fonts.py` aus den Fontsource-Paketen, SIL OFL; Lizenzen in `public/fonts/`). Eingebunden über `src/styles/fonts.css` (Vite hasht die Dateien nach `_astro/`, Unterpfad-fest); der Service Worker legt alle `_astro/*.woff2` vorab ab. Familiennamen und Tokens bleiben unverändert; metrikangepasste Notschriften stehen in den Tokens hinter den Webschriften. Zeichenbestand: fester Sockel plus alle Zeichen aus `src/i18n`, `content`, `components`, `layouts`, `pages`, `scripts`, `styles` (vom Skript automatisch abgeleitet; neue Texte → `python3 scripts/make-fonts.py` erneut ausführen). Zeichenabdeckung und Gewichtsgrenze (< 100 kB): `tests/unit/fonts.test.ts`, das bei jedem Zeichen im Textbestand ohne Glyphe (außer Pfeilen aus der Systemschrift) fehlschlägt. Gesamtgewicht der drei Dateien ca. 82,8 kB. Begründung und Zahlen: D16.

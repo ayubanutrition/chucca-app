@@ -16,14 +16,15 @@
     "test:e2e": "playwright test --trace off --project=chromium",
     "test:e2e:cross": "CROSS_BROWSER=1 playwright test --trace off --project=firefox --project=webkit",
     "test:sw-update": "node scripts/build-update.mjs && playwright test -c playwright.update.config.ts --trace off",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build:test && npm run test:dist && npm run test:e2e && npm run test:sw-update",
+    "check": "npm run docs:check && npm run typecheck && npm run lint && npm run test && npm run build:test && npm run test:dist && npm run test:e2e && npm run test:sw-update",
     "build:hours": "CHUCCA_TEST_HOURS=1 astro build --outDir dist-hours",
     "build:test": "astro build && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example astro build --outDir dist-public && CHUCCA_MODE=public CHUCCA_SITE_URL=https://chucca.example CHUCCA_BASE=/preview/app/ astro build --outDir dist-sub && npm run build:hours",
     "serve": "node scripts/serve.mjs dist 4321",
     "media:audit": "vitest run tests/unit/content-media.test.ts",
     "content:check": "node scripts/run-ts.mjs scripts/content-check.ts",
     "menu:import": "node scripts/run-ts.mjs scripts/menu-from-csv.ts",
-    "test:dist": "vitest run -c vitest.dist.config.ts"
+    "test:dist": "vitest run -c vitest.dist.config.ts",
+    "docs:check": "node scripts/docs-check.mjs"
   },
   "dependencies": {
     "astro": "^7.4.11",

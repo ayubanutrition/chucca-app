@@ -1,12 +1,12 @@
 # Handoff
 
-Stand 11.11.2026.
+Stand 13.11.2026 (Code-Stand `f0d8970` plus Doc-Check; Zahlen und Grenzen: `docs/06_QA.md`).
 
 ## Was fertig ist
-V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 252 Unit- und 577 Browser-Tests.
+V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 254 Unit-Tests, 220 Tests der Build-Ausgabe, 577 Chromium-Browser-Tests und 7 Service-Worker-Update-Tests (Lauf 13.11.2026).
 
 ## Browserübergreifend (12.11.2026)
-`npm run test:e2e:cross` führt die Browser-Suite in Playwright-Firefox und -WebKit aus (Linux, headless): je 476 bestanden, je 1 übersprungen, 0 fehlgeschlagen, 6 Tests erst nach Wiederholung grün. Behoben: Tastaturfokus unter der festen Tableiste in Firefox (`src/scripts/app.ts`). Nicht geprüft: Offline in WebKit (Werkzeugfehler), `prefers-contrast` in Firefox (nicht emulierbar). Ohne Browser-Installation (`npx playwright install --with-deps firefox webkit`) läuft der Befehl nicht; `npm run check` bleibt bei Chromium. Playwright-WebKit ist nicht iOS-Safari, Gerätetests (Aufgabe 14) bleiben offen. Details: `docs/06_QA.md`.
+`npm run test:e2e:cross` führt die Browser-Suite in Playwright-Firefox und -WebKit aus (Linux, headless; Lauf 13.11.2026, beide Browser zusammen): 1141 bestanden, 2 übersprungen, 0 fehlgeschlagen, 11 Tests erst nach Wiederholung grün (Firefox). Behoben: Tastaturfokus unter der festen Tableiste in Firefox (`src/scripts/app.ts`). Nicht geprüft: Offline in WebKit (Werkzeugfehler), `prefers-contrast` in Firefox (nicht emulierbar). Ohne Browser-Installation (`npx playwright install --with-deps firefox webkit`) läuft der Befehl nicht; `npm run check` bleibt bei Chromium. Playwright-WebKit ist nicht iOS-Safari, Gerätetests (Aufgabe 14) bleiben offen. Details: `docs/06_QA.md`.
 
 ## Vorbereitet, aber noch nicht nutzbar
 - QR-Aufsteller: `node scripts/qr-link.mjs <Basis-URL> <de|en|es> [Kurz-URL]` (Aufgabe 20). Erst nach der Hostentscheidung sinnvoll; Anleitung in `docs/10_BETREIBER.md`. Neue devDependency `qrcode-generator` (MIT), nicht im Produktbuild.
@@ -18,7 +18,7 @@ Nur lokal. Kein Deployment, keine öffentliche URL, kein PR.
 ```sh
 npm ci
 npm run build && npm run serve   # http://127.0.0.1:4321/
-npm run check                    # vollständige Prüfung
+npm run check                    # vollständige Prüfung (vorher einmal `npx playwright install chromium`, siehe README)
 ```
 
 ## Commits
@@ -46,7 +46,7 @@ Keine Veröffentlichung, keine Geräteabnahme, keine Felddaten, keine WCAG-Zerti
 
 ## Nächste drei Schritte
 1. Betreiberdaten anfordern (Liste in `docs/04_CONTENT_MEDIA.md`) und einpflegen – Aufgabe 12.
-2. Hosting festlegen, Vorschau deployen, Service Worker und Unterpfad dort prüfen – Aufgaben 13, 15, 16.
+2. Hosting festlegen, Vorschau deployen, Service-Worker-Update (15) und Unterpfad (16) dort wiederholen – Aufgabe 13; 15 und 16 sind lokal DONE, auf dem Host offen.
 3. Gerätetests auf iPhone und Android inkl. In-App-Browsern – Aufgabe 14.
 
 ## Betreiber-Datenweg (Trockenlauf 12.11.2026)

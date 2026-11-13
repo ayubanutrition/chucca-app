@@ -35,7 +35,7 @@ Recherche am 11.11.2026 durch einen eigenen Recherche-Subagenten dieser Session 
 | F5 | …/configuration-reference/#base | `base` wird nicht automatisch an Links gehängt | – | übernommen: `withBase()`/`href()` als einziger Weg; `trailingSlash: 'always'` |
 | F6 | …/guides/client-side-scripts/ | `<script>` ohne Attribute wird gebündelt; mit Attributen nicht | Modulskripte sind verzögert | übernommen; Sprach-Weiterleitung deshalb `is:inline` im Kopf |
 | F7 | …/guides/images/ | `alt` Pflicht, `public/` wird nicht verarbeitet, kein Hochskalieren | – | übernommen: Bilder in `src/assets/media`, `Picture` mit AVIF + WebP |
-| F8 | …/guides/fonts/ | Fonts-API ist stabil | Preload sparsam | **nicht übernommen**: Fontsource-CSS genügt; Fonts-API bleibt Option für Subsetting |
+| F8 | …/guides/fonts/ | Fonts-API ist stabil | Preload sparsam | **nicht übernommen**: Fonts-API bleibt Option; stattdessen eigene Teilmengen aus den Fontsource-Dateien (`scripts/make-fonts.py`, D16) |
 | F9 | …/guides/view-transitions/ | `<ClientRouter />` wird laut Doku zunehmend unnötig; unverträglich mit `security.csp` | Persistenz nur mit Router | übernommen: native Übergänge |
 | F10 | beide Upgrade-Leitfäden | Endpunkte mit Dateiendung ohne Schrägstrich; `Astro.site` in `getStaticPaths` veraltet | – | beachtet (`manifest.webmanifest.ts`, `gallery.html.ts`) |
 
@@ -94,7 +94,7 @@ Recherche am 11.11.2026 durch einen eigenen Recherche-Subagenten dieser Session 
 | F36 | (a) kleiner Reddit-Thread über Momentaufnahme; (b) nngroup.com/articles/qr-code-guidelines/ (2024); (c) CSS-Tricks „A Perfect Table of Contents“ (2022); (d) Anbieterblogs, nur Snippet | QR direkt auf die Zielseite; Punktlinien nur dekorativ; Preis an jedem Eintrag | (a) vier Kommentare | übernommen: Preis rechts mit `tabular-nums`, keine Punktlinien im Text; QR-Empfehlung in `docs/05_PLAN.md` |
 
 ### Schriften
-web.dev/articles/font-best-practices: WOFF2, variable Schrift lohnt bei mehreren Schnitten, `swap` für Markenschrift, Selbsthosting nicht automatisch schneller. Übernommen: zwei variable Familien, selbst gehostet (keine Dritt-Anfragen). Offen als Optimierung: Subsetting (heute ca. 167 kB Schriften beim ersten Besuch).
+web.dev/articles/font-best-practices: WOFF2, variable Schrift lohnt bei mehreren Schnitten, `swap` für Markenschrift, Selbsthosting nicht automatisch schneller. Übernommen: zwei variable Familien, selbst gehostet (keine Dritt-Anfragen). Subsetting inzwischen umgesetzt (Aufgabe 19, D16): Schriften beim Erstbesuch von ca. 167 auf 84,4 kB (Labor).
 
 ## Eigene Messungen und Gegenproben
 - Der Verdacht aus F2 und die Befunde der Reviews wurden im Browser nachvollzogen; Ergebnisse stehen in `docs/06_QA.md`.

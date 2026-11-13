@@ -30,4 +30,5 @@ Lies `README.md`, `docs/00_STATE.md` und `docs/05_PLAN.md`. Weitere Dokumente nu
 ## Definition of Done pro Aufgabe
 Verhalten umgesetzt · `npm run check` grün · sichtbare Änderungen im Browser bei 390 und 1440 px geprüft · Diff gelesen · echte Grenzen benannt · `docs/05_PLAN.md` und `docs/08_HANDOFF.md` aktualisiert.
 Status: TODO / DOING / DONE / BLOCKED. DONE braucht Evidenz (Befehl, Test, Screenshot).
+Zahlen und Aussagen in Dokumenten: Testzahlen führt `docs/06_QA.md`; wer sie anderswo nennt, nennt Datum und Lauf. Nur Gelaufenes gilt als geprüft, alles andere steht als NOT RUN oder „nicht geprüft“. `npm run docs:check` (Teil von `npm run check`) fängt tote Pfade, unbekannte npm-Skripte und Variablen ab, aber keine veralteten Zahlen: die prüft, wer sie ändert.
 Ein bestandener Build ist keine Browserprüfung. Ein Commit ist kein Push. Ein Push ist kein Deployment. Emulation ist kein Gerätetest.

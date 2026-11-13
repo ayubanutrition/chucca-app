@@ -1,10 +1,10 @@
 # Aktueller Projektstand
 
-Stand: 11.11.2026, nach Umsetzung von V4.
+Stand: 13.11.2026 (Umsetzung von V4 am 11.11.2026; danach Zusatzprüfungen, Audits und Dokumentationsabgleich bis 13.11.2026). Zahlen und Prüfumfang: `docs/06_QA.md`; Verweise der Dokumente prüft `npm run docs:check`.
 
 | Gegenstand | Status | Evidenz |
 |---|---|---|
-| Remote `main` | unverändert, nur `README.md` | `8dec65b4fd27ea36e0441b22b86234e6e50deb83` (`git ls-remote`, 11.11.2026) |
+| Remote `main` | unverändert, nur `README.md` | `8dec65b4fd27ea36e0441b22b86234e6e50deb83` (`git ls-remote`, 11.11.2026 und erneut 13.11.2026) |
 | Arbeitsbranch | `claude/trusting-wozniak-wer4jd`, gepusht | siehe `docs/08_HANDOFF.md` |
 | Worktree | `.worktrees/chucca-v4` neben dem unveränderten Checkout von `main` | `git worktree list` |
 | Sicherung | lokaler Tag `backup/pre-v4-2026-11-11` auf `8dec65b` | `git tag` (nicht gepusht; `main` liegt ohnehin auf dem Remote) |
