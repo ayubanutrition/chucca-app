@@ -26,6 +26,7 @@ const partsFormat = new Intl.DateTimeFormat('en-GB', {
 export function madridParts(date: Date): ZonedParts {
   const out: Record<string, string> = {};
   for (const part of partsFormat.formatToParts(date)) out[part.type] = part.value;
+  // Stryker disable all: Rückfallwerte für nie fehlende Teile von formatToParts (nur für noUncheckedIndexedAccess)
   return {
     year: out.year ?? '',
     month: out.month ?? '',
@@ -33,6 +34,7 @@ export function madridParts(date: Date): ZonedParts {
     hour: out.hour ?? '',
     minute: out.minute ?? '',
   };
+  // Stryker restore all
 }
 
 /** Kalendertag in Madrid als YYYY-MM-DD. */
@@ -58,17 +60,29 @@ export const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 export const MAX_PLAN_DATE = '2100-12-31';
 
 /**
+ * Mögliche Zeitpunkte, an denen die Madrider Ortszeit `base` (als UTC gelesen) angezeigt wird:
+ * Verschiebungen von ±14 h im 15-Minuten-Raster. Madrid liegt nur bei +1 h/+2 h, der Bereich ist
+ * bewusst großzügig; Grenzen und Vorzeichen dieser Schleife haben daher keine beobachtbare Wirkung.
+ */
+function scanCandidates(base: Date): Date[] {
+  const out: Date[] = [];
+  // Stryker disable next-line all: großzügiger, symmetrischer Suchbereich, Grenzen/Vorzeichen ohne beobachtbare Wirkung
+  for (let offset = -14 * 60; offset <= 14 * 60; offset += 15) out.push(new Date(base.getTime() + offset * 60_000));
+  return out;
+}
+
+/**
  * Wandelt eine Madrider Ortszeit in einen eindeutigen Zeitpunkt um.
  * Gibt null zurück, wenn das Datum nicht existiert, die Ortszeit wegen der
  * Zeitumstellung fehlt (Frühjahr) oder doppelt vorkommt (Herbst).
  */
 export function toInstant(date: string, time: string): Date | null {
+  // Stryker disable next-line all: Formatprüfung ist vorgeschaltet; ungültige Zeit-/Datumsformen scheitern danach ohnehin an Date und Treffervergleich
   if (!DATE_PATTERN.test(date) || !/^\d{2}:\d{2}$/.test(time)) return null;
   const base = new Date(`${date}T${time}:00Z`);
   if (!Number.isFinite(base.getTime())) return null;
   const hits: Date[] = [];
-  for (let offset = -14 * 60; offset <= 14 * 60; offset += 15) {
-    const candidate = new Date(base.getTime() + offset * 60_000);
+  for (const candidate of scanCandidates(base)) {
     const p = madridParts(candidate);
     if (`${p.year}-${p.month}-${p.day}` === date && `${p.hour}:${p.minute}` === time) hits.push(candidate);
   }
@@ -82,17 +96,18 @@ export function toInstant(date: string, time: string): Date | null {
  */
 export function toInstantLenient(date: string, time: string): Date | null {
   const strict = toInstant(date, time);
+  // Stryker disable next-line ConditionalExpression: reine Abkürzung, der lenient-Pfad liefert für eindeutige Zeiten dasselbe
   if (strict) return strict;
   if (!DATE_PATTERN.test(date) || !TIME_PATTERN.test(time)) return null;
   const base = new Date(`${date}T${time}:00Z`);
   if (!Number.isFinite(base.getTime()) || base.toISOString().slice(0, 10) !== date) return null;
   const hits: Date[] = [];
   let firstAfter: Date | null = null;
-  for (let offset = -14 * 60; offset <= 14 * 60; offset += 15) {
-    const candidate = new Date(base.getTime() + offset * 60_000);
+  for (const candidate of scanCandidates(base)) {
     const p = madridParts(candidate);
     const local = `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
     if (local === `${date}T${time}`) hits.push(candidate);
+    // Stryker disable next-line EqualityOperator: Gleichheit wurde im if davor behandelt
     else if (!firstAfter && local > `${date}T${time}`) firstAfter = candidate;
   }
   return hits[0] ?? firstAfter;

@@ -58,11 +58,13 @@ export function skyPhase(now: Date, date: string, lat: number, lon: number): Sky
   const rise = sunrise(date, lat, lon);
   const set = sunset(date, lat, lon);
   const dusk = civilDusk(date, lat, lon);
-  if (!rise || !set || !dusk) return 'night';
+  // Ohne Auf-/Untergang (Polartag, Polarnacht) bleibt es bei „night“; ohne Ende der bürgerlichen Dämmerung
+  // (Sommernächte in hohen Breiten) wird es nach dem Untergang nie dunkler als „dusk“.
+  if (!rise || !set) return 'night';
   const time = now.getTime();
   if (time < rise.getTime()) return 'night';
   if (time < set.getTime() - 60 * 60_000) return 'day';
   if (time < set.getTime()) return 'golden';
-  if (time < dusk.getTime()) return 'dusk';
+  if (!dusk || time < dusk.getTime()) return 'dusk';
   return 'night';
 }

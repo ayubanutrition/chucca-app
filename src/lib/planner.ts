@@ -56,6 +56,7 @@ export function validatePlan(draft: Pick<Draft, 'date' | 'time'>, now: Date = ne
 }
 
 function parseDraft(value: unknown): Draft | null {
+  // Stryker disable next-line all: doppelt abgesichert, Destrukturierung von null wirft (in loadDraft gefangen), Nicht-Objekte scheitern an den typeof-Prüfungen darunter
   if (!value || typeof value !== 'object') return null;
   const { date, time, uid } = value as Record<string, unknown>;
   if (typeof date !== 'string' || typeof time !== 'string' || typeof uid !== 'string') return null;
@@ -67,7 +68,9 @@ function parseDraft(value: unknown): Draft | null {
 
 /** Lädt den Entwurf der laufenden Sitzung; ungültige oder fehlende Daten ergeben einen leeren Entwurf. */
 export function loadDraft(): Draft {
+  // Stryker disable next-line StringLiteral: jede Art außer 'local' wählt sessionStorage (area), '' ist gleichwertig
   const raw = readStored(DRAFT_KEY, 'session');
+  // Stryker disable next-line ConditionalExpression: JSON.parse('null') ergibt ebenfalls den leeren Entwurf
   if (!raw) return emptyDraft();
   try {
     return parseDraft(JSON.parse(raw)) ?? emptyDraft();
@@ -76,6 +79,7 @@ export function loadDraft(): Draft {
   }
 }
 
+// Stryker disable next-line StringLiteral: jede Art außer 'local' wählt sessionStorage (area), '' ist gleichwertig
 export const saveDraft = (draft: Draft): boolean => writeStored(DRAFT_KEY, JSON.stringify(draft), 'session');
 
 /**

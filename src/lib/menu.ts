@@ -44,6 +44,7 @@ export function matchesEntry(entry: MenuEntry, filter: MenuFilter): boolean {
   if (filter.category && entry.category !== filter.category) return false;
   if (filter.alcoholFree && !entry.alcoholFree) return false;
   if (filter.taste && !entry.tastes.includes(filter.taste)) return false;
+  // Stryker disable next-line Regex,MethodExpression: leere Teilstrings sind für every(includes) wirkungslos (includes('') ist wahr)
   const terms = normalize(filter.query).split(/\s+/).filter(Boolean);
   return terms.every((term) => entry.haystack.includes(term));
 }

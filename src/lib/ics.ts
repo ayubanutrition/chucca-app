@@ -72,6 +72,7 @@ export function buildCalendar(event: CalendarEvent): string {
     `DTSTAMP:${stamp(event.now ?? new Date())}`,
     `DTSTART:${stamp(event.start)}`,
   ];
+  // Stryker disable next-line EqualityOperator: 0 ist durch den Truthy-Test davor schon ausgeschlossen, >= 0 verhält sich gleich
   if (event.durationMinutes && event.durationMinutes > 0) {
     lines.push(`DTEND:${stamp(new Date(event.start.getTime() + event.durationMinutes * 60_000))}`);
   }

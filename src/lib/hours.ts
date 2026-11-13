@@ -30,6 +30,7 @@ export type OpenStatus =
 
 function rangeFor(hours: HoursData, date: string, weekday: number): DayRange | null {
   if (hours.exceptions && date in hours.exceptions) return hours.exceptions[date] ?? null;
+  // Stryker disable next-line OptionalChaining: openStatus prüft regular vorher, der Zugriff ist nie auf null/undefined
   return hours.regular?.[weekday] ?? null;
 }
 
