@@ -44,7 +44,15 @@ async function headersFor(path) {
 }
 
 createServer(async (request, response) => {
-  const raw = decodeURIComponent(new URL(request.url ?? '/', 'http://x').pathname);
+  let raw;
+  try {
+    raw = decodeURIComponent(new URL(request.url ?? '/', 'http://x').pathname);
+  } catch {
+    // Fehlerhafte Prozentkodierung (z. B. `%E0%A4%A`) darf den Testserver nicht beenden.
+    response.writeHead(400, { 'content-type': 'text/plain; charset=utf-8' });
+    response.end('Bad request');
+    return;
+  }
   // Hosting im Unterpfad: außerhalb des Präfixes gibt es nichts.
   const path = normalize(raw.startsWith(prefix) ? `/${raw.slice(prefix.length)}` : '/__außerhalb__');
   const extra = await headersFor(path);
