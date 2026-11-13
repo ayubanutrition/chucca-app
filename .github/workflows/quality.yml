@@ -1,15 +1,30 @@
 name: Quality
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+
+# Kein Schreibzugriff, keine Secrets nötig.
 permissions:
   contents: read
+
+# Pro Branch/PR läuft nur der neueste Lauf; ältere werden abgebrochen.
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run typecheck
@@ -24,11 +39,16 @@ jobs:
     # Firefox und WebKit (Playwright-Engine, nicht iOS-Safari). Eigener Job, damit `check` schnell bleibt; bei Bedarf als „required“ markieren.
     runs-on: ubuntu-latest
     needs: check
+    timeout-minutes: 45
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run build:test
