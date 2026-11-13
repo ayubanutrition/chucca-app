@@ -3,7 +3,7 @@
  * Ohne bestätigte Zeiten lautet das Ergebnis immer „unconfirmed“ –
  * es wird nie ein Status aus Annahmen berechnet.
  */
-import { addDays, madridDate, madridTime, madridWeekday, toInstantLenient } from './time';
+import { addDays, madridDate, madridWeekday, toInstantLenient } from './time';
 
 export interface DayRange {
   /** Öffnung HH:MM (Madrid). */
@@ -84,4 +84,3 @@ export function upcomingExceptions(hours: HoursData, today: string): HoursExcept
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export { madridTime };

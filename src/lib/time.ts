@@ -5,7 +5,7 @@
  */
 export const VENUE_TIME_ZONE = 'Europe/Madrid';
 
-export interface ZonedParts {
+interface ZonedParts {
   year: string;
   month: string;
   day: string;
@@ -23,7 +23,7 @@ const partsFormat = new Intl.DateTimeFormat('en-GB', {
   hourCycle: 'h23',
 });
 
-export function madridParts(date: Date): ZonedParts {
+function madridParts(date: Date): ZonedParts {
   const out: Record<string, string> = {};
   for (const part of partsFormat.formatToParts(date)) out[part.type] = part.value;
   // Stryker disable all: Rückfallwerte für nie fehlende Teile von formatToParts (nur für noUncheckedIndexedAccess)

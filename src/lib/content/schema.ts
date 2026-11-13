@@ -121,7 +121,7 @@ export function incompleteConfirmations(venue: Venue): string[] {
   return [...(venue.hours.status === 'confirmed' && !venue.hours.regular ? ['hours: regular (die sieben Wochentage) fehlt'] : []), ...endpointProblems(venue.inquiryEndpoint).map((problem) => `inquiryEndpoint: ${problem}`)];
 }
 
-export { TASTES, type Taste } from '../tastes';
+export { TASTES } from '../tastes';
 
 const price = z
   .object({

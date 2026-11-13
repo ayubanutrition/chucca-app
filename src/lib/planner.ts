@@ -13,7 +13,7 @@ export interface Draft {
   uid: string;
 }
 
-export type PlanErrorCode = 'invalidDate' | 'invalidTime' | 'dst' | 'past';
+type PlanErrorCode = 'invalidDate' | 'invalidTime' | 'dst' | 'past';
 export type PlanResult =
   | { ok: true; instant: Date }
   | { ok: false; field: 'date' | 'time'; code: PlanErrorCode };

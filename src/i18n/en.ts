@@ -40,7 +40,6 @@ export const en: Dictionary = {
     previewNote: 'Sample data and concept images are labelled.',
     noscript: 'Filters, sharing and calendar need JavaScript. Without it, the content stays readable.',
     offline: 'You are offline. Maps, Instagram and sharing need a connection.',
-    unconfirmed: 'Not yet confirmed',
     copy: 'Copy text',
     manualCopyLabel: 'Text to copy',
     manualCopyHint: 'Copying did not work here. Select the text and copy it by hand.',

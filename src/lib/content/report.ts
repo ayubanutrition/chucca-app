@@ -7,10 +7,10 @@ import { activeEndpoint, endpointProblems, inactiveEndpointNote } from '../inqui
 import { exclusionReasons, isPreviewConcept, type ExclusionReason } from '../media';
 import { incompleteConfirmations, LOCALE_CODES, unbackedConfirmations, type FactStatus, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 
-export type Level = 'ok' | 'warn' | 'error';
-export const ICON: Record<Level, string> = { ok: '✔', warn: '⚠', error: '✖' };
+type Level = 'ok' | 'warn' | 'error';
+const ICON: Record<Level, string> = { ok: '✔', warn: '⚠', error: '✖' };
 
-export interface Line {
+interface Line {
   level: Level;
   text: string;
 }
@@ -95,7 +95,7 @@ const STATUS_TEXT: Record<FactStatus, string> = {
   historic: 'veraltet',
 };
 
-export const MEDIA_REASON_TEXT: Record<ExclusionReason, string> = {
+const MEDIA_REASON_TEXT: Record<ExclusionReason, string> = {
   rights_not_approved: 'Nutzungsrechte nicht freigegeben',
   venue_not_verified: 'Aufnahmeort nicht bestätigt',
   not_actual_venue_photograph: 'kein echtes Foto des Lokals',

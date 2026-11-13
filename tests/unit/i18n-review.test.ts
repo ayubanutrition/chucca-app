@@ -6,44 +6,11 @@ import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { LOCALES, dictionary } from '../../src/i18n';
 import { CSV_COLUMNS, KIND_LABELS, OPEN_POINTS, collectRows, contextFor, escapeHtml, flatten, lengthHints, parseTextCheckChanges, toCsv, toHtml, type ReviewRow } from '../../scripts/i18n-review-core';
+import { parseCsv } from './csv-helper';
 
 const root = resolve(import.meta.dirname, '../..');
 const rows = collectRows({ root });
 const ui = rows.filter((r) => r.kind === 'ui');
-
-/** Minimaler CSV-Leser (Semikolon, Anführungszeichen, CRLF) für die Rückprobe. */
-function parseCsv(text: string): string[][] {
-  const out: string[][] = [];
-  let row: string[] = [];
-  let cell = '';
-  let quoted = false;
-  const body = text.replace(/^﻿/, '');
-  for (let i = 0; i < body.length; i++) {
-    const c = body[i];
-    if (quoted) {
-      if (c === '"' && body[i + 1] === '"') {
-        cell += '"';
-        i++;
-      } else if (c === '"') quoted = false;
-      else cell += c;
-    } else if (c === '"') quoted = true;
-    else if (c === ';') {
-      row.push(cell);
-      cell = '';
-    } else if (c === '\r' && body[i + 1] === '\n') {
-      row.push(cell);
-      out.push(row);
-      row = [];
-      cell = '';
-      i++;
-    } else cell += c;
-  }
-  if (cell || row.length) {
-    row.push(cell);
-    out.push(row);
-  }
-  return out;
-}
 
 describe('Review-Blatt: Vollständigkeit', () => {
   const reference = flatten(dictionary('de') as never);

@@ -39,7 +39,6 @@ export const de = {
     previewNote: 'Beispieldaten und Konzeptmotive sind gekennzeichnet.',
     noscript: 'Für Filter, Teilen und Kalender braucht diese Seite JavaScript. Ohne JavaScript bleiben die Inhalte lesbar.',
     offline: 'Du bist offline. Karten, Instagram und Teilen brauchen eine Verbindung.',
-    unconfirmed: 'Noch unbestätigt',
     copy: 'Text kopieren',
     manualCopyLabel: 'Text zum Kopieren',
     manualCopyHint: 'Kopieren hat hier nicht funktioniert. Markiere den Text und kopiere ihn von Hand.',

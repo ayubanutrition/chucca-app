@@ -31,7 +31,7 @@ export const DEFAULT_CATEGORIES: { id: string; name: Localized; aliases?: string
 
 /* ---------- CSV lesen ---------- */
 
-export const stripBom = (text: string): string => (text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
+const stripBom = (text: string): string => (text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
 
 /** Trennzeichen aus der Überschriftenzeile erkennen (außerhalb von Anführungszeichen): ; , oder Tab. */
 export function detectDelimiter(text: string): ';' | ',' | '\t' {
@@ -125,7 +125,7 @@ export function parsePriceCents(raw: string): { cents: number | null } | { error
 
 const YES = new Set(['ja', 'j', 'yes', 'y', 'si', 'sí', 'true', 'wahr', 'x', '1']);
 const NO = new Set(['nein', 'n', 'no', 'false', 'falsch', '0']);
-export function parseYesNo(raw: string): boolean | null {
+function parseYesNo(raw: string): boolean | null {
   const v = raw.trim().toLowerCase();
   if (YES.has(v)) return true;
   if (NO.has(v)) return false;

@@ -17,6 +17,9 @@ export const TEXT_SPACING_CSS = `
   p { margin-block-end: 2em !important; }
 `;
 
+/** Überstand der Seite über das Fenster (> 0 heißt horizontales Scrollen). */
+export const hscroll = (page: Page): Promise<number> => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+
 /** Namen der Sprachen je Pfad (nur Pfade, die einer Seite entsprechen). */
 export const localeOf = (path: string): 'de' | 'en' | 'es' => path.slice(1, 3) as 'de' | 'en' | 'es';
 

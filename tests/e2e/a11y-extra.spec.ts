@@ -6,13 +6,11 @@
  * Die zugehörigen „Fix-Beweis“-Tests injizieren den vorgeschlagenen CSS-Fix und laufen grün.
  */
 import { expect, test, type Page } from '@playwright/test';
-import { ALL_PAGES, DE_PAGES, SHOT_DIR, TEXT_SPACING_CSS, scanTextLoss } from './a11y-helpers';
+import { ALL_PAGES, DE_PAGES, SHOT_DIR, TEXT_SPACING_CSS, hscroll, scanTextLoss } from './a11y-helpers';
 
 // Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
 // die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
 test.use({ bypassCSP: true });
-
-const hscroll = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 test.describe('1.4.12 Textabstand', () => {
   for (const width of [390, 1440]) {

@@ -2,14 +2,12 @@
  * Robustheit: ohne JavaScript, Bildausfälle, Offline im Formular, Doppelklicks, extreme Eingaben,
  * Zurück/Vor (bfcache), sehr schmale und sehr breite Fenster. Screenshots: /tmp/chucca-agent-a11y/.
  */
-import { expect, test, type Page } from '@playwright/test';
-import { ALL_PAGES, DE_PAGES, SHOT_DIR } from './a11y-helpers';
+import { expect, test } from '@playwright/test';
+import { ALL_PAGES, DE_PAGES, SHOT_DIR, hscroll } from './a11y-helpers';
 
 // Die Tests spielen eigene Stylesheets ein (Textabstand, Schriftgröße, Kontrastmodus), wie es Nutzer- oder Assistenz-Software tut;
 // die Seiten-CSP gilt dafür nicht. Die CSP selbst prüft tests/e2e/headers.spec.ts.
 test.use({ bypassCSP: true });
-
-const hscroll = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 test.describe('JavaScript deaktiviert', () => {
   test.use({ javaScriptEnabled: false });
