@@ -5,3 +5,5 @@ declare const __CHUCCA_BUILD_ID__: string;
 declare const __CHUCCA_TEST_HOURS__: boolean;
 /** Nur im Testbuild `dist-inquiry` true (CHUCCA_TEST_INQUIRY=1); sonst false. */
 declare const __CHUCCA_TEST_INQUIRY__: boolean;
+/** Nur im Testbuild `dist-menu` true (CHUCCA_TEST_MENU=1); sonst false. */
+declare const __CHUCCA_TEST_MENU__: boolean;

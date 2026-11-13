@@ -9,7 +9,7 @@ import path from 'node:path';
 export const ROOT = path.resolve(import.meta.dirname, '..', '..');
 
 export interface Build {
-  name: 'dist' | 'dist-public' | 'dist-sub' | 'dist-hours' | 'dist-inquiry';
+  name: 'dist' | 'dist-public' | 'dist-sub' | 'dist-hours' | 'dist-inquiry' | 'dist-menu';
   dir: string;
   /** Basispfad mit abschließendem Schrägstrich. */
   base: string;
@@ -25,6 +25,7 @@ export const BUILDS: Build[] = [
   { name: 'dist-sub', dir: path.join(ROOT, 'dist-sub'), base: '/preview/app/', isPublic: true, site: 'https://chucca.example' },
   { name: 'dist-hours', dir: path.join(ROOT, 'dist-hours'), base: '/', isPublic: false, site: null },
   { name: 'dist-inquiry', dir: path.join(ROOT, 'dist-inquiry'), base: '/', isPublic: false, site: null },
+  { name: 'dist-menu', dir: path.join(ROOT, 'dist-menu'), base: '/', isPublic: false, site: null },
 ];
 
 export function assertBuilt(): void {

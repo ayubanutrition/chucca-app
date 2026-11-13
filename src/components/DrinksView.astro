@@ -14,7 +14,7 @@ interface Props {
 }
 const { locale } = Astro.props;
 const t = dictionary(locale);
-const { menu, state } = menuFor(MODE);
+const { menu, state, testNotice } = menuFor(MODE);
 const hasMenu = state !== 'pending' && menu.items.length > 0;
 const categories = menu.categories.map((category) => ({ ...category, items: menu.items.filter((item) => item.category === category.id) })).filter((category) => category.items.length > 0);
 const updatedText = menuUpdatedText(menu.updatedAt, state === 'published', t.drinks.updated, locale);
@@ -74,7 +74,7 @@ const countLabel = (count: number): string => (count === 1 ? t.drinks.filter.cou
         {updatedText && <p class="small" data-menu-updated>{updatedText}</p>}
       </div>
 
-      {state === 'fixture' && <p class="notice">{t.drinks.fixture.note}</p>}
+      {state === 'fixture' ? <p class="notice">{t.drinks.fixture.note}</p> : testNotice ? <p class="notice" data-test-fixture>{testNotice}</p> : null}
 
       {
         hasMenu ? (

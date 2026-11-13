@@ -2,7 +2,7 @@ import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 
 export default tseslint.config(
-  { ignores: ['dist/', 'dist-public/', 'dist-sub/', 'dist-hours/', 'dist-inquiry/', 'dist-update/', '.astro/', 'node_modules/', 'test-results/', 'playwright-report/'] },
+  { ignores: ['dist/', 'dist-public/', 'dist-sub/', 'dist-hours/', 'dist-inquiry/', 'dist-menu/', 'dist-update/', '.astro/', 'node_modules/', 'test-results/', 'playwright-report/'] },
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
   {

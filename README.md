@@ -20,9 +20,9 @@ npm run docs:check   # Dokumente: tote Pfade, unbekannte npm-Skripte und Variabl
 npm run typecheck    # astro check (TypeScript strictest)
 npm run lint         # ESLint
 npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker, Header, Schriften, CSV, QR, Doc-Check, Prüfblatt Textdurchsicht, Gerätetest-Protokoll
-npm run build:test   # fünf Builds: dist/ (Vorschau), dist-public/ (öffentlich, Test-URL), dist-sub/ (Unterpfad), dist-hours/ (nur Test: Zeiten-Fixture), dist-inquiry/ (nur Test: Sendeweg mit Test-Endpunkt)
+npm run build:test   # sechs Builds: dist/ (Vorschau), dist-public/ (öffentlich, Test-URL), dist-sub/ (Unterpfad), dist-hours/ (nur Test: Zeiten-Fixture), dist-inquiry/ (nur Test: Sendeweg mit Test-Endpunkt), dist-menu/ (nur Test: bestätigte Test-Karte)
 npm run test:dist    # Build-Ausgabe: HTML-Validität, Links, Manifest, JSON-LD, CSP-Hashes, Bilder (braucht build:test)
-npm run test:e2e     # Playwright (Chromium) gegen alle fünf Builds, inkl. axe (braucht build:test)
+npm run test:e2e     # Playwright (Chromium) gegen alle sechs Builds, inkl. axe (braucht build:test)
 npm run test:sw-update # Update-Pfad des Service Workers mit zwei Build-Ständen (Playwright; baut selbst)
 npm run check        # alles in dieser Reihenfolge; Exit 0 = grün (dauert einige Minuten)
 ```
@@ -30,7 +30,7 @@ Nicht Teil von `npm run check`: `npm run test:e2e:cross` (dieselbe Suite in Fire
 
 Einmalig vor dem ersten `npm run check` den Testbrowser installieren: `npx playwright install chromium` (auf einem frischen Linux zusätzlich Systembibliotheken: `npx playwright install --with-deps chromium`). Für `test:e2e:cross`: `npx playwright install --with-deps firefox webkit`. Liegen die Browser nicht im Standardpfad, `PLAYWRIGHT_BROWSERS_PATH` setzen.
 
-Die Browsertests starten ihre Testserver selbst auf `PORT_BASE` bis `PORT_BASE + 6` (Standard 4331–4337). Laufen mehrere Arbeitskopien oder Läufe gleichzeitig, jeweils einen anderen Wert setzen, z. B. `PORT_BASE=8700 npm run check`. Zwei Läufe mit demselben Wert stören sich.
+Die Browsertests starten ihre Testserver selbst auf `PORT_BASE` bis `PORT_BASE + 7` (Standard 4331–4338). Laufen mehrere Arbeitskopien oder Läufe gleichzeitig, jeweils einen anderen Wert setzen, z. B. `PORT_BASE=8700 npm run check`. Zwei Läufe mit demselben Wert stören sich.
 
 ## Betriebsmodi
 | Variable | Wirkung |
@@ -40,6 +40,7 @@ Die Browsertests starten ihre Testserver selbst auf `PORT_BASE` bis `PORT_BASE +
 | `CHUCCA_BASE=/pfad/` | Hosting im Unterpfad |
 | `CHUCCA_BUILD_ID=…` | feste Build-Kennung (Service-Worker-Update-Tests) |
 | `CHUCCA_TEST_HOURS=1` | nur Test: erfundene Öffnungszeiten, nur Vorschau und nur nach `dist-hours/` (`npm run build:hours`, `docs/03_ARCHITECTURE.md`) |
+| `CHUCCA_TEST_MENU=1` | nur Test: gekennzeichnete, erfundene bestätigte Karte (Jahr 2099), nur Vorschau und nur nach `dist-menu/` (`npm run build:menu`, `docs/03_ARCHITECTURE.md`) |
 | `CHUCCA_TEST_INQUIRY=1` | nur Test: gekennzeichneter Test-Endpunkt für den Sendeweg der Gruppenanfrage, nur Vorschau und nur nach `dist-inquiry/` (`npm run build:inquiry`, `docs/03_ARCHITECTURE.md`) |
 
 Öffentlicher Build: `CHUCCA_SITE_URL=https://example.org npm run build:public` → `dist-public/`.

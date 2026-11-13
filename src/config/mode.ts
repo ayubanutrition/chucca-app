@@ -20,3 +20,10 @@ export const TEST_HOURS: boolean = IS_PREVIEW && typeof __CHUCCA_TEST_HOURS__ !=
  * (Modus public, anderer Ausgabeordner als `dist-inquiry`) ab.
  */
 export const TEST_INQUIRY: boolean = IS_PREVIEW && typeof __CHUCCA_TEST_INQUIRY__ !== 'undefined' && __CHUCCA_TEST_INQUIRY__;
+/**
+ * Test-Schalter (CHUCCA_TEST_MENU=1, `npm run build:menu`): ersetzt nur im Vorschau-Modus die (leere, unbestätigte) veröffentlichte Karte
+ * durch die gekennzeichnete, bestätigte Test-Karte `src/content/fixtures/menu-test.ts` (erfundene Namen, Preise, Datum 2099), damit die
+ * Karte mit Bestand im Browser testbar ist. Wie `TEST_HOURS`: `astro.config.ts` und `integrations/chucca-build.ts` lehnen jede andere
+ * Kombination (Modus public, anderer Test-Schalter, anderer Ausgabeordner als `dist-menu`) ab.
+ */
+export const TEST_MENU: boolean = IS_PREVIEW && typeof __CHUCCA_TEST_MENU__ !== 'undefined' && __CHUCCA_TEST_MENU__;

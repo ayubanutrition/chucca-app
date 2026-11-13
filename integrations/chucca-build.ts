@@ -23,7 +23,7 @@ async function walk(dir: string, root = dir): Promise<string[]> {
   return out;
 }
 
-export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string; testHours?: boolean; testInquiry?: boolean }): AstroIntegration {
+export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: string; testHours?: boolean; testInquiry?: boolean; testMenu?: boolean }): AstroIntegration {
   let base = '/';
   let site: string | undefined;
   return {
@@ -39,6 +39,9 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
         }
         if (options.testInquiry && (options.mode !== 'preview' || outName !== 'dist-inquiry')) {
           throw new Error(`CHUCCA_TEST_INQUIRY=1 baut ausschließlich den Vorschau-Testbuild nach dist-inquiry (Ziel: ${outName}, Modus: ${options.mode}).`);
+        }
+        if (options.testMenu && (options.mode !== 'preview' || outName !== 'dist-menu')) {
+          throw new Error(`CHUCCA_TEST_MENU=1 baut ausschließlich den Vorschau-Testbuild nach dist-menu (Ziel: ${outName}, Modus: ${options.mode}).`);
         }
       },
       'astro:build:done': async ({ dir, logger }) => {
@@ -95,6 +98,10 @@ export function chuccaBuild(options: { mode: 'preview' | 'public'; buildId: stri
         const inquiryOrigin = origins[0] ?? null;
         if (inquiryOrigin !== null && endpointOrigin(inquiryOrigin) !== inquiryOrigin) throw new Error(`Ungültige Herkunft des Anfrage-Endpunkts: ${inquiryOrigin}`);
         if (inquiryOrigin?.endsWith('.invalid') && !options.testInquiry) throw new Error('Test-Endpunkt (.invalid) in einem regulären Build: abgebrochen.');
+        // Wächter gegen Leaks in beide Richtungen: Test-Karte und Test-Zeiten tragen Kennungen, die in keinem anderen Build stehen dürfen.
+        for (const [flag, marker] of [[options.testMenu, 'TESTFIXTURE-MENU'], [options.testHours, 'TESTFIXTURE-HOURS'], [options.testInquiry, 'TESTFIXTURE-INQUIRY']] as const) {
+          if (!flag && htmlTexts.some((text) => text.includes(marker))) throw new Error(`Test-Kennung ${marker} in einem regulären Build: abgebrochen.`);
+        }
         await writeFile(
           join(root, '_headers'),
           buildHeadersFile({ files: await walk(root), hashes: collectInlineHashes(htmlTexts), noindex: options.mode !== 'public' || !site, inquiryOrigin }),

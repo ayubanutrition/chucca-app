@@ -14,9 +14,10 @@ import { selectMedia, toPublicMedia, type MediaPublic } from '../media';
 import { parseOrThrow } from './report';
 import { eventsSchema, incompleteConfirmations, mediaCatalogueSchema, menuSchema, unbackedConfirmations, venueSchema, type Localized, type MediaInternal, type Menu, type Venue, type VenueEvent } from './schema';
 import type { HoursData } from '../hours';
-import { TEST_HOURS, TEST_INQUIRY, type Mode } from '../../config/mode';
+import { TEST_HOURS, TEST_INQUIRY, TEST_MENU, type Mode } from '../../config/mode';
 import { fixtureHours, HOURS_FIXTURE_NOTICE } from '../../content/fixtures/hours';
 import { fixtureInquiryEndpoint, INQUIRY_FIXTURE_NOTICE } from '../../content/fixtures/inquiry';
+import { testMenu as testMenuRaw, MENU_FIXTURE_NOTICE } from '../../content/fixtures/menu-test';
 import { activeEndpoint } from '../inquiry-endpoint';
 
 export const venueInternal: Venue = parseOrThrow('src/content/published/venue.json', venueSchema, venueRaw);
@@ -24,7 +25,10 @@ const unbacked = unbackedConfirmations(venueInternal);
 if (unbacked.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json steht „confirmed“ ohne Quelle oder Datum bei: ${unbacked.join(', ')}. Bitte „source“ und „observedAt“ (oder „verifiedAt“) eintragen oder den Status zurücksetzen.`);
 const incomplete = incompleteConfirmations(venueInternal);
 if (incomplete.length > 0) throw new Error(`Inhalte fehlerhaft – der Build wurde angehalten. In src/content/published/venue.json sind Angaben unvollständig oder widersprüchlich: ${incomplete.join('; ')}.`);
-export const publishedMenu: Menu = parseOrThrow('src/content/published/menu.json', menuSchema, menuRaw);
+const repoPublishedMenu: Menu = parseOrThrow('src/content/published/menu.json', menuSchema, menuRaw);
+/** Im Testbuild `dist-menu` (`CHUCCA_TEST_MENU`) steht an dieser Stelle die gekennzeichnete, bestätigte Test-Karte; sonst unverändert der Bestand. */
+const testMenuParsed: Menu = parseOrThrow('src/content/fixtures/menu-test.ts', menuSchema, testMenuRaw);
+export const publishedMenu: Menu = TEST_MENU ? testMenuParsed : repoPublishedMenu;
 export const fixtureMenu: Menu = parseOrThrow('src/content/fixtures/menu.json', menuSchema, fixtureMenuRaw);
 export const publishedEvents: VenueEvent[] = parseOrThrow('src/content/published/events.json', eventsSchema, eventsRaw);
 export const mediaCatalogue: MediaInternal[] = parseOrThrow('src/content/media/catalogue.json', mediaCatalogueSchema, catalogueRaw);
@@ -92,10 +96,12 @@ export interface MenuView {
   menu: Menu;
   /** published = bestätigte Karte, fixture = Beispielkarte der Vorschau, pending = noch keine Karte. */
   state: 'published' | 'fixture' | 'pending';
+  /** Nur im Testbuild `dist-menu` gesetzt: Kennzeichnung der Test-Karte für die Seite. */
+  testNotice?: string;
 }
 
 export function menuFor(mode: Mode, published: Menu = publishedMenu, fixture: Menu = fixtureMenu): MenuView {
-  if (published.status === 'confirmed' && published.items.length > 0) return { menu: published, state: 'published' };
+  if (published.status === 'confirmed' && published.items.length > 0) return { menu: published, state: 'published', ...(TEST_MENU && published === testMenuParsed ? { testNotice: MENU_FIXTURE_NOTICE } : {}) };
   if (mode === 'preview') return { menu: fixture, state: 'fixture' };
   return { menu: published, state: 'pending' };
 }
