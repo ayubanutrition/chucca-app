@@ -8,7 +8,7 @@ Nur ein Textentwurf. Es wurde kein Pull Request geöffnet; das geschieht erst au
 
 **Umfang:** rund 180 Dateien und rund 50 Commits gegenüber `main` (13.11.2026: 178 Dateien, 49 Commits; maßgeblich `git diff --stat 8dec65b..HEAD`). Der Altstand V3 liegt nicht im Repo.
 
-**Prüfung (Stand `docs/06_QA.md`):** `npm run check` Exit 0 – Doc-Check, Typecheck, Lint, 286 Unit-Tests, vier Builds, 220 Tests der Build-Ausgabe, 577 Chromium-E2E-Tests (gegen Vorschau, öffentlich, Unterpfad und den Test-Build mit Fixture-Zeiten), 7 Service-Worker-Update-Tests. Zusatzlauf Firefox/WebKit (`npm run test:e2e:cross`), Lighthouse im Labor, axe-Prüfungen, Breakpoint-Sweep.
+**Prüfung (Stand `docs/06_QA.md`):** `npm run check` Exit 0 – Doc-Check, Typecheck, Lint, 400 Unit-Tests, vier Builds, 220 Tests der Build-Ausgabe, 577 Chromium-E2E-Tests (gegen Vorschau, öffentlich, Unterpfad und den Test-Build mit Fixture-Zeiten), 7 Service-Worker-Update-Tests. Zusatzlauf Firefox/WebKit (`npm run test:e2e:cross`), Lighthouse im Labor, axe-Prüfungen, Breakpoint-Sweep.
 
 **Nicht geprüft / extern offen:** Betreiberdaten (Karte, Preise, Zeiten, Fotos, Rechtstexte), Hosting und Domain, Tests auf echten iOS-/Android-Geräten, Screenreader, muttersprachliche EN/ES-Durchsicht, bestätigter Anfragekanal, QR-Aufsteller-Druck.
 
