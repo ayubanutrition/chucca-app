@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 /** Namen, die erst der Build erzeugt oder die nur als frühere/fremde Dateien genannt werden. */
 const NOT_IN_REPO = new Set([
-  '_headers', 'sw.js', 'sitemap.xml', 'robots.txt', '404.html', 'gallery.html', 'index.html', 'manifest.webmanifest', 'mutation.json',
+  '_headers', 'sw.js', 'sitemap.xml', 'robots.txt', '404.html', 'gallery.html', 'index.html', 'manifest.webmanifest', 'mutation.json', 'i18n-review.csv', 'i18n-review.html',
   // V3-Altstand, im Repo nicht enthalten (docs/00_STATE.md, docs/02_DESIGN.md)
   'planner.js', 'atmosphere.webp', 'drink.webp', 'media_library.py',
   // fremde Dateien, die der Text nur beschreibt

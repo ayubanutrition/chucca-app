@@ -48,7 +48,7 @@ Keine Veröffentlichung, keine Geräteabnahme, keine Felddaten, keine WCAG-Zerti
 ## Nächste drei Schritte
 1. Betreiberdaten anfordern (Liste in `docs/04_CONTENT_MEDIA.md`) und einpflegen – Aufgabe 12.
 2. Hosting festlegen, Vorschau deployen, Service-Worker-Update (15) und Unterpfad (16) dort wiederholen – Aufgabe 13; 15 und 16 sind lokal DONE, auf dem Host offen.
-3. Gerätetests auf iPhone und Android inkl. In-App-Browsern – Aufgabe 14.
+3. Gerätetests auf iPhone und Android inkl. In-App-Browsern – Aufgabe 14. Prüfprotokoll und CSV-Vorlage sind vorbereitet (`docs/14_GERAETETEST.md`), nichts ist gelaufen. Muttersprachliche Durchsicht – Aufgabe 17: Prüfblatt mit `npm run i18n:review`, Anleitung `docs/15_TEXTREVIEW.md`, nichts durchgesehen.
 
 ## Betreiber-Datenweg (Trockenlauf 12.11.2026)
 Mit erfundenen Daten in einer Wegwerfkopie durchgespielt (nichts davon im Repo): Tabelle → `npm run menu:import` → `venue.json` (Zeiten, Kanal bestätigt) + Fotoeintrag + Termin → `npm run content:check` → öffentlicher Build mit `CHUCCA_SITE_URL`. Ergebnis: Karte, Zeiten/Status, Kanal, Foto und Termin erscheinen; Drinks und Galerie ohne `noindex` und in der Sitemap; keine Rechte-/Quellenfelder und kein Fixture-/Konzepttext im Output. Dabei behoben: rohe Zod-Ausgabe beim Build-Abbruch (jetzt deutsche Meldung mit Datei und Feld), `confirmed` ohne Wochentage und freigegebenes Foto ohne Datei ließen den Build still durch, doppelte Medien-/Termin-IDs wurden nicht gemeldet, Startseite zeigte ohne JavaScript „Zeiten nicht bestätigt“ trotz bestätigter Zeiten, Doku (`menu:import`, Zeilenzahl der Vorlage, Fotodateinamen) lückenhaft. Nicht gefahren: echte Betreiberdaten, Scan/Druck des QR-Codes, Gerätetest.

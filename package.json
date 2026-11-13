@@ -26,6 +26,7 @@
     "menu:import": "node scripts/run-ts.mjs scripts/menu-from-csv.ts",
     "test:dist": "vitest run -c vitest.dist.config.ts",
     "docs:check": "node scripts/docs-check.mjs",
+    "i18n:review": "node scripts/i18n-review-sheet.mjs",
     "mutation": "stryker run"
   },
   "dependencies": {

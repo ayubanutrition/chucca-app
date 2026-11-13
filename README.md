@@ -19,7 +19,7 @@ npm run serve        # dist/ ausliefern: http://127.0.0.1:4321/
 npm run docs:check   # Dokumente: tote Pfade, unbekannte npm-Skripte und Variablen, Abschnittsverweise
 npm run typecheck    # astro check (TypeScript strictest)
 npm run lint         # ESLint
-npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker, Header, Schriften, CSV, QR, Doc-Check
+npm test             # Vitest: Zeit/DST, ICS, Planer, Teilen, Inhalte, Medien, Sprachen, Service Worker, Header, Schriften, CSV, QR, Doc-Check, Prüfblatt Textdurchsicht, Gerätetest-Protokoll
 npm run build:test   # fünf Builds: dist/ (Vorschau), dist-public/ (öffentlich, Test-URL), dist-sub/ (Unterpfad), dist-hours/ (nur Test: Zeiten-Fixture), dist-inquiry/ (nur Test: Sendeweg mit Test-Endpunkt)
 npm run test:dist    # Build-Ausgabe: HTML-Validität, Links, Manifest, JSON-LD, CSP-Hashes, Bilder (braucht build:test)
 npm run test:e2e     # Playwright (Chromium) gegen alle fünf Builds, inkl. axe (braucht build:test)
@@ -49,7 +49,7 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 `npm run content:check` prüft alle Inhalte gegen die Schemata und fasst auf Deutsch zusammen, was bestätigt ist und was den öffentlichen Build noch blockiert (Exit-Code 1 nur bei Schema-Verstößen). Eine ausgefüllte Kartentabelle (`docs/templates/menu-vorlage.csv`) wandelt `npm run menu:import -- datei.csv [--out pfad.json]` um; ohne `--out` wird nichts überschrieben (Unterlage für den Betrieb: `docs/10_BETREIBER.md`).
 
 ## Hilfsskripte
-`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `node scripts/qr-link.mjs` (QR-Aufsteller, `docs/10_BETREIBER.md`), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
+`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/measure.mjs` (Labormessung), `node scripts/qr-link.mjs` (QR-Aufsteller, `docs/10_BETREIBER.md`), `npm run i18n:review` (Prüfblatt für die Textdurchsicht nach `reports/i18n-review/`, `docs/15_TEXTREVIEW.md`), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
 
 ## Dokumente (je Thema ein führender Ort)
 | Datei | Führend für |
@@ -70,4 +70,6 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 | `docs/10_BETREIBER.md` | Unterlage für den Betrieb: was geliefert werden muss, QR aufstellen, Datenweg |
 | `docs/10_TEXTPRUEFUNG.md` | geänderte Texte DE/EN/ES und Prüfpunkte für Muttersprachler |
 | `docs/13_PR_ENTWURF.md` | Textentwurf für einen Pull Request (keiner geöffnet) |
-| `docs/evidence/`, `docs/templates/` | Screenshots des Stands; Kartentabelle für den Betrieb |
+| `docs/14_GERAETETEST.md` | Geräte-Prüfprotokoll für Prüfpersonen (Aufgabe 14; vorbereitet, nicht ausgeführt); Ergebnisvorlage `docs/templates/geraetetest-ergebnis.csv` |
+| `docs/15_TEXTREVIEW.md` | Anleitung für die muttersprachliche Textdurchsicht EN/ES (Aufgabe 17; vorbereitet, nicht durchgeführt) |
+| `docs/evidence/`, `docs/templates/` | Screenshots des Stands; Kartentabelle für den Betrieb; Ergebnisvorlage Gerätetest |
