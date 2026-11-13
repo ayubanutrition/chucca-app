@@ -3,8 +3,7 @@
   "include": [".astro/types.d.ts", "src", "tests", "integrations", "scripts", "*.ts", "*.mjs"],
   "exclude": ["dist", "dist-public", "dist-sub", "dist-hours", "dist-update", "node_modules"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "paths": { "@/*": ["./src/*"] },
     "resolveJsonModule": true,
     "exactOptionalPropertyTypes": false
   }
