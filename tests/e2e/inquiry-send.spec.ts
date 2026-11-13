@@ -333,7 +333,9 @@ test.describe('Sendeweg: Fehlerzustände bewahren die Eingabe und bieten den Rü
     await expect(status(page)).toHaveText(TEXT.de.sent);
   });
 
-  test('eine Antwort mit Weiterleitung (3xx) zählt nicht als Erfolg', async ({ page }) => {
+  test('eine Antwort mit Weiterleitung (3xx) zählt nicht als Erfolg', async ({ page, browserName }) => {
+    // Playwright-WebKit kann keine Antwort mit Weiterleitungsstatus nachbilden (route.fulfill: "Cannot fulfill with redirect status"); Werkzeug-Grenze, kein Produktbefund.
+    test.skip(browserName === 'webkit', 'route.fulfill mit 3xx ist in Playwright-WebKit nicht möglich');
     const mock = await mockEndpoint(page, { kind: 'status', status: 302 });
     await prepare(page, 'de');
     await sendButton(page).click();
