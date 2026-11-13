@@ -1,5 +1,5 @@
 /**
- * Dynamisches Sicherheits- und Robustheits-Fuzzing im Browser (Chromium), nur gegen die lokalen Testserver.
+ * Dynamisches Sicherheits- und Robustheits-Fuzzing im Browser (Chromium; Zusatzlauf Firefox/WebKit), nur gegen die lokalen Testserver.
  * Methode, Fälle und Befunde: docs/06_QA.md, Abschnitt „Fuzzing“. Kein Penetrationstest.
  *
  * Instrumentierung je Seite: `window.__pwned` (Sentinel, den jede Nutzlast zu setzen versucht), `dialog`-Ereignisse
@@ -551,7 +551,7 @@ test.describe('(3) Manipulierter Speicher', () => {
 test.describe('(4) Service Worker: Pfade und Cache-Schlüssel', () => {
   test.use({ baseURL: ORIGIN.public, serviceWorkers: 'allow' });
 
-  test('unbekannte, hostile und überlange Pfade vergiften den Cache nicht', async ({ page, context }) => {
+  test('unbekannte, hostile und überlange Pfade vergiften den Cache nicht', async ({ page, context, browserName }) => {
     const probe = await instrument(page, [ORIGIN.public]);
     await page.goto('/de/besuch/');
     await page.evaluate(async () => {
@@ -618,11 +618,19 @@ test.describe('(4) Service Worker: Pfade und Cache-Schlüssel', () => {
       }, entry);
       expect(same, `Cache-Kopie weicht vom Server ab: ${entry.url}`).toBe(true);
     }
-    await context.setOffline(true);
     // Ein erfundener Pfad bekommt offline die neutrale Offline-Seite und nie eine zuvor gespeicherte fremde Seite.
-    await page.goto('/de/erfunden-offline/').catch(() => undefined);
-    await expect(page.getByText('Du bist offline')).toBeVisible();
-    await context.setOffline(false);
+    // Nur Chromium: `setOffline` erreicht in Playwright-Firefox die Netzanfragen des Service Workers nicht. Gemessen: die Navigation ist
+    // `fromServiceWorker`, doch der `fetch(request)` im Worker gelingt (sonst käme sein Offline-Zweig mit Status 503); Antwort ist die echte
+    // 404-Seite des Servers (404, „Diese Seite gibt es nicht“), obwohl die Seite selbst unter `setOffline` jede Anfrage mit NetworkError
+    // abweist. In WebKit scheitert jede Navigation offline. Siehe docs/06_QA.md, „Browserübergreifend“ Befund 9.
+    if (browserName === 'chromium') {
+      await context.setOffline(true);
+      await page.goto('/de/erfunden-offline/').catch(() => undefined);
+      await expect(page.getByText('Du bist offline')).toBeVisible();
+      await context.setOffline(false);
+    } else {
+      test.info().annotations.push({ type: 'offline', description: `nicht geprüft in ${browserName}: setOffline erreicht den Service Worker nicht (Befund 9)` });
+    }
     expect(probe.dialogs).toEqual([]);
     expect(probe.foreign).toEqual([]);
     expect(await page.evaluate(() => (window as unknown as { __pwned?: unknown }).__pwned)).toBeUndefined();
@@ -832,24 +840,70 @@ test.describe('(6) Header auf Antworten für hostile Anfragen', () => {
     });
   }
 
-  test('Einbettung in einen fremden Rahmen wird vom Browser verweigert (frame-ancestors)', async ({ page }) => {
-    await page.goto(`${ORIGIN.preview}/de/`);
-    await page.evaluate((target) => {
+  // Der Rahmen muss von einer Seite OHNE eigene CSP aus eingebettet werden. Die Seiten der Anwendung tragen selbst `default-src 'none'`
+  // (ohne `frame-src`), und damit verweigert schon die einbettende Seite jeden Rahmen: Einbettung in eine Anwendungsseite beweist
+  // `frame-ancestors` nicht (so lief der Test zuerst, in allen drei Engines). Die Einbetter sind deshalb per Route bereitgestellte
+  // Seiten ohne Header; Kontrollrahmen zeigt, dass das Werkzeug einen geladenen Rahmen erkennt.
+  // Zustände der Engines, wenn der Zielrahmen verweigert wird (beobachtet): Chromium: Rahmen-URL `chrome-error://chromewebdata/`;
+  // WebKit: Rahmen-URL bleibt die Zieladresse, Inhalt leer, Konsole „does not appear in the frame-ancestors directive“;
+  // Firefox: Rahmen-URL leer, `evaluate` im Rahmen hängt, Konsole „blocked the loading of a resource (frame-ancestors)“.
+  async function embed(page: Page, embedderUrl: string, target: string) {
+    const consoleLines: string[] = [];
+    page.on('console', (message) => consoleLines.push(message.text()));
+    await page.route(embedderUrl, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>Einbetter</title><body>Einbetter ohne CSP</body>' }));
+    await page.route('http://kontrolle.example/**', (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>K</title><body>KONTROLLE-GELADEN</body>' }));
+    await page.goto(embedderUrl);
+    await page.evaluate((src) => {
       const frame = document.createElement('iframe');
-      frame.src = target;
-      frame.id = 'fuzz-frame';
+      frame.src = src;
       document.body.append(frame);
-    }, `${ORIGIN.public}/de/`);
-    // Der Browser ersetzt das Ziel durch eine Fehlerseite; die Seite selbst wird nicht dargestellt.
-    await expect
-      .poll(async () => {
-        const child = page.frames().find((frame) => frame !== page.mainFrame());
-        if (!child) return 'kein Rahmen';
-        const text = await child.evaluate(() => document.body?.innerText ?? '').catch(() => 'nicht lesbar');
-        return /CHUCCA/.test(text) ? 'GELADEN' : 'blockiert';
-      })
-      .toBe('blockiert');
+    }, target);
+    const state = async () => {
+      const child = page.frames().find((frame) => frame !== page.mainFrame());
+      if (!child) return { url: '(kein Rahmen)', text: '(kein Rahmen)', verdict: 'kein Rahmen' };
+      const url = child.url();
+      const text = await Promise.race([
+        child.evaluate(() => document.body?.innerText ?? '').catch((error: unknown) => `(nicht lesbar: ${String(error).slice(0, 60)})`),
+        new Promise<string>((resolve) => setTimeout(() => resolve('(keine Antwort aus dem Rahmen)'), 1500)),
+      ]);
+      const loaded = /KONTROLLE-GELADEN|CHUCCA/.test(text);
+      const refused = !loaded && (url.startsWith('chrome-error:') || consoleLines.some((line) => /frame-ancestors/i.test(line)));
+      return { url, text: text.slice(0, 60), verdict: loaded ? 'GELADEN' : refused ? 'verweigert' : 'offen' };
+    };
+    return { state, consoleLines };
+  }
+
+  const FRAME_CASES = [
+    { name: 'fremde Herkunft (öffentlicher Stand)', embedder: 'http://einbetter.example/', target: `${ORIGIN.public}/de/` },
+    { name: 'fremde Herkunft (Vorschau)', embedder: 'http://einbetter.example/', target: `${ORIGIN.preview}/de/` },
+    { name: 'gleiche Herkunft (frame-ancestors \'none\' gilt auch dafür)', embedder: `${ORIGIN.public}/einbetter-fuzz`, target: `${ORIGIN.public}/de/` },
+  ];
+
+  test('Kontrolle: das Werkzeug erkennt einen geladenen fremden Rahmen', async ({ page }) => {
+    const { state } = await embed(page, 'http://einbetter.example/', 'http://kontrolle.example/ok');
+    await expect.poll(async () => (await state()).verdict, { timeout: 10_000 }).toBe('GELADEN');
   });
+
+  for (const frameCase of FRAME_CASES) {
+    test(`Einbettung wird vom Browser verweigert (frame-ancestors): ${frameCase.name}`, async ({ page }) => {
+      const { state } = await embed(page, frameCase.embedder, frameCase.target);
+      const seen: string[] = [];
+      try {
+        await expect
+          .poll(async () => {
+            const current = await state();
+            seen.push(`${current.verdict} url=${current.url} text=${JSON.stringify(current.text)}`);
+            return current.verdict;
+          }, { timeout: 15_000 })
+          .toBe('verweigert');
+      } catch (error) {
+        throw new Error(`Rahmen nie verweigert. Beobachtet je Schritt:\n${seen.slice(-12).join('\n')}\n${String(error)}`);
+      }
+      // Danach bleibt es verweigert: die Seite erscheint nie im Rahmen.
+      await page.waitForTimeout(1000);
+      expect((await state()).verdict).toBe('verweigert');
+    });
+  }
 
   test('Fremdes Skript, fremdes Bild und eingeschleuste Inline-Skripte blockt die CSP (Selbsttest der Instrumentierung)', async ({ page }) => {
     const probe = await instrument(page, [ORIGIN.public, 'https://evil.example']);
