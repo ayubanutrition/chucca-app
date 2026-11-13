@@ -1,9 +1,9 @@
 # Handoff
 
-Stand 13.11.2026 (Code-Stand `f0d8970` plus Doc-Check; Zahlen und Grenzen: `docs/06_QA.md`).
+Stand 13.11.2026. Basis `f1f226c` (gepusht, Remote-Kopf des Arbeitsbranchs); darauf liegt ein lokaler, **nicht gepushter** Commit „Anforderungs-Rückverfolgung“ (`docs/16_ANFORDERUNGEN.md`, neue Tests, neue Belegbilder). Zahlen und Grenzen: `docs/06_QA.md`. Zuordnung Auftrag → Beleg: `docs/16_ANFORDERUNGEN.md`.
 
 ## Was fertig ist
-V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; 254 Unit-Tests, 220 Tests der Build-Ausgabe, 577 Chromium-Browser-Tests und 7 Service-Worker-Update-Tests (Lauf 13.11.2026).
+V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenplaner, Galerie, Event-Zustände; DE/EN/ES mit lokalisierten Routen; Mobile und Desktop; zwei Betriebsmodi; PWA-Grundlage; Teststände führt `docs/06_QA.md` (Lauf `npm run check` 13.11.2026, Exit 0).
 
 ## Browserübergreifend (12.11.2026)
 `npm run test:e2e:cross` führt die Browser-Suite in Playwright-Firefox und -WebKit aus (Linux, headless; Lauf 13.11.2026, beide Browser zusammen): 1141 bestanden, 2 übersprungen, 0 fehlgeschlagen, 11 Tests erst nach Wiederholung grün (Firefox). Behoben: Tastaturfokus unter der festen Tableiste in Firefox (`src/scripts/app.ts`). Nicht geprüft: Offline in WebKit (Werkzeugfehler), `prefers-contrast` in Firefox (nicht emulierbar). Ohne Browser-Installation (`npx playwright install --with-deps firefox webkit`) läuft der Befehl nicht; `npm run check` bleibt bei Chromium. Playwright-WebKit ist nicht iOS-Safari, Gerätetests (Aufgabe 14) bleiben offen. Details: `docs/06_QA.md`.

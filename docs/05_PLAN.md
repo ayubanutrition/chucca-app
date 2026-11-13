@@ -32,6 +32,9 @@ Status wie oben; BLOCKED heißt: hängt an einer Entscheidung oder Lieferung au�
 | 20 | BLOCKED (Werkzeug DONE) | QR-Aufsteller: Deep-Link auf `/…/drinks/` mit lesbarer Kurz-URL | 13 | Werkzeug fertig (`scripts/qr-link.mjs`, `tests/unit/qr-link.test.ts`, 6 Tests; Anleitung `docs/10_BETREIBER.md`). Offen: Host (13), Kurz-URL, Druck und Scan-Test mit echtem Gerät; Drinks bleibt im öffentlichen Modus `noindex`, bis die Karte bestätigt ist |
 | 21 | BLOCKED (Vorlage DONE) | Native Phase bewerten | 12–14 | Vorlage liegt vor: `docs/12_NATIVE_PHASE.md` (Kriterien, Annahmen, Auslöser). Entscheidung offen, braucht Ergebnisse aus 12–14 |
 
+## Anforderungs-Rückverfolgung
+Jede Anforderung des Auftrags mit Status und Beleg: `docs/16_ANFORDERUNGEN.md` (114 Einträge: 98 ERFÜLLT, 6 TEILWEISE, 10 OFFEN-EXTERN, 0 NICHT ERFÜLLT; Stand 13.11.2026). Die BLOCKED-Aufgaben oben sind die OFFEN-EXTERN-Zeilen dort.
+
 ## Cross-Browser-Stand (12.11.2026)
 Dieselbe Browser-Suite läuft zusätzlich in Playwright-Firefox und -WebKit (`npm run test:e2e:cross`, nicht Teil von `npm run check`; CI-Job `cross-browser` eingerichtet, nicht ausgeführt). Ergebnis (Lauf 13.11.2026, beide Browser zusammen): 1141 bestanden, 2 übersprungen, 0 fehlgeschlagen; 11 Tests nur nach Wiederholung grün (Firefox, Last). Ein echter Fehler in Firefox (Tastaturfokus unter der Tableiste) ist behoben. Offen: Offline-Verhalten in WebKit ungeprüft (Werkzeuggrenze). Playwright-WebKit ist nicht iOS-Safari und ersetzt Aufgabe 14 nicht. Details: `docs/06_QA.md`, „Browserübergreifend“.
 

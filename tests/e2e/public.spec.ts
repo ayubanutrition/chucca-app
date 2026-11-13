@@ -30,6 +30,12 @@ test('leere Galerie ist ehrlich, nicht indexiert und nicht in der Navigation', a
   await expect(page.getByRole('heading', { name: 'Noch keine freigegebenen Fotos.' })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
   expect(await dist('sitemap.xml')).not.toContain('galer');
+  // Ohne freigegebene Fotos ist die Galerie weder in der Navigation noch auf der Startseite verlinkt (kein leeres Hauptversprechen).
+  await expect(page.locator('.topnav a')).toHaveCount(4);
+  await expect(page.locator('.tabbar a')).toHaveCount(4);
+  await expect(page.locator('.topnav a[href*="galerie"], .tabbar a[href*="galerie"]')).toHaveCount(0);
+  await page.goto('/de/');
+  await expect(page.locator('main a[href*="galerie"]')).toHaveCount(0);
 });
 
 test('SEO: Canonical, wechselseitige hreflang, x-default, strukturierte Daten', async ({ page }) => {

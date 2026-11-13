@@ -19,6 +19,18 @@ Führender Ort für Fakten ist `src/content/published/venue.json` (mit `status`,
 
 Annahme, die vor dem Release der Betreiber bestätigen sollte: die Adresse. Sie ist die einzige Angabe, die ohne Betreiberbeleg öffentlich erscheint.
 
+## Zuständige Rollen (vorläufig)
+Jede Angabe in `venue.json` trägt `status`, `source`, `observedAt` und, sobald bestätigt, `verifiedAt` (`src/lib/content/schema.ts`). Wer sie bestätigen muss, steht hier als **Rolle, nicht als Person**; es ist niemand als zuständig benannt, und die Rollen sind Vorschläge, bis der Betrieb sie festlegt (`docs/10_BETREIBER.md`).
+| Angabe | Bestätigt (Rolle, vorläufig) | Pflegt im Repo |
+|---|---|---|
+| Besucheradresse, Eingangsbeschreibung, Öffnungszeiten, Saison, Ausnahmetage | Betriebsleitung des Lokals | Entwicklung nach schriftlicher Angabe (`hours`, `venue.json`) |
+| Karte, Preise, alkoholfreie Auswahl, Übersetzungen der Karte | Betriebsleitung bzw. Bar-Verantwortliche | Entwicklung oder Betrieb über `menu:import` |
+| Termine | Betriebsleitung | Betrieb oder Entwicklung (`published/events.json`) |
+| Anfragekanal, Zusage zur Betreuung, Datenschutztext | Betriebsleitung und rechtliche Beratung (nicht von uns zu liefern) | Entwicklung nach Bestätigung (`inquiryEndpoint`) |
+| Fotos, Nutzungsfreigabe, Einwilligung abgebildeter Personen | Bildrechte-Inhaber:in bzw. Betriebsleitung | Entwicklung (Katalog `src/content/media/catalogue.json`) |
+| Hosting, Domain, Zugangsschutz der Vorschau | Betrieb (Konto- und Domaininhaber:in) | Entwicklung (`docs/11_HOSTING.md`) |
+| Muttersprachliche Freigabe EN/ES | Prüfperson mit der Sprache (`docs/15_TEXTREVIEW.md`) | Entwicklung (`src/i18n/`) |
+
 ## Was der Betrieb liefern muss (blockiert nur die betroffenen öffentlichen Teile)
 1. Aktuelle Karte mit Namen, Zutaten, Größen, Preisen, alkoholfreien Drinks; Übersetzungen prüfen.
 2. Öffnungszeiten je Wochentag, Saisonzeitraum, Ausnahmen.

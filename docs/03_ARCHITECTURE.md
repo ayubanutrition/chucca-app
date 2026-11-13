@@ -1,7 +1,7 @@
 # Architektur
 
 ## Stack (geprüft am 11.11.2026)
-Astro 7.4.11 (statisch vorgerendert) · TypeScript 6.0 (strictest) · Zod 4 · Vitest 5 · Playwright 1.63 + axe-core · ESLint 10. Keine UI-Bibliothek, kein Backend. Node ≥ 22 (`.nvmrc`: 22; Prüfstand: 22.23.4). Eine Lockdatei: `package-lock.json`.
+Astro 7.4.11 (statisch vorgerendert) · TypeScript 6.0 (strictest) · Zod 4 · Vitest 5 · Playwright 1.63 + axe-core · ESLint 10. Keine UI-Bibliothek, kein Backend. Node ≥ 22 (`.nvmrc`: 22; Prüfstand: 22.23.4). Eine Lockdatei: `package-lock.json`. Gegenprobe 13.11.2026 mit `npm outdated`: Astro, Zod, Vitest, ESLint aktuell; Playwright 1.63 (1.65 verfügbar) und TypeScript 6.0.3 (7.0 verfügbar) bewusst nicht gehoben, ohne Verträglichkeitsprüfung.
 Interaktivität sind sechs kleine TypeScript-Module (zusammen ca. 9 kB gzip), je Seite nur das benötigte.
 
 ## Struktur

@@ -17,7 +17,7 @@ const NOT_IN_REPO = new Set([
   'planner.js', 'atmosphere.webp', 'drink.webp', 'media_library.py',
   // fremde Dateien, die der Text nur beschreibt
   // Dateien aus fremden Repositories oder vom Betrieb gelieferte Beispielnamen (docs/09_RESEARCH.md, README.md)
-  'ical.js', 'generate-sitemap.ts', 'fold-line.js', 'tools.ts', 'vercel.json', 'karte.csv', 'datei.csv', 'parvus.js',
+  'START_PROMPT.md', 'AUDIT_2026-11-11.md', 'README_FIRST.md', 'SOURCES.md', 'gallery.json', 'ical.js', 'generate-sitemap.ts', 'fold-line.js', 'tools.ts', 'vercel.json', 'karte.csv', 'datei.csv', 'parvus.js',
 ]);
 const TOP = /^(?:\.github|\.nvmrc|src|docs|tests|scripts|integrations|public)(?:\/|$)/;
 const FILE_EXT = /^\w[\w.-]*\.(?:md|ts|mjs|json|astro|yml|yaml|css|py|csv|js|webp|svg|png|jpg)$/;

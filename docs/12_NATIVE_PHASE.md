@@ -59,5 +59,17 @@ Entscheidung frühestens, wenn **alle** zutreffen:
 
 Kein Auslöser: Wunsch nach „einer richtigen App“ ohne benannte Funktion.
 
+## Ausbauplan, falls ein Auslöser eintritt (bedingt, nicht beauftragt)
+Gilt nur nach der Entscheidung für Option 2 oder 3. Reihenfolge und Abnahme sind Vorschläge **[Annahme]**; Versionen, Gebühren und Store-Regeln sind vorher aktuell nachzusehen. Jede Stufe ist ein eigener Lieferstand: PWA, Wrapper und native App werden nie als derselbe Stand ausgewiesen.
+| Stufe | Inhalt | Abnahme | Hängt ab von |
+|---|---|---|---|
+| N0 Nutzerwert | Die konkrete Funktion benennen, die die PWA nicht leistet (siehe Auslöser); ohne sie endet der Plan hier | Funktion in einem Satz, vom Betrieb bestätigt | Betrieb |
+| N1 Plattformen | Zielplattformen festlegen (iOS, Android oder beide), Mindestversionen, Geräteliste der Prüfpersonen | Liste im Repo, Betrieb stimmt zu | N0, Aufgabe 14 |
+| N2 Projekt | Wrapper-Projekt um den bestehenden Build anlegen (geteilte Logik aus `src/lib/`, Inhalte und Texte weiter aus `src/`), eigener Ordner, eigener Branch | Projekt baut reproduzierbar aus dem Lockfile; PWA-Build unverändert | N1 |
+| N3 Signierung und Konten | Entwickler:innen-Konten beim Betrieb, Signierschlüssel unter Verantwortung des Betriebs (nicht im Repo), Bundle-Kennung | Konten und Schlüsselort schriftlich benannt | Betrieb |
+| N4 Geräte | Installation, Start, Teilen, Kalenderdatei, Safe Areas, Offline und Rückkehr aus dem Hintergrund auf den Pflichtgeräten; Protokoll wie `docs/14_GERAETETEST.md` | ausgefülltes Protokoll, keine Emulation | N2, N3 |
+| N5 Distribution | Store-Einträge in DE/EN/ES, Datenschutz- und Altersangaben, Review-Einreichung, Rücknahme- und Update-Weg | Einreichung nur mit ausdrücklicher Freigabe des Betriebs | N4 |
+Nicht Teil dieses Plans: eigene native Oberflächen ohne Auslöser, Push, Konten, Zahlungen.
+
 ## Nächster Schritt
 Nach Aufgabe 14 diese Tabellen mit Gerätebefunden abgleichen (jede [Annahme] bestätigen oder streichen), dann dem Betrieb Option 1 oder 2 zur Entscheidung vorlegen.
