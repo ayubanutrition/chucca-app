@@ -107,7 +107,7 @@ Stand 13.11.2026, Basis `f1f226c`. Dieses Dokument ordnet jede prüfbare Anforde
 | E04 | Trennung von src, Komponenten, Content, Übersetzungen, Datenmodellen, Interaktionslogik, Build-Output | SP §5 | ERFÜLLT | `docs/03_ARCHITECTURE.md` „Struktur“; Regel „Browserskripte importieren kein Schema“ geprüft in `public.spec.ts` |
 | E05 | Eine Lockdatei; reproduzierbare Start-/Build-/Checkbefehle | SP §5 | ERFÜLLT | `package-lock.json` (einzige, Wächter in `scope-guards.test.ts`), `README.md`, CI-Nachlauf im frischen Klon (`docs/06_QA.md`) |
 | E06 | Alte Hash-Links sinnvoll abfangen | SP §5 | ERFÜLLT | `core.spec.ts` „alte V3-Links: Hash-Routen und gallery.html führen ans Ziel“; `tests/unit/i18n-sw.test.ts` „kennt die alten V3-Hash-Routen“ |
-| E07 | Route und Auswahl beim Sprachwechsel erhalten | SP §5, ST-03 | ERFÜLLT | `core.spec.ts` „Sprachwechsel bleibt auf derselben Seite und behält Filter und Geschmack“; `tests/e2e/degraded.spec.ts` (alle Seitenpaare ohne JavaScript) |
+| E07 | Route und Auswahl beim Sprachwechsel erhalten | SP §5, ST-03 | TEILWEISE | `core.spec.ts` „Sprachwechsel bleibt auf derselben Seite und behält Filter und Geschmack“; `tests/e2e/degraded.spec.ts` (alle Seitenpaare ohne JavaScript) |
 | E08 | Schema-validierte Inhalte; Vorschau/Testdaten strikt vom veröffentlichten Bestand getrennt | SP §5 | ERFÜLLT | `src/lib/content/schema.ts`, `src/content/fixtures/` getrennt von `src/content/published/`; `tests/unit/content-media.test.ts` („Betriebsmodi“, „Datenverträge“), `public.spec.ts` („Build enthält keine … Beispieldaten“) |
 | E09 | Interne Bildrechte, Recherche, lokale Pfade nie komplett exportieren; explizite öffentliche Feldliste | SP §5, ST-04 | ERFÜLLT | `PUBLIC_MEDIA_FIELDS` in `src/lib/media.ts`; `content-media.test.ts` „exportiert ausschließlich die erlaubten Felder“; `public.spec.ts` durchsucht den Build. Es gibt keine `gallery.json`; `gallery.html` ist nur die V3-Weiterleitung |
 | E10 | CMS/Backend nur soweit der Betriebsprozess es braucht | SP §5 | ERFÜLLT | `docs/07_DECISIONS.md` D15; Pflege per CSV/JSON (`docs/04_CONTENT_MEDIA.md` „Pflege“) |
@@ -151,8 +151,8 @@ Zählung der Statusspalten dieses Dokuments (Skript siehe Abschnitt „Pflege“
 
 | Status | Anzahl |
 |---|---|
-| ERFÜLLT | 99 |
-| TEILWEISE | 5 (A07, E16, E17, F06, F15) |
+| ERFÜLLT | 98 |
+| TEILWEISE | 6 (A07, E14, E16, E17, F06, F15) |
 | OFFEN-EXTERN | 10 |
 | NICHT ERFÜLLT | 0 |
 | zusammen | 114 |
@@ -160,7 +160,7 @@ Zählung der Statusspalten dieses Dokuments (Skript siehe Abschnitt „Pflege“
 ## Lücken im Überblick
 **OFFEN-EXTERN (nichts davon ist von uns zu erfinden):** echte Karte und Preise (C09), Betreiberbestätigung (C13), freigegebene Fotos (C19, D03), echte Termine (C22), muttersprachliche Freigabe (C24), betreuter Empfangskanal und echte Zustellung (C28), Hosting, Domain, Zugangsschutz (E02, E16), Host-Prüfung von Manifest und Header (E17), native Entscheidung (E20), Gerätetests und Geräte-Safe-Areas (F06, F17), Feld-INP (F15), Autorisierung für einen PR (A07).
 
-**TEILWEISE:** A07 (PR: Autorisierung), E16 und E17 (Host), F06 (Gerät), F15 (Felddaten) haben den Rest außerhalb des Repos; im Repo ist davon nichts mehr offen (E14 ist mit `tests/unit/menu-updated.test.ts` geschlossen).
+**TEILWEISE:** A07 (PR: Autorisierung), E16 und E17 (Host), F06 (Gerät), F15 (Felddaten) haben den Rest außerhalb des Repos. E14 bleibt TEILWEISE: die Logik von „Stand der Karte“ ist mit `tests/unit/menu-updated.test.ts` getestet, die Einbindung im gerenderten HTML erst mit einer echten Karte beobachtbar (kein Browsertest).
 
 **Beim Prüfen gefundene und geschlossene Lücken:** Verantwortliche in `docs/04_CONTENT_MEDIA.md` (B08); Browserzustand der Termine ungetestet (C21, `tests/e2e/events.spec.ts`); Navigationsaussage der leeren Galerie nicht geprüft (C18); keine Safe-Area-Prüfung (F06, `tests/e2e/safe-areas.spec.ts`); kein Lab-Wert für Interaktionslatenz (F15, `scripts/measure-inp.mjs`); veraltete Screenshots und fehlende Zustandsbilder (F12); Bauplan der Native-Phase ohne Ablauf (E19); veraltete Testzahlen im Handoff (A13); versionierte Testausgabe `.vitest/json/output.json` aus dem Repo entfernt und ignoriert; statische Wächter für Verbote (`tests/unit/scope-guards.test.ts`).
 
