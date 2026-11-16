@@ -32,6 +32,9 @@ Status wie oben; BLOCKED heißt: hängt an einer Entscheidung oder Lieferung au�
 | 20 | BLOCKED (Werkzeug DONE) | QR-Aufsteller: Deep-Link auf `/…/drinks/` mit lesbarer Kurz-URL | 13 | Werkzeug fertig (`scripts/qr-link.mjs`, `tests/unit/qr-link.test.ts`, 6 Tests; Anleitung `docs/10_BETREIBER.md`). Offen: Host (13), Kurz-URL, Druck und Scan-Test mit echtem Gerät; Drinks bleibt im öffentlichen Modus `noindex`, bis die Karte bestätigt ist |
 | 21 | BLOCKED (Vorlage DONE) | Native Phase bewerten | 12–14 | Vorlage liegt vor: `docs/12_NATIVE_PHASE.md` (Kriterien, Annahmen, Auslöser). Entscheidung offen, braucht Ergebnisse aus 12–14 |
 
+## Weg zur Veröffentlichung
+Die BLOCKED-Aufgaben 12, 13 bis 18 und 20 hängen voneinander ab. Reihenfolge, Befehle, Abbruchkriterien, Freigabe-Checkliste und Rückfall: `docs/17_GOLIVE.md` (vorbereitet, nichts ausgeführt). Das Werkzeug `scripts/smoke-live.mjs` (nur lesender Smoke-Test gegen eine Live-URL) ist fertig und lokal getestet; gegen einen echten Host nie gelaufen.
+
 ## Anforderungs-Rückverfolgung
 Jede Anforderung des Auftrags mit Status und Beleg: `docs/16_ANFORDERUNGEN.md` (114 Einträge: 98 ERFÜLLT, 6 TEILWEISE, 10 OFFEN-EXTERN, 0 NICHT ERFÜLLT; Stand 13.11.2026). Die BLOCKED-Aufgaben oben sind die OFFEN-EXTERN-Zeilen dort.
 

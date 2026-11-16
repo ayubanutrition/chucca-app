@@ -13,6 +13,9 @@ V4 als zusammenhängende, ausführbare Web-App: Heute, Drinks, Besuch, Gruppenpl
 - Entscheidungsvorlage PWA vs. native: `docs/12_NATIVE_PHASE.md` (Aufgabe 21).
 - Sendeweg für Gruppenanfragen (Aufgabe 18, technisch vorbereitet, AUS): optionales `inquiryEndpoint` in `venue.json` (im Repo absent), Senden-Knopf mit Zuständen sending/Erfolg nur nach 2xx/4xx/5xx/Timeout/offline in DE/EN/ES, CSP-Host nur bei Bestätigung. Einschalten erst, wenn der Betrieb Dienst, Adresse, CORS, Betreuung und Datenschutztext (`privacyNote`) geliefert und schriftlich bestätigt hat: `docs/10_BETREIBER.md`, Punkt 3; Eintrag und Regeln `docs/04_CONTENT_MEDIA.md`; Belege und Grenzen `docs/06_QA.md`. Test-Schalter `CHUCCA_TEST_INQUIRY` (nur `dist-inquiry`).
 
+## Weg zur Veröffentlichung
+Reihenfolge der externen Lieferungen (Betreiberdaten, Hosting, Gerätetests, Textdurchsicht, Anfragekanal, QR), Entscheidungsvorlagen, Freigabe-Checkliste, Rückfallplan und Wartung: `docs/17_GOLIVE.md`. Neu: `scripts/smoke-live.mjs` prüft eine ausgelieferte Seite nur lesend (GET/HEAD) auf Status, Header, CSP-Hashes, Canonical/hreflang, `sw.js`, 404 und Sitemap; getestet nur gegen `scripts/serve.mjs`, nie gegen einen echten Host. Die Sicherung `backup/pre-v4-2026-11-11` enthält nur `README.md` (kein lauffähiger Rückfallstand, Details im Runbook, Abschnitt 4).
+
 ## Wo es läuft
 Nur lokal. Kein Deployment, keine öffentliche URL, kein PR.
 

@@ -50,7 +50,7 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 `npm run content:check` prüft alle Inhalte gegen die Schemata und fasst auf Deutsch zusammen, was bestätigt ist und was den öffentlichen Build noch blockiert (Exit-Code 1 nur bei Schema-Verstößen). Eine ausgefüllte Kartentabelle (`docs/templates/menu-vorlage.csv`) wandelt `npm run menu:import -- datei.csv [--out pfad.json]` um; ohne `--out` wird nichts überschrieben (Unterlage für den Betrieb: `docs/10_BETREIBER.md`).
 
 ## Hilfsskripte
-`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/screenshot-states.mjs` (erzeugt `docs/evidence/` neu: Seiten und Zustände), `node scripts/measure-inp.mjs` (Interaktionslatenz im Labor), `node scripts/measure.mjs` (Labormessung), `node scripts/qr-link.mjs` (QR-Aufsteller, `docs/10_BETREIBER.md`), `npm run i18n:review` (Prüfblatt für die Textdurchsicht nach `reports/i18n-review/`, `docs/15_TEXTREVIEW.md`), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
+`node scripts/make-concept-art.mjs` (Konzeptmotive), `node scripts/make-icons.mjs` (Icons), `node scripts/screenshots.mjs` (QA-Screenshots), `node scripts/screenshot-states.mjs` (erzeugt `docs/evidence/` neu: Seiten und Zustände), `node scripts/measure-inp.mjs` (Interaktionslatenz im Labor), `node scripts/measure.mjs` (Labormessung), `node scripts/qr-link.mjs` (QR-Aufsteller, `docs/10_BETREIBER.md`), `node scripts/smoke-live.mjs <Basis-URL>` (nur lesender Smoke-Test gegen eine ausgelieferte Seite, `docs/17_GOLIVE.md`), `npm run i18n:review` (Prüfblatt für die Textdurchsicht nach `reports/i18n-review/`, `docs/15_TEXTREVIEW.md`), `python3 scripts/make-fonts.py` (Schriftteilmengen neu erzeugen; braucht `pip install fonttools brotli` und `npm ci`, schreibt `src/assets/fonts/`, Lizenzen nach `public/fonts/`).
 
 ## Dokumente (je Thema ein führender Ort)
 | Datei | Führend für |
@@ -73,5 +73,6 @@ Karte, Öffnungszeiten, Termine, Fotos: `docs/04_CONTENT_MEDIA.md`, Abschnitt �
 | `docs/16_ANFORDERUNGEN.md` | Rückverfolgung: jede Anforderung des Auftrags → Status → Beleg |
 | `docs/13_PR_ENTWURF.md` | Textentwurf für einen Pull Request (keiner geöffnet) |
 | `docs/14_GERAETETEST.md` | Geräte-Prüfprotokoll für Prüfpersonen (Aufgabe 14; vorbereitet, nicht ausgeführt); Ergebnisvorlage `docs/templates/geraetetest-ergebnis.csv` |
+| `docs/17_GOLIVE.md` | Go-Live-Runbook: Reihenfolge der externen Lieferungen, Entscheidungsvorlagen, Freigabe-Checkliste, Rückfall, Wartung (vorbereitet, nichts ausgeführt) |
 | `docs/15_TEXTREVIEW.md` | Anleitung für die muttersprachliche Textdurchsicht EN/ES (Aufgabe 17; vorbereitet, nicht durchgeführt) |
 | `docs/evidence/`, `docs/templates/` | Screenshots des Stands; Kartentabelle für den Betrieb; Ergebnisvorlage Gerätetest |

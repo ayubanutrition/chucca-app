@@ -165,5 +165,7 @@ Zählung der Statusspalten dieses Dokuments (Skript siehe Abschnitt „Pflege“
 **Beim Prüfen gefundene und geschlossene Lücken:** Verantwortliche in `docs/04_CONTENT_MEDIA.md` (B08); Browserzustand der Termine ungetestet (C21, `tests/e2e/events.spec.ts`); Navigationsaussage der leeren Galerie nicht geprüft (C18); keine Safe-Area-Prüfung (F06, `tests/e2e/safe-areas.spec.ts`); kein Lab-Wert für Interaktionslatenz (F15, `scripts/measure-inp.mjs`); veraltete Screenshots und fehlende Zustandsbilder (F12); Bauplan der Native-Phase ohne Ablauf (E19); veraltete Testzahlen im Handoff (A13); versionierte Testausgabe `.vitest/json/output.json` aus dem Repo entfernt und ignoriert; statische Wächter für Verbote (`tests/unit/scope-guards.test.ts`).
 
 ## Pflege
+Die OFFEN-EXTERN- und TEILWEISE-Zeilen werden in der Reihenfolge von `docs/17_GOLIVE.md` geschlossen; dort steht je Schritt, welche Zeilen danach zu ändern sind.
+
 Nach jeder Änderung an Auftrag oder Umfang diese Tabellen anpassen und `npm run docs:check` laufen lassen (prüft Pfade, Skripte, Variablen). Statuswörter bleiben genau: ERFÜLLT, TEILWEISE, OFFEN-EXTERN, NICHT ERFÜLLT. Zählung:
 `grep -oE '\| (ERFÜLLT|TEILWEISE|OFFEN-EXTERN|NICHT ERFÜLLT) \|' docs/16_ANFORDERUNGEN.md | sort | uniq -c`
