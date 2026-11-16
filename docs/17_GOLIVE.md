@@ -252,7 +252,7 @@ Nicht abgedeckt: Verhalten im Browser (Service-Worker-Update, Offline, Installat
 
 Grundsatz: Der Rückfall ist vor dem Deployment vorbereitet, nicht danach erfunden. Es wird nichts erzwungen: kein Force-Push, kein Zurücksetzen fremder Änderungen (`AGENTS.md`).
 
-**Was die Sicherung `backup/pre-v4-2026-11-11` ist (geprüft am 16.11.2026):** ein lokaler Tag auf `8dec65b` mit genau einer Datei, `README.md`. `git ls-tree -r --name-only backup/pre-v4-2026-11-11` zeigt das. Er sichert den Ausgangszustand von `main`, **nicht** eine lauffähige Vorgängerseite. Ein Rückfall „auf den Tag“ stellt daher keine Website wieder her. Der Tag ist in diesem Klon lokal (`docs/00_STATE.md`); ob er auf `origin` liegt, ist nicht festgestellt.
+**Was die Sicherung `backup/pre-v4-2026-11-11` ist (geprüft am 16.11.2026):** ein lokaler Tag auf `8dec65b` mit genau einer Datei, `README.md`. `git ls-tree -r --name-only backup/pre-v4-2026-11-11` zeigt das. Er sichert den Ausgangszustand von `main`, **nicht** eine lauffähige Vorgängerseite. Ein Rückfall „auf den Tag“ stellt daher keine Website wieder her. Der Tag ist in diesem Klon lokal (`docs/00_STATE.md`); `git ls-remote --tags origin` am 16.11.2026 ergab eine leere Liste: Der Tag liegt **nicht** auf `origin`, sondern nur in diesem Klon.
 
 Vor G9 prüfen:
 ```sh
